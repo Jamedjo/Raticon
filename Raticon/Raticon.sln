@@ -3,16 +3,49 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raticon", "Raticon.csproj", "{DD5C4CD7-5710-4AF0-9FB3-C7D86EFB1169}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaticonTest", "..\RaticonTest\RaticonTest.csproj", "{B3FAF9ED-9341-419D-A6EE-E765D1D0CB1B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D0E11310-6419-47BD-A04E-E1FDCFBFA69E}"
+	ProjectSection(SolutionItems) = preProject
+		Local.testsettings = Local.testsettings
+		Raticon.vsmdi = Raticon.vsmdi
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = Raticon.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DD5C4CD7-5710-4AF0-9FB3-C7D86EFB1169}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD5C4CD7-5710-4AF0-9FB3-C7D86EFB1169}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD5C4CD7-5710-4AF0-9FB3-C7D86EFB1169}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{DD5C4CD7-5710-4AF0-9FB3-C7D86EFB1169}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{DD5C4CD7-5710-4AF0-9FB3-C7D86EFB1169}.Debug|x86.ActiveCfg = Debug|x86
 		{DD5C4CD7-5710-4AF0-9FB3-C7D86EFB1169}.Debug|x86.Build.0 = Debug|x86
+		{DD5C4CD7-5710-4AF0-9FB3-C7D86EFB1169}.Release|Any CPU.ActiveCfg = Release|x86
+		{DD5C4CD7-5710-4AF0-9FB3-C7D86EFB1169}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{DD5C4CD7-5710-4AF0-9FB3-C7D86EFB1169}.Release|Mixed Platforms.Build.0 = Release|x86
 		{DD5C4CD7-5710-4AF0-9FB3-C7D86EFB1169}.Release|x86.ActiveCfg = Release|x86
 		{DD5C4CD7-5710-4AF0-9FB3-C7D86EFB1169}.Release|x86.Build.0 = Release|x86
+		{B3FAF9ED-9341-419D-A6EE-E765D1D0CB1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3FAF9ED-9341-419D-A6EE-E765D1D0CB1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3FAF9ED-9341-419D-A6EE-E765D1D0CB1B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B3FAF9ED-9341-419D-A6EE-E765D1D0CB1B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B3FAF9ED-9341-419D-A6EE-E765D1D0CB1B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B3FAF9ED-9341-419D-A6EE-E765D1D0CB1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3FAF9ED-9341-419D-A6EE-E765D1D0CB1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3FAF9ED-9341-419D-A6EE-E765D1D0CB1B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B3FAF9ED-9341-419D-A6EE-E765D1D0CB1B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B3FAF9ED-9341-419D-A6EE-E765D1D0CB1B}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
