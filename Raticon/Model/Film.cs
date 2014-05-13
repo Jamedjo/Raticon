@@ -34,18 +34,31 @@ namespace Raticon.Model
         }
 
         private RatingResult ratingResultCache;
-        public override string Rating
+        private T getResult<T>(T default_value, Func<RatingResult,T> getProperty)
         {
-            get
+            if (ratingResultCache == null)
             {
-                if (ratingResultCache == null)
+                if (ImdbId == null)
                 {
-                    ratingResultCache = ratingService.getRating(ImdbId);
+                    return default_value;
                 }
-                return ratingResultCache.Rating;
+                ratingResultCache = ratingService.getRating(ImdbId);
             }
+            return getProperty(ratingResultCache);
         }
 
+        public override string Rating
+        {
+            get { return getResult("", r => r.Rating); }
+        }
+        public override string Title
+        {
+            get { return getResult("", r => r.Title); }
+        }
+        public override string Year
+        {
+            get { return getResult("", r => r.Year); }
+        }
 
         private IFileSystem fileSystem;
         private IRatingService ratingService;
@@ -64,9 +77,16 @@ namespace Raticon.Model
 
         private string ImdbIdFromNfo()
         {
-            string nfo_file = fileSystem.Directory.GetFiles(Path, "*imdb*.nfo").First();
-            string imdb_line =  fileSystem.File.ReadAllLines(nfo_file).First();
-            return Regex.Match(imdb_line,@"/(tt\d+)",RegexOptions.IgnoreCase).Groups[1].Value;
+            try
+            {
+                string nfo_file = fileSystem.Directory.GetFiles(Path, "*imdb*.nfo").First();
+                string imdb_line = fileSystem.File.ReadAllLines(nfo_file).First();
+                return Regex.Match(imdb_line, @"/(tt\d+)", RegexOptions.IgnoreCase).Groups[1].Value;
+            }
+            catch(InvalidOperationException e)
+            {
+                return null;
+            }
         }
     }
 }

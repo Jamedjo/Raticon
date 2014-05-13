@@ -1,5 +1,8 @@
 using GalaSoft.MvvmLight;
 using Raticon.Model;
+using GalaSoft.MvvmLight.Command;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Windows;
 
 namespace Raticon.ViewModel
 {
@@ -22,13 +25,21 @@ namespace Raticon.ViewModel
         /// </summary>
         public MainViewModel()
         {
-            if (true)//(IsInDesignMode)
+            if (IsInDesignMode)
             {
                 Collection = new DummyCollection();
             }
-            else
+
+            AddFolderCommand = new RelayCommand(AddFolder);
+        }
+
+        public RelayCommand AddFolderCommand { get; private set; }
+        public void AddFolder()
+        {
+            var dialog = new CommonOpenFileDialog { IsFolderPicker = true };
+            if (dialog.ShowDialog(Application.Current.MainWindow) == CommonFileDialogResult.Ok)
             {
-                //Collection = new MediaCollection(
+                Collection = new MediaCollection(dialog.FileName);
             }
         }
 

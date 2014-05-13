@@ -11,7 +11,7 @@
         </Grid.RowDefinitions>
         
         <ToolBar Grid.Row="0">
-            <Button>Add Folder</Button>
+            <Button Command="{Binding AddFolderCommand}">Add Folder</Button>
         </ToolBar>
 
         <rc:FilmListView Grid.Row="1"/>
