@@ -1,0 +1,50 @@
+﻿<UserControl x:Class="Raticon.Control.FilmListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"
+             DataContext="{Binding Main, Source={StaticResource Locator}}"
+             d:DesignHeight="400" d:DesignWidth="300">
+    <UserControl.Resources>
+        <DataTemplate x:Key="HeaderTemplateArrowUp">
+            <DockPanel>
+                <TextBlock HorizontalAlignment="Center" Text="{Binding}"/>
+                <Path x:Name="arrow" StrokeThickness="1" Fill="gray" Data="M 5,10 L 15,10 L 10,5 L 5,10"/>
+            </DockPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="HeaderTemplateArrowDown">
+            <DockPanel>
+                <TextBlock HorizontalAlignment="Center" Text="{Binding }"/>
+                <Path x:Name="arrow" StrokeThickness="1" Fill="gray" Data="M 5,5 L 10,10 L 15,5 L 5,5"/>
+            </DockPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <ListView x:Name="FilmList" GridViewColumnHeader.Click="SortClickHandler" ItemsSource="{Binding Collection.Items}">
+        <ListView.View>
+            <GridView>
+                <GridViewColumn DisplayMemberBinding="{Binding Path}" Width="150">
+                    <GridViewColumn.Header>
+                        <GridViewColumnHeader Tag="Path">Folder</GridViewColumnHeader>
+                    </GridViewColumn.Header>
+                </GridViewColumn>
+                <GridViewColumn DisplayMemberBinding="{Binding Year}" Width="45">
+                    <GridViewColumn.Header>
+                        <GridViewColumnHeader Tag="Year">Year</GridViewColumnHeader>
+                    </GridViewColumn.Header>
+                </GridViewColumn>
+                <GridViewColumn DisplayMemberBinding="{Binding Rating}">
+                    <GridViewColumn.Header>
+                        <GridViewColumnHeader Tag="Rating">Rating</GridViewColumnHeader>
+                    </GridViewColumn.Header>
+                </GridViewColumn>
+                <GridViewColumn DisplayMemberBinding="{Binding Title}" Width="60">
+                    <GridViewColumn.Header>
+                        <GridViewColumnHeader Tag="Title">Title</GridViewColumnHeader>
+                    </GridViewColumn.Header>
+                </GridViewColumn>
+            </GridView>
+        </ListView.View>
+    </ListView >
+</UserControl>

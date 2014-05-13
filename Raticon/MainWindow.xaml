@@ -1,8 +1,19 @@
 ﻿<Window x:Class="Raticon.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
+        xmlns:rc="clr-namespace:Raticon.Control"
+        DataContext="{Binding Main, Source={StaticResource Locator}}"
+        Title="MainWindow" Height="430" Width="326">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
         
+        <ToolBar Grid.Row="0">
+            <Button>Add Folder</Button>
+        </ToolBar>
+
+        <rc:FilmListView Grid.Row="1"/>
     </Grid>
 </Window>

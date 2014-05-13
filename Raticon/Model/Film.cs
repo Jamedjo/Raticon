@@ -8,13 +8,20 @@ using Raticon.Service;
 
 namespace Raticon.Model
 {
-    public class Film
+    public abstract class IFilm
     {
-        public string FolderName { get; set; }
-        public string Path { get; set; }
+        public virtual string FolderName { get; protected set; }
+        public virtual string Path { get; protected set; }
+        public virtual string ImdbId { get; protected set; }
+        public virtual string Rating { get; protected set; }
+        public virtual string Title { get; protected set; }
+        public virtual string Year { get; protected set; }
+    }
+    public class Film : IFilm
+    {
 
         private string imdbIdCache;
-        public string ImdbId
+        public override string ImdbId
         {
             get
             {
@@ -27,7 +34,7 @@ namespace Raticon.Model
         }
 
         private RatingResult ratingResultCache;
-        public string Rating
+        public override string Rating
         {
             get
             {

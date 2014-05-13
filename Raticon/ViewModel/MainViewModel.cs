@@ -1,4 +1,5 @@
 using GalaSoft.MvvmLight;
+using Raticon.Model;
 
 namespace Raticon.ViewModel
 {
@@ -21,14 +22,25 @@ namespace Raticon.ViewModel
         /// </summary>
         public MainViewModel()
         {
-            ////if (IsInDesignMode)
-            ////{
-            ////    // Code runs in Blend --> create design time data.
-            ////}
-            ////else
-            ////{
-            ////    // Code runs "for real"
-            ////}
+            if (true)//(IsInDesignMode)
+            {
+                Collection = new DummyCollection();
+            }
+            else
+            {
+                //Collection = new MediaCollection(
+            }
+        }
+
+        private IMediaCollection collection;
+        public IMediaCollection Collection
+        {
+            get { return collection; }
+            set
+            {
+                collection = value;
+                RaisePropertyChanged("Collection");
+            }
         }
     }
 }
