@@ -115,7 +115,7 @@
     </ApplicationDefinition>
     <Compile Include="Model\Collection.cs" />
     <Compile Include="Model\Film.cs" />
-    <Compile Include="Service\Imdb.cs" />
+    <Compile Include="Service\RatingService.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="MainWindow.xaml">

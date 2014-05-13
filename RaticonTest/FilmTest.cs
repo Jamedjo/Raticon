@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Raticon.Model;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
+using Raticon.Service;
 
 
 namespace RaticonTest
@@ -71,7 +72,7 @@ namespace RaticonTest
             {
                 { @"C:\Some\Path\To\In.the.Heat.of.the.Night.1967\InTheHeatofTheNight_imdb_.nfo", new MockFileData("http://www.imdb.com/title/tt0061811/") }
             });
-            film = new Film(test_path,fileSystem);
+            film = new Film(test_path,fileSystem, new MockRatingService());
         }
         
         
@@ -96,7 +97,21 @@ namespace RaticonTest
         [TestMethod]
         public void It_should_get_imdb_id_from_nfo()
         {
-            Assert.AreEqual("tt0061811", film.ImdbIdFromNfo());
+            Assert.AreEqual("tt0061811", film.ImdbId);
+        }
+
+        [TestMethod]
+        public void It_should_get_rating_from_rating_service()
+        {
+            Assert.AreEqual(film.Rating, "7.0");
+        }
+    }
+
+    public class MockRatingService : IRatingService
+    {
+        public override RatingResult getRating(string imdbId)
+        {
+            return new RatingResult { Rating = "7.0" };
         }
     }
 }
