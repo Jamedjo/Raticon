@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:rc="clr-namespace:Raticon.Control"
         DataContext="{Binding Main, Source={StaticResource Locator}}"
-        Title="MainWindow" Height="430" Width="326">
+        Title="MainWindow" Height="430" Width="526">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"></RowDefinition>

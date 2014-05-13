@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d"
              DataContext="{Binding Main, Source={StaticResource Locator}}"
-             d:DesignHeight="400" d:DesignWidth="300">
+             d:DesignHeight="400" d:DesignWidth="500">
     <UserControl.Resources>
         <DataTemplate x:Key="HeaderTemplateArrowUp">
             <DockPanel>
@@ -22,27 +22,52 @@
     </UserControl.Resources>
 
     <ListView x:Name="FilmList" GridViewColumnHeader.Click="SortClickHandler" ItemsSource="{Binding Collection.Items}">
+        <ListView.ItemContainerStyle>
+            <Style TargetType="ListViewItem">
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            </Style>
+        </ListView.ItemContainerStyle>
         <ListView.View>
             <GridView>
-                <GridViewColumn DisplayMemberBinding="{Binding Path}" Width="150">
-                    <GridViewColumn.Header>
-                        <GridViewColumnHeader Tag="Path">Folder</GridViewColumnHeader>
-                    </GridViewColumn.Header>
-                </GridViewColumn>
-                <GridViewColumn DisplayMemberBinding="{Binding Year}" Width="45">
-                    <GridViewColumn.Header>
-                        <GridViewColumnHeader Tag="Year">Year</GridViewColumnHeader>
-                    </GridViewColumn.Header>
-                </GridViewColumn>
-                <GridViewColumn DisplayMemberBinding="{Binding Rating}">
-                    <GridViewColumn.Header>
-                        <GridViewColumnHeader Tag="Rating">Rating</GridViewColumnHeader>
-                    </GridViewColumn.Header>
-                </GridViewColumn>
-                <GridViewColumn DisplayMemberBinding="{Binding Title}" Width="60">
+                <GridViewColumn DisplayMemberBinding="{Binding Title}" Width="190">
                     <GridViewColumn.Header>
                         <GridViewColumnHeader Tag="Title">Title</GridViewColumnHeader>
                     </GridViewColumn.Header>
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Title}"/>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                <GridViewColumn Width="45">
+                    <GridViewColumn.Header>
+                        <GridViewColumnHeader Tag="Year">Year</GridViewColumnHeader>
+                    </GridViewColumn.Header>
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Year}" HorizontalAlignment="Center"/>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                <GridViewColumn>
+                    <GridViewColumn.Header>
+                        <GridViewColumnHeader Tag="Rating">Rating</GridViewColumnHeader>
+                    </GridViewColumn.Header>
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Rating}" HorizontalAlignment="Center"/>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                <GridViewColumn Width="210">
+                    <GridViewColumn.Header>
+                        <GridViewColumnHeader Tag="Path">Folder</GridViewColumnHeader>
+                    </GridViewColumn.Header>
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path}" HorizontalAlignment="Right"/>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
                 </GridViewColumn>
             </GridView>
         </ListView.View>

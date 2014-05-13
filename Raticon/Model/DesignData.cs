@@ -7,7 +7,7 @@ namespace Raticon.Model
 {
     public class DummyCollection : IMediaCollection
     {
-        public DummyCollection(int count = 10, string collection_path = @"C:\Trailers")
+        public DummyCollection(int count = 10, string collection_path = @"C:\Some\Long\Path\To\Trailers")
         {
             Items = new IFilm[count];
             for (int i = 0; i < Items.Length; i++)

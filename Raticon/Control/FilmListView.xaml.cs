@@ -77,9 +77,21 @@ namespace Raticon.Control
             }
             else
             {
-                return ListSortDirection.Ascending;
+                return defaultDirection(headerClicked);
             }
+        }
 
+        private ListSortDirection defaultDirection(GridViewColumnHeader header)
+        {
+            switch(header.Content.ToString())
+            {
+                case "Rating":
+                case "Year":
+                    return ListSortDirection.Descending;
+                case "Title":
+                default:
+                    return ListSortDirection.Ascending;
+            }
         }
 
     }
