@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Raticon.Model;
+using System.IO.Abstractions;
+using System.IO.Abstractions.TestingHelpers;
+
 
 namespace RaticonTest
 {
@@ -64,7 +67,11 @@ namespace RaticonTest
         [TestInitialize()]
         public void FilmTestInitialize()
         {
-            film = new Film(test_path);
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { @"C:\Some\Path\To\In.the.Heat.of.the.Night.1967\InTheHeatofTheNight_imdb_.nfo", new MockFileData("http://www.imdb.com/title/tt0061811/") }
+            });
+            film = new Film(test_path,fileSystem);
         }
         
         
@@ -77,13 +84,19 @@ namespace RaticonTest
         [TestMethod]
         public void It_should_have_a_path()
         {
-            Assert.IsTrue(film.Path == test_path);
+            Assert.AreEqual(film.Path,test_path);
         }
 
         [TestMethod]
         public void Its_folder_name_should_be_the_last_part_of_its_path()
         {
             Assert.IsTrue(film.Path.IndexOf(film.FolderName) > 10);
+        }
+
+        [TestMethod]
+        public void It_should_get_imdb_id_from_nfo()
+        {
+            Assert.AreEqual("tt0061811", film.ImdbIdFromNfo());
         }
     }
 }
