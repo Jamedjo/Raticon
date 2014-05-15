@@ -105,6 +105,29 @@ namespace RaticonTest
         {
             Assert.AreEqual(film.Rating, "7.0");
         }
+
+        [TestMethod]
+        public void It_should_create_folderJpg_when_required()
+        {
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData> {
+                { film.Path, new MockDirectoryData() }
+            });
+            var httpService = new MockBinaryHttpService(fileSystem);
+            film.RequireFolderJpg(fileSystem,httpService);
+            Assert.IsTrue(fileSystem.File.Exists(film.PathTo("folder.jpg")));
+        }
+
+        [TestMethod]
+        public void It_shouldnt_create_folderJpg_if_it_exists()
+        {
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData> {
+                {film.Path, new MockDirectoryData() },
+                {film.PathTo("folder.jpg"), new MockFileData("")}
+            });
+            var httpService = new MockBinaryHttpService(fileSystem);
+            film.RequireFolderJpg(fileSystem, httpService);
+            Assert.IsFalse(httpService.WasCalled);
+        }
     }
 
     public class MockRatingService : IRatingService
@@ -112,6 +135,26 @@ namespace RaticonTest
         public override RatingResult getRating(string imdbId)
         {
             return new RatingResult { Rating = "7.0" };
+        }
+    }
+
+    public class MockBinaryHttpService : IHttpService
+    {
+        IFileSystem fileSystem;
+        public bool WasCalled = false;
+        public MockBinaryHttpService(IFileSystem fileSystem)
+        {
+            this.fileSystem = fileSystem;
+        }
+        public override void GetBinary(string url, string path)
+        {
+            WasCalled = true;
+            fileSystem.File.Create(path);
+        }
+
+        public override string Get(string url)
+        {
+            throw new NotImplementedException();
         }
     }
 }

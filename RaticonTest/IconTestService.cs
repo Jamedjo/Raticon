@@ -5,30 +5,47 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Raticon.Service;
 using Raticon.Model;
+using System.IO;
 
 namespace RaticonTest
 {
     [TestClass]
     public class IconServiceTest
     {
+        IFilm filmMock = new FilmMock(@"C:\Temp");
 
-        [TestMethod]
-        public void It_should_make_icon()
+        [TestInitialize]
+        public void IconServiceTestInitialize()
         {
-            IFilm filmMock = new FilmMock(@"C:\Temp");
-            System.IO.Directory.Delete(filmMock.Path, true);
             System.IO.Directory.CreateDirectory(filmMock.Path);
-            string output = new IconService().Process(filmMock);
-            StringAssert.Equals(output, "");
+            new IconService().Process(filmMock);
         }
 
-        //It should use make star.png avaliable (assert call resourceservice to extract to path)
-        //It_should_fetch_folder_jpg_if_missing
-        //It should throw and exception if imagemagick version isn't suitable
-        //It should call shell service with correct command
-        //It should extract a copy of the desktop.ini file
-        //It should cleanup intermediate files if not done by the script
-        //It should set directory and dektop.ini attributes if not done by the script
+        [TestMethod]
+        public void It_should_make_an_icon()
+        {
+            Assert.IsTrue(System.IO.File.Exists(filmMock.PathTo("folder.ico")));
+        }
+
+        [TestMethod]
+        public void It_should_set_correct_attributes()
+        {
+            Assert.AreEqual(FileAttributes.ReadOnly | FileAttributes.Directory, File.GetAttributes(filmMock.Path));
+            Assert.AreEqual(FileAttributes.Hidden, File.GetAttributes(filmMock.PathTo("desktop.ini")));
+        }
+
+        [TestMethod]
+        public void It_should_throw_an_exception_if_imagemagick_version_isnt_suitable()
+        {
+            throw new NotImplementedException();
+        }
+
+        [TestCleanup]
+        public void IconServiceTestCleanup()
+        {
+            System.IO.File.SetAttributes(filmMock.Path, System.IO.FileAttributes.Normal);
+            System.IO.Directory.Delete(filmMock.Path, true);
+        }
     }
 
     [TestClass]

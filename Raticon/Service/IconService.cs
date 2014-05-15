@@ -9,17 +9,33 @@ namespace Raticon.Service
 {
     public class IconService
     {
-        public string Process(IFilm film)
+        public void Process(IFilm film)
         {
-            new ResourceService().ExtractTo("Raticon.star.png", film.Path + @"\star.png");
-            new ResourceService().ExtractTo("Raticon.Resources.desktop.ini", film.Path + @"\desktop.ini");
-            System.IO.File.SetAttributes(film.Path + @"\desktop.ini", System.IO.FileAttributes.Hidden);
-            new HttpService().GetBinary(film.Poster,film.Path + @"\folder.jpg");
+            BuildFolderIco(film);
+            SetupFolderIcon(film.Path);
+        }
+
+        private void SetupFolderIcon(string path)
+        {
+            new ResourceService().ExtractTo("Raticon.Resources.desktop.ini", path + @"\desktop.ini");
+            System.IO.File.SetAttributes(path + @"\desktop.ini", System.IO.FileAttributes.Hidden);
+
+            //Folder needs to be read only for icon to show
+            System.IO.File.SetAttributes(path, System.IO.FileAttributes.ReadOnly);
+        }
+
+        private void BuildFolderIco(IFilm film)
+        {
+            //Required files
+            new ResourceService().ExtractTo("Raticon.star.png", film.PathTo("star.png"));
+            film.RequireFolderJpg();
+
+            //Run Resources/IconScript.tt
             string script = new IconScript(film.Rating).TransformText();
             string output = new ShellService().Execute(script, film.Path);
-            System.IO.File.Delete(film.Path + @"\star.png");
-            System.IO.File.SetAttributes(film.Path, System.IO.FileAttributes.ReadOnly);
-            return output;
+
+            //Cleanup
+            System.IO.File.Delete(film.PathTo("star.png"));
         }
 
     }

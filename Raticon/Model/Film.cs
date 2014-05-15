@@ -17,10 +17,23 @@ namespace Raticon.Model
         public virtual string Title { get; protected set; }
         public virtual string Year { get; protected set; }
         public virtual string Poster { get; protected set; }
+
+        public void RequireFolderJpg(IFileSystem fileSystem = null, IHttpService httpService = null)
+        {
+            fileSystem = fileSystem ?? new FileSystem();
+            if (!fileSystem.File.Exists(PathTo("folder.jpg")))
+            {
+                (httpService ?? new HttpService()).GetBinary(Poster, Path + @"\folder.jpg");
+            }
+        }
+
+        public string PathTo(string fileName)
+        {
+            return System.IO.Path.Combine(Path, fileName);
+        }
     }
     public class Film : IFilm
     {
-
         private string imdbIdCache;
         public override string ImdbId
         {
@@ -60,7 +73,7 @@ namespace Raticon.Model
         {
             get { return getResult("", r => r.Year); }
         }
-        public string Poster
+        public override string Poster
         {
             get { return getResult("", r => r.Poster); }
         }
