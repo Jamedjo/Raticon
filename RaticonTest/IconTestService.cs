@@ -35,9 +35,23 @@ namespace RaticonTest
         }
 
         [TestMethod]
+        [ExpectedException(typeof(Raticon.Service.IconService.ImageMagickNotInstalledException))]
+        public void It_should_throw_an_exception_if_imagemagick_not_installed()
+        {
+            string path = @"C:\Temp\RaticonNoImageMagickInstalledTest";
+            Directory.CreateDirectory(path);
+            File.WriteAllLines(path + @"\convert.bat", new[] { "" });
+            new IconService().RaiseErrorIfImageMagickInvalid(path);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(Raticon.Service.IconService.ImageMagickVersionException))]
         public void It_should_throw_an_exception_if_imagemagick_version_isnt_suitable()
         {
-            throw new NotImplementedException();
+            string path = @"C:\Temp\RaticonWrongImageMagickVersionTest";
+            Directory.CreateDirectory(path);
+            File.WriteAllLines(path + @"\convert.bat", new[] { "echo Version: ImageMagick 6.8.8-2 Q14 x64 2014-02-08" });
+            new IconService().RaiseErrorIfImageMagickInvalid(path);
         }
 
         [TestCleanup]
