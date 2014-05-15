@@ -196,6 +196,7 @@
       <DependentUpon>SearchResultPicker.xaml</DependentUpon>
     </Compile>
     <Compile Include="Service\FilmLookupService.cs" />
+    <Compile Include="Service\ConvertService.cs" />
     <Compile Include="Service\HttpService.cs" />
     <Compile Include="Service\IconService.cs" />
     <Compile Include="Service\ImdbIdCacheService.cs" />
@@ -290,6 +291,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="FodyWeavers.xml" />
+    <COMReference Include="ImageMagickObject">
+      <Guid>{9AA0FC6A-63C7-3632-BD6B-7CAF646E51A0}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\IconScript.tt">
