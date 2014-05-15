@@ -14,7 +14,6 @@ namespace RaticonTest
     {
         IFilm filmMock = new FilmMock(@"C:\Temp");
 
-        [TestInitialize]
         public void IconServiceTestInitialize()
         {
             System.IO.Directory.CreateDirectory(filmMock.Path);
@@ -22,14 +21,26 @@ namespace RaticonTest
         }
 
         [TestMethod]
+        public void It_shouldnt_attempt_much_if_folderIco_already_exists()
+        {
+            System.IO.Directory.CreateDirectory(filmMock.Path);
+            File.WriteAllText(filmMock.PathTo("folder.ico"),"");
+            new IconService().Process(filmMock);
+            Assert.IsFalse(File.Exists(filmMock.PathTo("desktop.ini")));
+            File.Delete(filmMock.PathTo("folder.ico"));
+        }
+
+        [TestMethod]
         public void It_should_make_an_icon()
         {
+            IconServiceTestInitialize();
             Assert.IsTrue(System.IO.File.Exists(filmMock.PathTo("folder.ico")));
         }
 
         [TestMethod]
         public void It_should_set_correct_attributes()
         {
+            IconServiceTestInitialize();
             Assert.AreEqual(FileAttributes.ReadOnly | FileAttributes.Directory, File.GetAttributes(filmMock.Path));
             Assert.AreEqual(FileAttributes.Hidden, File.GetAttributes(filmMock.PathTo("desktop.ini")));
         }
@@ -57,8 +68,13 @@ namespace RaticonTest
         [TestCleanup]
         public void IconServiceTestCleanup()
         {
-            System.IO.File.SetAttributes(filmMock.Path, System.IO.FileAttributes.Normal);
-            System.IO.Directory.Delete(filmMock.Path, true);
+            try
+            {
+                System.IO.File.SetAttributes(filmMock.Path, System.IO.FileAttributes.Normal);
+                System.IO.Directory.Delete(filmMock.Path, true);
+            }
+            catch (Exception)
+            { }
         }
     }
 

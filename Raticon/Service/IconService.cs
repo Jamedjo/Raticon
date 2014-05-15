@@ -12,6 +12,7 @@ namespace Raticon.Service
     {
         public void Process(IFilm film)
         {
+            if (System.IO.File.Exists(film.PathTo("folder.ico"))) { return; }
             RaiseErrorIfImageMagickInvalid(film.Path);
             BuildFolderIco(film);
             SetupFolderIcon(film.Path);
