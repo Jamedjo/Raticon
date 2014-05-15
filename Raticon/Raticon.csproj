@@ -153,6 +153,7 @@
       <DependentUpon>IconScript.tt</DependentUpon>
     </Compile>
     <Compile Include="Resources\IconScriptParams.cs" />
+    <Compile Include="Service\FilmLookupService.cs" />
     <Compile Include="Service\HttpService.cs" />
     <Compile Include="Service\IconService.cs" />
     <Compile Include="Service\RatingService.cs" />
