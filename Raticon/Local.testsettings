@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<TestSettings name="Local" id="82258f99-900f-4b4e-a60c-9d953fe8d5a4" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+<TestSettings name="Local" id="cbd52707-6c3c-4073-a587-d50d61d775fa" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
   <Description>These are default test settings for a local test run.</Description>
   <Deployment enabled="false" />
   <Execution>
