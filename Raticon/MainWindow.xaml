@@ -9,9 +9,10 @@
             <RowDefinition Height="30"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        
+
         <ToolBar Grid.Row="0">
             <Button Command="{Binding AddFolderCommand}">Add Folder</Button>
+            <Button Command="{Binding MakeIconsCommand}">Make Icons</Button>
         </ToolBar>
 
         <rc:FilmListView Grid.Row="1"/>

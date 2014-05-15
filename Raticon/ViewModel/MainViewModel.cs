@@ -3,6 +3,7 @@ using Raticon.Model;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Windows;
+using Raticon.Service;
 
 namespace Raticon.ViewModel
 {
@@ -31,6 +32,7 @@ namespace Raticon.ViewModel
             }
 
             AddFolderCommand = new RelayCommand(AddFolder);
+            MakeIconsCommand = new RelayCommand(MakeIcons);
         }
 
         public RelayCommand AddFolderCommand { get; private set; }
@@ -40,6 +42,15 @@ namespace Raticon.ViewModel
             if (dialog.ShowDialog(Application.Current.MainWindow) == CommonFileDialogResult.Ok)
             {
                 Collection = new MediaCollection(dialog.FileName);
+            }
+        }
+
+        public RelayCommand MakeIconsCommand { get; private set; }
+        public void MakeIcons()
+        {
+            foreach(IFilm film in Collection.Items)
+            {
+                new IconService().Process(film);
             }
         }
 
