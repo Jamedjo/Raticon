@@ -20,7 +20,7 @@ namespace RaticonTest
                 { @"C:\Media\B", new MockDirectoryData() },
                 { @"C:\Media\C", new MockDirectoryData() }
             });
-            MediaCollection m = new MediaCollection(@"C:\Media",fileSystem);
+            MediaCollection m = new MediaCollection(@"C:\Media", fileSystem);
 
             CollectionAssert.AreEqual(new[] { "A", "B", "C" }, m.Items.Select(f => f.FolderName).ToArray());
         }

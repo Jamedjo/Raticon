@@ -28,7 +28,8 @@ namespace Raticon.Service
             {
                 Title = o["Title"].ToString(),
                 Year = o["Year"].ToString(),
-                Rating = o["imdbRating"].ToString()
+                Rating = o["imdbRating"].ToString(),
+                Poster = o["Poster"].ToString()
             };
         }
     }

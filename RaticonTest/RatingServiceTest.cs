@@ -14,13 +14,14 @@ namespace RaticonTest
         private RatingService ratingService = new RatingService();
 
         [TestMethod]
-        public void ItShouldGetARatingResult()
+        public void It_should_get_a_rating_result()
         {
             RatingResult expectedResult = new RatingResult
             {
                 Rating = "8.0",
                 Title = "In the Heat of the Night",
-                Year = "1967"
+                Year = "1967",
+                Poster = @"http://ia.media-imdb.com/images/M/MV5BMTk3NjkxMDc1MV5BMl5BanBnXkFtZTcwMDIwMjI0NA@@._V1_SX300.jpg"
             };
             
             Assert.AreEqual(ratingService.getRating("tt0061811", new MockHttpService()), expectedResult);

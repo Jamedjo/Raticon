@@ -59,6 +59,10 @@ namespace Raticon.Model
         {
             get { return getResult("", r => r.Year); }
         }
+        public string Poster
+        {
+            get { return getResult("", r => r.Poster); }
+        }
 
         private IFileSystem fileSystem;
         private IRatingService ratingService;
@@ -83,7 +87,7 @@ namespace Raticon.Model
                 string imdb_line = fileSystem.File.ReadAllLines(nfo_file).First();
                 return Regex.Match(imdb_line, @"/(tt\d+)", RegexOptions.IgnoreCase).Groups[1].Value;
             }
-            catch(InvalidOperationException e)
+            catch(InvalidOperationException)
             {
                 return null;
             }

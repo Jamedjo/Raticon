@@ -72,10 +72,10 @@ namespace RaticonTest
             {
                 { @"C:\Some\Path\To\In.the.Heat.of.the.Night.1967\InTheHeatofTheNight_imdb_.nfo", new MockFileData("http://www.imdb.com/title/tt0061811/") }
             });
-            film = new Film(test_path,fileSystem, new MockRatingService());
+            film = new Film(test_path, fileSystem, new MockRatingService());
         }
-        
-        
+
+
         [TestMethod]
         public void It_should_have_a_folder_name()
         {
@@ -85,7 +85,7 @@ namespace RaticonTest
         [TestMethod]
         public void It_should_have_a_path()
         {
-            Assert.AreEqual(film.Path,test_path);
+            Assert.AreEqual(film.Path, test_path);
         }
 
         [TestMethod]
