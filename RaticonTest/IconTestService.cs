@@ -31,6 +31,14 @@ namespace RaticonTest
         }
 
         [TestMethod]
+        public void It_shouldnt_attempt_much_if_folder_has_no_rating()
+        {
+            filmMock = new NotAFilmMock(@"C:\Temp");
+            IconServiceTestInitialize();
+            Assert.IsFalse(File.Exists(filmMock.PathTo("desktop.ini")));
+        }
+
+        [TestMethod]
         public void It_should_make_an_icon()
         {
             IconServiceTestInitialize();
@@ -109,6 +117,13 @@ namespace RaticonTest
             Path = base_path+@"\In.the.Heat.of.the.Night.1967";
             Rating = "8.0";
             Poster = @"http://i.imgur.com/OXGEGDr.jpg";
+        }
+    }
+    public class NotAFilmMock : IFilm
+    {
+        public NotAFilmMock(string base_path)
+        {
+            Path = base_path + @"\.git";
         }
     }
 }

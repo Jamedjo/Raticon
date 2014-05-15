@@ -63,16 +63,17 @@ namespace RaticonTest
         #endregion
 
         Film film;
+        IFileSystem defaultFileSystem;
         string test_path = @"C:\Some\Path\To\In.the.Heat.of.the.Night.1967";
 
         [TestInitialize()]
         public void FilmTestInitialize()
         {
-            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            defaultFileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
             {
                 { @"C:\Some\Path\To\In.the.Heat.of.the.Night.1967\InTheHeatofTheNight_imdb_.nfo", new MockFileData("http://www.imdb.com/title/tt0061811/") }
             });
-            film = new Film(test_path, fileSystem, new MockRatingService());
+            film = new Film(test_path, defaultFileSystem, new MockRatingService());
         }
 
 
@@ -128,13 +129,39 @@ namespace RaticonTest
             film.RequireFolderJpg(fileSystem, httpService);
             Assert.IsFalse(httpService.WasCalled);
         }
+
+        [TestMethod]
+        public void It_shouldnt_operate_on_non_film_folders()
+        {
+
+        }
+
+        [TestMethod]
+        public void It_shouldnt_request_folderJpg_from_empty_url()
+        {
+            film = new Film(test_path, defaultFileSystem, new MockInvalidFilmRatingService());
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData> {
+                {film.Path, new MockDirectoryData() }
+            });
+            var httpService = new MockBinaryHttpService(fileSystem);
+            film.RequireFolderJpg(fileSystem, httpService);
+            Assert.IsFalse(httpService.WasCalled);
+        }
     }
 
     public class MockRatingService : IRatingService
     {
         public override RatingResult getRating(string imdbId)
         {
-            return new RatingResult { Rating = "7.0" };
+            return new RatingResult { Rating = "7.0", Poster = @"http://img.jpg" };
+        }
+    }
+
+    public class MockInvalidFilmRatingService : IRatingService
+    {
+        public override RatingResult getRating(string imdbId)
+        {
+            return new RatingResult {};
         }
     }
 

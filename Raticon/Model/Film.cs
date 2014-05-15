@@ -21,7 +21,7 @@ namespace Raticon.Model
         public void RequireFolderJpg(IFileSystem fileSystem = null, IHttpService httpService = null)
         {
             fileSystem = fileSystem ?? new FileSystem();
-            if (!fileSystem.File.Exists(PathTo("folder.jpg")))
+            if (!fileSystem.File.Exists(PathTo("folder.jpg")) && Poster != null && Poster.Length > 0)
             {
                 (httpService ?? new HttpService()).GetBinary(Poster, Path + @"\folder.jpg");
             }
