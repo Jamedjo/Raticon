@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -7,6 +8,23 @@ namespace Raticon.Service
 {
     public class ShellService
     {
-        //public string run(string command);
+        public string Execute(string command)
+        {
+            string output;
+            var startInfo = new ProcessStartInfo
+            {
+                WindowStyle = ProcessWindowStyle.Hidden,
+                RedirectStandardOutput = true, UseShellExecute =  false,
+                FileName = "cmd.exe",
+                Arguments = "/C " + command
+            };
+
+            using (var process = Process.Start(startInfo))
+            {
+                process.WaitForExit();
+                output = process.StandardOutput.ReadToEnd();
+            }
+            return output;
+        }
     }
 }

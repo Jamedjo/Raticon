@@ -201,6 +201,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <EmbeddedResource Include="Resources\desktop.ini" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="star.png" />
