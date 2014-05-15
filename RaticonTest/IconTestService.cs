@@ -19,7 +19,10 @@ namespace RaticonTest
         //It should use make star.png avaliable (assert call resourceservice to extract to path)
         //It_should_fetch_folder_jpg_if_missing
         //It should throw and exception if imagemagick version isn't suitable
-        //It should call shell service with correct command 
+        //It should call shell service with correct command
+        //It should extract a copy of the desktop.ini file
+        //It should cleanup intermediate files if not done by the script
+        //It should set directory and dektop.ini attributes if not done by the script
     }
 
     [TestClass]
@@ -29,8 +32,19 @@ namespace RaticonTest
         public void It_should_extract_embedded_resource_to_filesytem()
         {
             string path = @"C:\Temp\star.png";
-            new ResourceService().Extract("Raticon.star.png", path);
+            new ResourceService().ExtractTo("Raticon.star.png", path);
             Assert.IsTrue(System.IO.File.Exists(path));
+        }
+    }
+
+    [TestClass]
+    public class IconScriptTest
+    {
+        [TestMethod]
+        public void It_should_print_rating_into_script()
+        {
+            string output = new Raticon.Resources.IconScript("7.3").TransformText();
+            StringAssert.Contains(output, "7.3 rating.png");
         }
     }
 }
