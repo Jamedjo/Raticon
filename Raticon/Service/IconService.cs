@@ -9,11 +9,17 @@ namespace Raticon.Service
 {
     public class IconService
     {
-        public void process(IFilm film)
+        public string Process(IFilm film)
         {
-            new ResourceService().ExtractTo("Raticon.star.png", film.Path+@"\star.png");
-
+            new ResourceService().ExtractTo("Raticon.star.png", film.Path + @"\star.png");
+            new ResourceService().ExtractTo("Raticon.Resources.desktop.ini", film.Path + @"\desktop.ini");
+            System.IO.File.SetAttributes(film.Path + @"\desktop.ini", System.IO.FileAttributes.Hidden);
+            new HttpService().GetBinary(film.Poster,film.Path + @"\folder.jpg");
             string script = new IconScript(film.Rating).TransformText();
+            string output = new ShellService().Execute(script, film.Path);
+            System.IO.File.Delete(film.Path + @"\star.png");
+            System.IO.File.SetAttributes(film.Path, System.IO.FileAttributes.ReadOnly);
+            return output;
         }
 
     }

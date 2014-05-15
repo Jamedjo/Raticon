@@ -16,6 +16,7 @@ namespace Raticon.Model
         public virtual string Rating { get; protected set; }
         public virtual string Title { get; protected set; }
         public virtual string Year { get; protected set; }
+        public virtual string Poster { get; protected set; }
     }
     public class Film : IFilm
     {

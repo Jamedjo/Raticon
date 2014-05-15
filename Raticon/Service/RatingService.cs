@@ -21,7 +21,7 @@ namespace Raticon.Service
 
         public RatingResult getRating(string imdbId, IHttpService httpService)
         {
-            string data = httpService.get(@"http://www.omdbapi.com/?i="+imdbId);
+            string data = httpService.Get(@"http://www.omdbapi.com/?i="+imdbId);
             JObject o = JObject.Parse(data);
 
             return new RatingResult

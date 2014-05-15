@@ -8,7 +8,7 @@ namespace Raticon.Service
 {
     public class ShellService
     {
-        public string Execute(string command)
+        public string Execute(string command, string workingDirectory = null)
         {
             string output;
             var startInfo = new ProcessStartInfo
@@ -16,7 +16,8 @@ namespace Raticon.Service
                 WindowStyle = ProcessWindowStyle.Hidden,
                 RedirectStandardOutput = true, UseShellExecute =  false,
                 FileName = "cmd.exe",
-                Arguments = "/C " + command
+                Arguments = "/C " + command,
+                WorkingDirectory = workingDirectory ?? System.Environment.SystemDirectory
             };
 
             using (var process = Process.Start(startInfo))
