@@ -5,6 +5,7 @@ using System.Text;
 using System.IO.Abstractions;
 using System.Text.RegularExpressions;
 using Raticon.Service;
+using System.Windows;
 
 namespace Raticon.Model
 {
@@ -23,7 +24,18 @@ namespace Raticon.Model
             fileSystem = fileSystem ?? new FileSystem();
             if (!fileSystem.File.Exists(PathTo("folder.jpg")) && Poster != null && Poster.Length > 0)
             {
-                (httpService ?? new HttpService()).GetBinary(Poster, Path + @"\folder.jpg");
+                try
+                {
+                    (httpService ?? new HttpService()).GetBinary(Poster, PathTo("folder.jpg"));
+                }
+                catch
+                {
+#if DEBUG
+                    throw;
+#else
+                    MessageBox.Show("Couldn't download folder.jpg for '"+Title+"' from url '"+Poster+"' to '"+PathTo("folder.jpg")+"'","Error downloading folder.jpg",MessageBoxButton.OK,MessageBoxImage.Error);
+#endif
+                }
             }
         }
 

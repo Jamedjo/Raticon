@@ -1,3 +1,4 @@
+using System.Linq;
 using GalaSoft.MvvmLight;
 using Raticon.Model;
 using GalaSoft.MvvmLight.Command;
@@ -33,6 +34,7 @@ namespace Raticon.ViewModel
 
             AddFolderCommand = new RelayCommand(AddFolder);
             MakeIconsCommand = new RelayCommand(MakeIcons);
+            ClearThumbCacheCommand = new RelayCommand(ClearThumbCache);
         }
 
         public RelayCommand AddFolderCommand { get; private set; }
@@ -48,10 +50,18 @@ namespace Raticon.ViewModel
         public RelayCommand MakeIconsCommand { get; private set; }
         public void MakeIcons()
         {
-            foreach(IFilm film in Collection.Items)
+            var validFilms = Collection.Items.Where(f => !string.IsNullOrWhiteSpace(f.Rating));
+            foreach (IFilm film in validFilms)
             {
                 new IconService().Process(film);
             }
+            MessageBox.Show("Complete!\n\n" + validFilms.Count() + " folders have been processed and icons added.", "Complete!");
+        }
+
+        public RelayCommand ClearThumbCacheCommand { get; private set; }
+        public void ClearThumbCache()
+        {
+            new ShellService().Execute("cleanmgr","");
         }
 
         private IMediaCollection collection;

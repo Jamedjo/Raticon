@@ -89,10 +89,21 @@ namespace Raticon.Service
 
         public void ExtractTo(string resource, string path)
         {
-            System.IO.Stream star = GetAsStream(resource);
-            using (var file = System.IO.File.Create(path))
+            try
             {
-                star.CopyTo(file);
+                System.IO.Stream star = GetAsStream(resource);
+                using (var file = System.IO.File.Create(path))
+                {
+                    star.CopyTo(file);
+                }
+            }
+            catch(System.UnauthorizedAccessException)
+            {
+#if DEBUG
+                throw;
+#else
+                System.Windows.MessageBox.Show("Couldn't write to file '" + path + "' while trying to extract '" + resource + "'.", "Unauthorized Access Exception", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+#endif
             }
         }
     }

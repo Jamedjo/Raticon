@@ -14,6 +14,7 @@ namespace Raticon.Service
             var startInfo = new ProcessStartInfo
             {
                 WindowStyle = ProcessWindowStyle.Hidden,
+                CreateNoWindow = true,
                 RedirectStandardOutput = true, UseShellExecute =  false,
                 FileName = "cmd.exe",
                 Arguments = "/C " + command,

@@ -9,10 +9,10 @@ namespace Raticon.Model
     {
         public DummyCollection(int count = 10, string collection_path = @"C:\Some\Long\Path\To\Trailers")
         {
-            Items = new IFilm[count];
-            for (int i = 0; i < Items.Length; i++)
+            Items = new List<IFilm>();
+            for (int i = 0; i < count; i++)
             {
-                Items[i] = new DummyFilm(collection_path,i);
+                Items.Add(new DummyFilm(collection_path,i));
             }
         }
     }

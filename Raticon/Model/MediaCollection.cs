@@ -8,7 +8,7 @@ namespace Raticon.Model
 {
     public class IMediaCollection
     {
-        public IFilm[] Items { get; protected set; }
+        public IList<IFilm> Items { get; protected set; }
     }
     public class MediaCollection : IMediaCollection
     {
@@ -19,7 +19,7 @@ namespace Raticon.Model
             this.fileSystem = fileSystem;
 
             string[] subfolders = fileSystem.Directory.GetDirectories(folder);
-            Items = subfolders.Select(f => new Film(f, fileSystem)).ToArray();
+            Items = subfolders.Select(f => new Film(f, fileSystem)).ToList<IFilm>();
         }
     }
 }
