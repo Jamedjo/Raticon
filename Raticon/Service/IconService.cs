@@ -5,11 +5,22 @@ using System.Text;
 using Raticon.Model;
 using Raticon.Resources;
 using System.Text.RegularExpressions;
+using System.Windows;
 
 namespace Raticon.Service
 {
     public class IconService
     {
+        public void ProcessCollection(IMediaCollection collection)
+        {
+            var validFilms = collection.Items.Where(f => !string.IsNullOrWhiteSpace(f.Rating));
+            foreach (IFilm film in validFilms)
+            {
+                Process(film);
+            }
+            MessageBox.Show("Complete!\n\n" + validFilms.Count() + " folders have been processed and icons added.", "Complete!",MessageBoxButton.OK,MessageBoxImage.Information);
+        }
+
         public void Process(IFilm film)
         {
             if (System.IO.File.Exists(film.PathTo("folder.ico")) || String.IsNullOrWhiteSpace(film.Rating) ) { return; }

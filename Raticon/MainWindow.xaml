@@ -21,7 +21,7 @@
                     <Button Command="{Binding ClearThumbCacheCommand}">Clear Windows Thumbnail Cache</Button>
                 </Grid>
                 <StackPanel  DockPanel.Dock="Left" Orientation="Horizontal">
-                    <Button Command="{Binding AddFolderCommand}">Add Folder</Button>
+                    <Button Command="{Binding AddFolderCommand}">Select Folder</Button>
                     <Button Command="{Binding MakeIconsCommand}">Make Icons</Button>
                 </StackPanel>
             </DockPanel>

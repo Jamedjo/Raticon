@@ -50,12 +50,7 @@ namespace Raticon.ViewModel
         public RelayCommand MakeIconsCommand { get; private set; }
         public void MakeIcons()
         {
-            var validFilms = Collection.Items.Where(f => !string.IsNullOrWhiteSpace(f.Rating));
-            foreach (IFilm film in validFilms)
-            {
-                new IconService().Process(film);
-            }
-            MessageBox.Show("Complete!\n\n" + validFilms.Count() + " folders have been processed and icons added.", "Complete!");
+            new IconService().ProcessCollection(Collection);
         }
 
         public RelayCommand ClearThumbCacheCommand { get; private set; }
