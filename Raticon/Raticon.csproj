@@ -158,6 +158,7 @@
     <Compile Include="Service\IconService.cs" />
     <Compile Include="Service\RatingService.cs" />
     <Compile Include="Service\ShellService.cs" />
+    <Compile Include="Service\TitleCleaner.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="Control\FilmListView.xaml">
