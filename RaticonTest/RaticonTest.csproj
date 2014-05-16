@@ -73,6 +73,7 @@
     <Compile Include="FilmLookupServiceTest.cs" />
     <Compile Include="IconTestService.cs" />
     <Compile Include="MediaCollectionTest.cs" />
+    <Compile Include="MockHttpService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FilmTest.cs" />
     <Compile Include="RatingServiceTest.cs" />

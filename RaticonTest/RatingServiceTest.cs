@@ -15,6 +15,7 @@ namespace RaticonTest
     public class RatingServiceTest
     {
         private RatingService ratingService = new RatingService();
+        public static string OmdbapiResult = @"{""Title"":""In the Heat of the Night"",""Year"":""1967"",""Rated"":""Approved"",""Released"":""14 Oct 1967"",""Runtime"":""109 min"",""Genre"":""Crime, Drama, Mystery"",""Director"":""Norman Jewison"",""Writer"":""Stirling Silliphant (screenplay), John Ball (based on a novel by)"",""Actors"":""Sidney Poitier, Rod Steiger, Warren Oates, Lee Grant"",""Plot"":""An African American police detective is asked to investigate a murder in a racially hostile southern town."",""Language"":""English"",""Country"":""USA"",""Awards"":""Won 5 Oscars. Another 17 wins & 12 nominations."",""Poster"":""http://ia.media-imdb.com/images/M/MV5BMTk3NjkxMDc1MV5BMl5BanBnXkFtZTcwMDIwMjI0NA@@._V1_SX300.jpg"",""Metascore"":""N/A"",""imdbRating"":""8.0"",""imdbVotes"":""39,893"",""imdbID"":""tt0061811"",""Type"":""movie"",""Response"":""True""}";
 
         [TestMethod]
         public void It_should_get_a_rating_result()
@@ -26,34 +27,8 @@ namespace RaticonTest
                 Year = "1967",
                 Poster = @"http://ia.media-imdb.com/images/M/MV5BMTk3NjkxMDc1MV5BMl5BanBnXkFtZTcwMDIwMjI0NA@@._V1_SX300.jpg"
             };
-            
-            Assert.AreEqual(ratingService.GetRating("tt0061811", new MockHttpService()), expectedResult);
-        }
-    }
 
-    class MockHttpService : IHttpService
-    {
-        public override string Get(string url)
-        {
-            return @"{""Title"":""In the Heat of the Night"",""Year"":""1967"",""Rated"":""Approved"",""Released"":""14 Oct 1967"",""Runtime"":""109 min"",""Genre"":""Crime, Drama, Mystery"",""Director"":""Norman Jewison"",""Writer"":""Stirling Silliphant (screenplay), John Ball (based on a novel by)"",""Actors"":""Sidney Poitier, Rod Steiger, Warren Oates, Lee Grant"",""Plot"":""An African American police detective is asked to investigate a murder in a racially hostile southern town."",""Language"":""English"",""Country"":""USA"",""Awards"":""Won 5 Oscars. Another 17 wins & 12 nominations."",""Poster"":""http://ia.media-imdb.com/images/M/MV5BMTk3NjkxMDc1MV5BMl5BanBnXkFtZTcwMDIwMjI0NA@@._V1_SX300.jpg"",""Metascore"":""N/A"",""imdbRating"":""8.0"",""imdbVotes"":""39,893"",""imdbID"":""tt0061811"",""Type"":""movie"",""Response"":""True""}";
-        }
-
-        public override void GetBinary(string url, string fileName)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    class AssertDontCallHttpService : IHttpService
-    {
-        public override string Get(string url)
-        {
-            throw new AssertFailedException("Http service Get was called with url '"+url+"'");
-        }
-
-        public override void GetBinary(string url, string fileName)
-        {
-            throw new AssertFailedException("Http service GetBinary was called with url '" + url + "' and fileName '"+fileName+"'");
+            Assert.AreEqual(ratingService.GetRating("tt0061811", new MockHttpService(OmdbapiResult)), expectedResult);
         }
     }
 
@@ -61,12 +36,13 @@ namespace RaticonTest
     public class DiskCachedRatingServiceTest
     {
         private DiskCachedRatingService ratingService = new DiskCachedRatingService();
+        private string OmdbapiResult = RatingServiceTest.OmdbapiResult;
 
         [TestMethod]
         public void It_should_store_result_after_http_lookup()
        {
             IFileSystem mockFileSystem = new MockFileSystem();
-            ratingService.GetRatingWithCache("tt0061811", new MockHttpService(), mockFileSystem);
+            ratingService.GetRatingWithCache("tt0061811", new MockHttpService(OmdbapiResult), mockFileSystem);
             string expectedPath = Path.Combine(Raticon.Constants.CommonApplicationDataPath, "Cache", "tt0061811.json");
             Assert.IsTrue(mockFileSystem.File.Exists(expectedPath));
         }
@@ -90,7 +66,7 @@ namespace RaticonTest
                 {Path.Combine(Raticon.Constants.CommonApplicationDataPath, "Cache", "tt0061811.json"), new MockFileData("{'Rating':'"+rating+"'}")}
             });
 
-            RatingResult result = ratingService.GetRatingWithCache("tt0061811", new MockHttpService(), mockFileSystem);
+            RatingResult result = ratingService.GetRatingWithCache("tt0061811", new MockHttpService(""), mockFileSystem);
             Assert.AreEqual<string>(result.Rating, rating);
         }
     }

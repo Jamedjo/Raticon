@@ -157,6 +157,7 @@
     <Compile Include="Service\FilmLookupService.cs" />
     <Compile Include="Service\HttpService.cs" />
     <Compile Include="Service\IconService.cs" />
+    <Compile Include="Service\ImdbIdCacheService.cs" />
     <Compile Include="Service\RatingService.cs" />
     <Compile Include="Service\ShellService.cs" />
     <Compile Include="Service\TitleCleaner.cs" />

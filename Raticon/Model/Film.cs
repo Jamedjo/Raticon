@@ -53,7 +53,7 @@ namespace Raticon.Model
             {
                 if (imdbIdCache == null)
                 {
-                    imdbIdCache = ImdbIdFromNfo();
+                    imdbIdCache = new FilmLookupService().Lookup(FolderName, Path, (rs) => new LookupChoice(rs.First()), fileSystem);
                 }
                 return imdbIdCache;
             }
@@ -105,18 +105,5 @@ namespace Raticon.Model
             FolderName = fileSystem.Path.GetFileName(path);
         }
 
-        private string ImdbIdFromNfo()
-        {
-            try
-            {
-                string nfo_file = fileSystem.Directory.GetFiles(Path, "*imdb*.nfo").First();
-                string imdb_line = fileSystem.File.ReadAllLines(nfo_file).First();
-                return Regex.Match(imdb_line, @"/(tt\d+)", RegexOptions.IgnoreCase).Groups[1].Value;
-            }
-            catch(InvalidOperationException)
-            {
-                return null;
-            }
-        }
     }
 }
