@@ -68,7 +68,7 @@ namespace Raticon.Model
                 {
                     return default_value;
                 }
-                ratingResultCache = ratingService.getRating(ImdbId);
+                ratingResultCache = ratingService.GetRating(ImdbId);
             }
             return getProperty(ratingResultCache);
         }
@@ -97,7 +97,7 @@ namespace Raticon.Model
         {
             if (fileSystem == null) fileSystem = new FileSystem();
             this.fileSystem = fileSystem;
-            if (ratingService == null) ratingService = new RatingService();
+            if (ratingService == null) ratingService = new DiskCachedRatingService();
             this.ratingService = ratingService;
 
             Path = path;

@@ -151,7 +151,7 @@ namespace RaticonTest
 
     public class MockRatingService : IRatingService
     {
-        public override RatingResult getRating(string imdbId)
+        public override RatingResult GetRating(string imdbId)
         {
             return new RatingResult { Rating = "7.0", Poster = @"http://img.jpg" };
         }
@@ -159,7 +159,7 @@ namespace RaticonTest
 
     public class MockInvalidFilmRatingService : IRatingService
     {
-        public override RatingResult getRating(string imdbId)
+        public override RatingResult GetRating(string imdbId)
         {
             return new RatingResult {};
         }

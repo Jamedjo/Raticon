@@ -5,6 +5,9 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Raticon.Service;
 using Raticon.Model;
+using System.IO.Abstractions;
+using System.IO.Abstractions.TestingHelpers;
+using System.IO;
 
 namespace RaticonTest
 {
@@ -24,7 +27,7 @@ namespace RaticonTest
                 Poster = @"http://ia.media-imdb.com/images/M/MV5BMTk3NjkxMDc1MV5BMl5BanBnXkFtZTcwMDIwMjI0NA@@._V1_SX300.jpg"
             };
             
-            Assert.AreEqual(ratingService.getRating("tt0061811", new MockHttpService()), expectedResult);
+            Assert.AreEqual(ratingService.GetRating("tt0061811", new MockHttpService()), expectedResult);
         }
     }
 
@@ -38,6 +41,57 @@ namespace RaticonTest
         public override void GetBinary(string url, string fileName)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    class AssertDontCallHttpService : IHttpService
+    {
+        public override string Get(string url)
+        {
+            throw new AssertFailedException("Http service Get was called with url '"+url+"'");
+        }
+
+        public override void GetBinary(string url, string fileName)
+        {
+            throw new AssertFailedException("Http service GetBinary was called with url '" + url + "' and fileName '"+fileName+"'");
+        }
+    }
+
+    [TestClass]
+    public class DiskCachedRatingServiceTest
+    {
+        private DiskCachedRatingService ratingService = new DiskCachedRatingService();
+
+        [TestMethod]
+        public void It_should_store_result_after_http_lookup()
+       {
+            IFileSystem mockFileSystem = new MockFileSystem();
+            ratingService.GetRatingWithCache("tt0061811", new MockHttpService(), mockFileSystem);
+            string expectedPath = Path.Combine(Raticon.Constants.CommonApplicationDataPath, "Cache", "tt0061811.json");
+            Assert.IsTrue(mockFileSystem.File.Exists(expectedPath));
+        }
+
+        [TestMethod]
+        public void It_shouldnt_use_http_service_if_disk_rating_is_present()
+        {
+            IFileSystem mockFileSystem = new MockFileSystem(new Dictionary<string, MockFileData> {
+                {Path.Combine(Raticon.Constants.CommonApplicationDataPath, "Cache", "tt0061811.json"), new MockFileData("{'Rating':'7.3'}")}
+            });
+
+            //AssertDontCallHttpService
+            ratingService.GetRatingWithCache("tt0061811", new AssertDontCallHttpService(), mockFileSystem);
+        }
+
+        [TestMethod]
+        public void It_should_return_valid_rating_result_from_cache()
+        {
+            string rating = "7.3";
+            IFileSystem mockFileSystem = new MockFileSystem(new Dictionary<string, MockFileData> {
+                {Path.Combine(Raticon.Constants.CommonApplicationDataPath, "Cache", "tt0061811.json"), new MockFileData("{'Rating':'"+rating+"'}")}
+            });
+
+            RatingResult result = ratingService.GetRatingWithCache("tt0061811", new MockHttpService(), mockFileSystem);
+            Assert.AreEqual<string>(result.Rating, rating);
         }
     }
 }
