@@ -16,7 +16,8 @@ namespace Raticon.Service
     {
         public LookupChoice Pick(List<LookupResult> results)
         {
-            return new LookupChoice(results.First());
+            LookupResult pick = results.FirstOrDefault();
+            return (pick != null) ? new LookupChoice(pick) : new LookupChoice(LookupChoice.Action.GiveUp);
         }
     }
 

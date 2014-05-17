@@ -42,7 +42,7 @@ namespace Raticon.ViewModel
             SearchCommand = new RelayCommand(RetrySearch);
             PickSelectedCommand = new RelayCommand(PickSelected);
 
-            SelectedItem = LookupResultList.First();
+            SelectedItem = LookupResultList.FirstOrDefault();
         }
     }
 }

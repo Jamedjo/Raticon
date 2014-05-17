@@ -6,6 +6,9 @@ using System.IO.Abstractions;
 using System.Text.RegularExpressions;
 using Raticon.Service;
 using System.Windows;
+using System.Windows.Threading;
+using GalaSoft.MvvmLight.Messaging;
+using System.ComponentModel;
 
 namespace Raticon.Model
 {
@@ -46,21 +49,26 @@ namespace Raticon.Model
     }
     public class Film : IFilm
     {
-        private string imdbIdCache;
+        protected string imdbIdCache;
         public override string ImdbId
         {
             get
             {
                 if (imdbIdCache == null)
                 {
-                    imdbIdCache = idLookupService.Lookup(FolderName, (rs) => resultPicker.Pick(rs));
+                    setImdbFromService();
                 }
                 return imdbIdCache;
             }
         }
 
-        private RatingResult ratingResultCache;
-        private T getResult<T>(T default_value, Func<RatingResult,T> getProperty)
+        protected virtual void setImdbFromService()
+        {
+            imdbIdCache = idLookupService.Lookup(FolderName, (rs) => resultPicker.Pick(rs));
+        }
+
+        protected RatingResult ratingResultCache;
+        protected T getResult<T>(T default_value, Func<RatingResult, T> getProperty)
         {
             if (ratingResultCache == null)
             {
@@ -90,9 +98,9 @@ namespace Raticon.Model
             get { return getResult("", r => r.Poster); }
         }
 
-        private IFileSystem fileSystem;
-        private IRatingService ratingService;
-        private IResultPicker resultPicker;
+        protected IFileSystem fileSystem;
+        protected IRatingService ratingService;
+        protected IResultPicker resultPicker;
         protected FilmLookupService idLookupService;
 
         public Film(string path, IFileSystem fileSystem = null, IRatingService ratingService = null, IResultPicker resultPicker = null)
@@ -122,10 +130,33 @@ namespace Raticon.Model
         }
     }
 
-    public class GuiFilm : CachedFilm
+    public class GuiFilm : CachedFilm, INotifyPropertyChanged
     {
         public GuiFilm(string path, IFileSystem fileSystem = null) : base(path, fileSystem, new GuiResultPickerService(Application.Current.MainWindow))
         {
+        }
+
+        private bool lookupInvoked = false;
+        protected override void setImdbFromService()
+        {
+            if(!lookupInvoked)
+            {
+                Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => {
+                    imdbIdCache = idLookupService.Lookup(FolderName, (rs) => resultPicker.Pick(rs));
+                    OnPropertyChanged("Title");
+                    OnPropertyChanged("Rating");
+                    OnPropertyChanged("Year");
+                    OnPropertyChanged("Poster");
+                }));
+                lookupInvoked = true;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged(String propertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

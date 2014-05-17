@@ -16,9 +16,12 @@ namespace Raticon.Service
                 string nfoFile = fileSystem.Directory.GetFiles(nfoFolder, "*imdb*.nfo").First();
                 return ReadFromNfoFile(nfoFile, fileSystem);
             }
-            catch (InvalidOperationException)
+            catch (Exception e)
             {
-                return null;
+                if (e is InvalidOperationException || e is System.IO.DirectoryNotFoundException)
+                    return null;
+                else
+                    throw;
             }
         }
 
