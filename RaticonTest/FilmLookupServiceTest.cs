@@ -53,28 +53,58 @@ namespace RaticonTest
 
         }
 
+        IFileSystem mockFilmFolder;
+        string folderPath = @"C:\Trailers\Italian Job";
+        string filmName = "Italian Job";
+        string MyApiFilmsResponse = "[{'idIMDB':'tt0064505'}]";
+        string MyApiFilmsSupermanResponse = "[{'idIMDB':'tt0078346'}]";
+
+        [TestInitialize]
+        public void FilmLookupServiceTestInitialize()
+        {
+            mockFilmFolder = new MockFileSystem(new Dictionary<string, MockFileData> {
+                {@"C:\Trailers\Italian Job\", new MockDirectoryData()}
+            });
+        }
+
         [TestMethod]
         public void FilmLookup_caches_result_after_search()
         {
-            IFileSystem mockFileSystem = new MockFileSystem(new Dictionary<string, MockFileData> {
-                {@"C:\Trailers\Italian Job\", new MockDirectoryData()}
-            });
-            new FilmLookupService().Lookup("Italian Job", @"C:\Trailers\Italian Job", (rs) => new LookupChoice(rs.First()), mockFileSystem, new MockHttpService("[{'idIMDB':'tt0064505'}]"));
-            Assert.IsTrue(mockFileSystem.File.Exists(@"C:\Trailers\Italian Job\Italian.Job_imdb_.nfo"));
+            new FilmLookupService().Lookup(filmName, folderPath, (rs) => new LookupChoice(rs.First()), mockFilmFolder, new MockHttpService(MyApiFilmsResponse));
+            Assert.IsTrue(mockFilmFolder.File.Exists(@"C:\Trailers\Italian Job\Italian.Job_imdb_.nfo"));
         }
 
         [TestMethod]
         public void FilmLookup_returns_null_if_callback_tells_it_to_give_up()
         {
-            IFileSystem mockFileSystem = new MockFileSystem(new Dictionary<string, MockFileData> {
-                {@"C:\Trailers\Italian Job\", new MockDirectoryData()}
-            });
-            string imdbId = new FilmLookupService().Lookup("Italian Job", @"C:\Trailers\Italian Job", (rs) => new LookupChoice(LookupChoice.Action.GiveUp), mockFileSystem, new MockHttpService("[{'idIMDB':'tt0064505'}]"));
+            string imdbId = new FilmLookupService().Lookup(filmName, folderPath, (rs) => new LookupChoice(LookupChoice.Action.GiveUp), mockFilmFolder, new MockHttpService(MyApiFilmsResponse));
             Assert.IsNull(imdbId);
         }
 
-        //The callback should be able to pick a result index
+        [TestMethod]
+        public void FilmLookup_returns_id_chosen_by_callback()
+        {
+            LookupResult pick = null;
+            string imdbId = new FilmLookupService().Lookup(filmName, folderPath, (rs) => {
+                pick = rs.ElementAt(new Random().Next(0, rs.Count - 1));
+                return new LookupChoice(pick);
+            }, mockFilmFolder, new MockHttpService(MyApiFilmsResponse));
+            Assert.AreEqual(imdbId, pick.ImdbId);
+        }
+
+        [TestMethod]
+        public void FilmLookup_searches_again_for_new_title_given_by_callback()
+        {
+            int attempt = 0;
+            string imdbId = new FilmLookupService().Lookup("Superman", folderPath, (rs) => {
+                attempt++;
+                return (attempt == 1) ? new LookupChoice(LookupChoice.Action.NewSearch, filmName) : new LookupChoice(rs.First());
+            }, mockFilmFolder, new MockHttpService(url => (url.Contains("Superman")) ? MyApiFilmsSupermanResponse : MyApiFilmsResponse));
+            Assert.AreEqual("tt0064505", imdbId);
+        }
+
         //The callback should be able to ask for 10 more results
-        //The callback should be able to ask it to search for a different title
+        //If there was a timout due to bad internet or API rate limiting, should be able to retry same search again.
+        //Shouldn't necessarily re-clean title if a user has entered a new title to search for.
     }
 }

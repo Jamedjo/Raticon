@@ -9,14 +9,18 @@ namespace RaticonTest
 {
     class MockHttpService : IHttpService
     {
-        private string returnValue;
+        private Func<string, string> callAction;
         public MockHttpService(string returnValue)
         {
-            this.returnValue = returnValue;
+            callAction = (url) => returnValue;
+        }
+        public MockHttpService(Func<string, string> callAction)
+        {
+            this.callAction = callAction;
         }
         public override string Get(string url)
         {
-            return returnValue;
+            return callAction(url);
         }
 
         public override void GetBinary(string url, string fileName)

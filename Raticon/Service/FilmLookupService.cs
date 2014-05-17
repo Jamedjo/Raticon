@@ -39,7 +39,7 @@ namespace Raticon.Service
             //lookupchoice should be an imdbId string, or some other constent string
             LookupChoice choice = choiceCallback(results);
 
-            string imdbId = choice.Run();
+            string imdbId = choice.Run(newTitleToSearch => ResultFromSearch(newTitleToSearch, nfoFolder, choiceCallback, fileSystem, httpService));
             if (!String.IsNullOrWhiteSpace(imdbId))
             {
                 new ImdbIdCacheService().CacheInFolder(imdbId, nfoFolder, fileSystem);
@@ -79,50 +79,5 @@ namespace Raticon.Service
     public class LookupResult : RatingResult
     {
         public string ImdbId { get; set; }
-    }
-
-    public class LookupChoice
-    {
-        public enum Action { Retry, MoreResults, GiveUp }
-
-        private string imdbId;
-        private LookupChoice.Action action;
-
-        public LookupChoice(LookupResult choice)
-        {
-            this.imdbId = choice.ImdbId;
-        }
-        public LookupChoice(string imdbId)
-        {
-            this.imdbId = imdbId;
-        }
-
-        public LookupChoice(LookupChoice.Action action)
-        {
-            this.action = action;
-        }
-
-        public string Run()
-        {
-            if (!String.IsNullOrWhiteSpace(imdbId))
-            {
-                return imdbId;
-            }
-            else
-            {
-                switch (action)
-                {
-                    case LookupChoice.Action.MoreResults:
-                        throw new NotImplementedException();
-                    //return "";
-                    case LookupChoice.Action.Retry:
-                        throw new NotImplementedException();
-                    //return "";
-                    case LookupChoice.Action.GiveUp:
-                    default:
-                        return null;
-                }
-            }
-        }
     }
 }
