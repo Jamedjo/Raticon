@@ -15,12 +15,10 @@ namespace FilmLookupDemo
     {
         public void Application_Startup(object sender, StartupEventArgs e)
         {
-            string codeSmellPath = @"C:\Temp\Italian.Job";
-            System.IO.Directory.CreateDirectory(codeSmellPath);
-            //string imdbId = new FilmLookupService().Lookup("Italian.Job", codeSmellPath, LookupCalllback);
-            string imdbId = LookupCalllback(new Raticon.Model.DummyResults()).Run(retryText => { MessageBox.Show("Tried to retry with title '" + retryText + "'"); return retryText; });
+            string imdbId = new FilmLookupService().Lookup("Italian.Job", LookupCalllback);
+            //string imdbId = LookupCalllback(new Raticon.Model.DummyResults()).Run(retryText => { MessageBox.Show("Tried to retry with title '" + retryText + "'"); return retryText; });
             MessageBox.Show("imdbId selected was:\n\"" + imdbId + "\"");
-
+            this.Shutdown();
         }
 
         static LookupChoice LookupCalllback(List<LookupResult> results)

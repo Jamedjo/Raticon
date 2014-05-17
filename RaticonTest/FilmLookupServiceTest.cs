@@ -14,14 +14,14 @@ namespace RaticonTest
         [TestMethod]
         public void Search_returns_multiple_results_for_ambiguous_titles()
         {
-            var results = new FilmLookupService().Search("Italian Job", new MockHttpService(FullMyApiFilmsResponse));
+            var results = new FilmLookupService(new MockHttpService(FullMyApiFilmsResponse)).Search("Italian Job");
             Assert.IsTrue(results.Count >= 2);
         }
 
         [TestMethod]
         public void Search_gets_a_correct_imdb_id()
         {
-             var results = new FilmLookupService().Search("Italian Job", new MockHttpService(FullMyApiFilmsResponse));
+             var results = new FilmLookupService(new MockHttpService(FullMyApiFilmsResponse)).Search("Italian Job");
             var ids = results.Select(r => r.ImdbId).ToList();
             CollectionAssert.Contains(ids, "tt0064505");
         }
@@ -29,7 +29,7 @@ namespace RaticonTest
         [TestMethod]
         public void Search_filters_titles_before_using_them()
         {
-            var results = new FilmLookupService().Search("Italian.Job.1969.Directors.Cut", new MockHttpService(url => {
+            var results = new FilmLookupService(new MockHttpService(url => {
                 if (url.Contains("Directors"))
                 {
                     throw new Exception("Search was not filtered and tried to call url '"+url+"'");
@@ -38,26 +38,26 @@ namespace RaticonTest
                 {
                     return MyApiFilmsResponse;
                 }
-            }));
+            })).Search("Italian.Job.1969.Directors.Cut");
         }
 
         [TestMethod]
         public void Search_returns_an_empty_list_when_no_results_found()
         {
             //"This is a movie which doesn't exist and never will unless someone reads this an makes one to prove a point"
-            var results = new FilmLookupService().Search("32498238409", new MockHttpService("{\"code\":110,\"message\":\"Movie not found\"}"));
+            var results = new FilmLookupService(new MockHttpService("{\"code\":110,\"message\":\"Movie not found\"}")).Search("32498238409");
             Assert.IsTrue(results.Count == 0);
         }
 
         [TestMethod]
-        public void FilmLookup_doesnt_use_http_if_nfo_is_present()
+        public void CachingFilmLookup_doesnt_use_http_if_nfo_is_present()
         {
             IFileSystem mockFileSystem = new MockFileSystem(new Dictionary<string, MockFileData> {
                 {@"C:\Trailers\Italian Job\Italian.Job_imdb_.nfo", new MockFileData(@"http://www.imdb.com/title/tt0064505/")}
             });
 
             //AssertDontCallHttpService
-            new FilmLookupService().Lookup("Italian Job", @"C:\Trailers\Italian Job", null, mockFileSystem, new AssertDontCallHttpService());
+            new CachingFilmLookupService(@"C:\Trailers\Italian Job", mockFileSystem, new AssertDontCallHttpService()).Lookup("Italian Job", null);
 
         }
 
@@ -77,16 +77,16 @@ namespace RaticonTest
         }
 
         [TestMethod]
-        public void FilmLookup_caches_result_after_search()
+        public void CachingFilmLookup_caches_result_after_search()
         {
-            new FilmLookupService().Lookup(filmName, folderPath, (rs) => new LookupChoice(rs.First()), mockFilmFolder, new MockHttpService(MyApiFilmsResponse));
+            new CachingFilmLookupService(folderPath, mockFilmFolder, new MockHttpService(MyApiFilmsResponse)).Lookup(filmName, (rs) => new LookupChoice(rs.First()));
             Assert.IsTrue(mockFilmFolder.File.Exists(@"C:\Trailers\Italian Job\Italian.Job_imdb_.nfo"));
         }
 
         [TestMethod]
         public void FilmLookup_returns_null_if_callback_tells_it_to_give_up()
         {
-            string imdbId = new FilmLookupService().Lookup(filmName, folderPath, (rs) => new LookupChoice(LookupChoice.Action.GiveUp), mockFilmFolder, new MockHttpService(MyApiFilmsResponse));
+            string imdbId = new FilmLookupService(new MockHttpService(MyApiFilmsResponse)).Lookup(filmName, (rs) => new LookupChoice(LookupChoice.Action.GiveUp));
             Assert.IsNull(imdbId);
         }
 
@@ -94,10 +94,10 @@ namespace RaticonTest
         public void FilmLookup_returns_id_chosen_by_callback()
         {
             LookupResult pick = null;
-            string imdbId = new FilmLookupService().Lookup(filmName, folderPath, (rs) => {
+            string imdbId = new FilmLookupService(new MockHttpService(MyApiFilmsResponse)).Lookup(filmName, (rs) => {
                 pick = rs.ElementAt(new Random().Next(0, rs.Count - 1));
                 return new LookupChoice(pick);
-            }, mockFilmFolder, new MockHttpService(MyApiFilmsResponse));
+            });
             Assert.AreEqual(imdbId, pick.ImdbId);
         }
 
@@ -105,10 +105,10 @@ namespace RaticonTest
         public void FilmLookup_searches_again_for_new_title_given_by_callback()
         {
             int attempt = 0;
-            string imdbId = new FilmLookupService().Lookup("Superman", folderPath, (rs) => {
+            string imdbId = new FilmLookupService(new MockHttpService(url => (url.Contains("Superman")) ? MyApiFilmsSupermanResponse : MyApiFilmsResponse)).Lookup("Superman", (rs) => {
                 attempt++;
                 return (attempt == 1) ? new LookupChoice(LookupChoice.Action.NewSearch, filmName) : new LookupChoice(rs.First());
-            }, mockFilmFolder, new MockHttpService(url => (url.Contains("Superman")) ? MyApiFilmsSupermanResponse : MyApiFilmsResponse));
+            });
             Assert.AreEqual("tt0064505", imdbId);
         }
 

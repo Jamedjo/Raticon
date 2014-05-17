@@ -10,6 +10,12 @@ namespace Raticon.Service
 {
     public class FilmLookupService
     {
+        private IHttpService httpService;
+        public FilmLookupService(IHttpService httpService = null)
+        {
+            this.httpService = httpService ?? new HttpService();
+        }
+
         /// <summary>
         /// Returns the imdbId of a movie. First checks its folder for a cached id.
         /// </summary>
@@ -17,41 +23,23 @@ namespace Raticon.Service
         /// <param name="nfoFolder">Path to the folder where the _imdb_.nfo file will be found or cached</param>
         /// <param name="choiceCallback"></param>
         /// <returns></returns>
-        public string Lookup(string unsanitized_title, string nfoFolder, Func<List<LookupResult>, LookupChoice> choiceCallback, IFileSystem fileSystem = null, IHttpService httpService = null)
+        public virtual string Lookup(string unsanitized_title, Func<List<LookupResult>, LookupChoice> choiceCallback)
         {
-            fileSystem = fileSystem ?? new FileSystem();
-            string cachedId = new ImdbIdCacheService().ReadFromFolder(nfoFolder, fileSystem);
-            if (cachedId != null)
-            {
-                return cachedId;
-            }
-            else
-            {
-                return ResultFromSearch(unsanitized_title, nfoFolder, choiceCallback, fileSystem, httpService);
-            }
+            return ResultFromSearch(unsanitized_title, choiceCallback);
         }
 
-        private string ResultFromSearch(string unsanitized_title, string nfoFolder, Func<List<LookupResult>, LookupChoice> choiceCallback, IFileSystem fileSystem, IHttpService httpService)
+        protected virtual string ResultFromSearch(string unsanitized_title, Func<List<LookupResult>, LookupChoice> choiceCallback)
         {
-
-            List<LookupResult> results = Search(unsanitized_title, httpService);
-
-            //lookupchoice should be an imdbId string, or some other constent string
+            List<LookupResult> results = Search(unsanitized_title);
             LookupChoice choice = choiceCallback(results);
-
-            string imdbId = choice.Run(newTitleToSearch => ResultFromSearch(newTitleToSearch, nfoFolder, choiceCallback, fileSystem, httpService));
-            if (!String.IsNullOrWhiteSpace(imdbId))
-            {
-                new ImdbIdCacheService().CacheInFolder(imdbId, nfoFolder, fileSystem);
-            }
-            return imdbId;
+            return choice.Run(newTitleToSearch => ResultFromSearch(newTitleToSearch, choiceCallback));
         }
 
 
-        public List<LookupResult> Search(string title, IHttpService httpService = null)
+        public List<LookupResult> Search(string title)
         {
             string clean_title = new TitleCleaner().Clean(title);
-            string data = (httpService ?? new HttpService()).Get(@"http://www.myapifilms.com/title?limit=10&title=" + clean_title);
+            string data = httpService.Get(@"http://www.myapifilms.com/title?limit=10&title=" + clean_title);
             try
             {
                 JArray objects = JArray.Parse(data);
@@ -73,6 +61,41 @@ namespace Raticon.Service
                 Rating = (o["rating"] ?? "").ToString(),
                 Poster = (o["urlPoster"] ?? "").ToString()
             };
+        }
+    }
+
+    public class CachingFilmLookupService : FilmLookupService
+    {
+        private string nfoFolder;
+        private IFileSystem fileSystem;
+        public CachingFilmLookupService(string nfoFolder, IFileSystem fileSystem = null, IHttpService httpService = null) : base(httpService)
+        {
+            this.fileSystem = fileSystem ?? new FileSystem();
+            this.nfoFolder = nfoFolder;
+        }
+
+        public override string Lookup(string unsanitized_title, Func<List<LookupResult>, LookupChoice> choiceCallback)
+        {
+            string cachedId = new ImdbIdCacheService().ReadFromFolder(nfoFolder, fileSystem);
+            if (cachedId != null)
+            {
+                return cachedId;
+            }
+            else
+            {
+                return base.Lookup(unsanitized_title, choiceCallback);
+            }
+        }
+
+        protected override string ResultFromSearch(string unsanitized_title, Func<List<LookupResult>, LookupChoice> choiceCallback)
+        {
+            string imdbId = base.ResultFromSearch(unsanitized_title, choiceCallback);
+
+            if (!String.IsNullOrWhiteSpace(imdbId))
+            {
+                new ImdbIdCacheService().CacheInFolder(imdbId, nfoFolder, fileSystem);
+            }
+            return imdbId;
         }
     }
 

@@ -53,7 +53,7 @@ namespace Raticon.Model
             {
                 if (imdbIdCache == null)
                 {
-                    imdbIdCache = new FilmLookupService().Lookup(FolderName, Path, (rs) => new LookupChoice(rs.First()), fileSystem);
+                    imdbIdCache = new CachingFilmLookupService(Path, fileSystem).Lookup(FolderName, (rs) => new LookupChoice(rs.First()));
                 }
                 return imdbIdCache;
             }
