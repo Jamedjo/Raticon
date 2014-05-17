@@ -78,7 +78,12 @@ namespace Raticon.Service
 
         private string JsonCacheFilePath(string imdbId, IFileSystem fileSystem)
         {
-            return fileSystem.Path.Combine(fileSystem.Path.Combine(Raticon.Constants.CommonApplicationDataPath, "Cache"), imdbId + ".json");
+            string folderPath = fileSystem.Path.Combine(Raticon.Constants.CommonApplicationDataPath, "Cache");
+            if (!System.IO.File.Exists(folderPath))
+            {
+                System.IO.Directory.CreateDirectory(folderPath);
+            }
+            return fileSystem.Path.Combine(folderPath, imdbId + ".json");
         }
     }
 }

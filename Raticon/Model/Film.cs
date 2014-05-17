@@ -53,7 +53,7 @@ namespace Raticon.Model
             {
                 if (imdbIdCache == null)
                 {
-                    imdbIdCache = new CachingFilmLookupService(Path, fileSystem).Lookup(FolderName, (rs) => new LookupChoice(rs.First()));
+                    imdbIdCache = idLookupService.Lookup(FolderName, (rs) => resultPicker.Pick(rs));
                 }
                 return imdbIdCache;
             }
@@ -92,18 +92,40 @@ namespace Raticon.Model
 
         private IFileSystem fileSystem;
         private IRatingService ratingService;
+        private IResultPicker resultPicker;
+        protected FilmLookupService idLookupService;
 
-        public Film(string path, IFileSystem fileSystem=null, IRatingService ratingService=null)
+        public Film(string path, IFileSystem fileSystem = null, IRatingService ratingService = null, IResultPicker resultPicker = null)
         {
-            if (fileSystem == null) fileSystem = new FileSystem();
-            this.fileSystem = fileSystem;
-            if (ratingService == null) ratingService = new DiskCachedRatingService();
-            this.ratingService = ratingService;
+            this.fileSystem = fileSystem ?? new FileSystem();
+            this.ratingService = ratingService ?? new RatingService();
+            this.resultPicker = resultPicker ?? new FirstResultPicker();
+
+            this.idLookupService = new FilmLookupService();
 
             Path = path;
-            
+
             FolderName = fileSystem.Path.GetFileName(path);
         }
 
+    }
+
+    public class CachedFilm : Film
+    {
+        public CachedFilm(string path, IFileSystem fileSystem, IRatingService ratingService, IResultPicker resultPicker = null) : base(path, fileSystem, ratingService, resultPicker)
+        {
+            this.idLookupService = new CachingFilmLookupService(Path, fileSystem);
+        }
+
+        public CachedFilm(string path, IFileSystem fileSystem = null, IResultPicker resultPicker = null) : this(path, fileSystem, new DiskCachedRatingService(), resultPicker)
+        {
+        }
+    }
+
+    public class GuiFilm : CachedFilm
+    {
+        public GuiFilm(string path, IFileSystem fileSystem = null) : base(path, fileSystem, new GuiResultPickerService(Application.Current.MainWindow))
+        {
+        }
     }
 }

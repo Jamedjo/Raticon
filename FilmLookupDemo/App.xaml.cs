@@ -23,7 +23,7 @@ namespace FilmLookupDemo
 
         static LookupChoice LookupCalllback(List<LookupResult> results)
         {
-            return new LookupResultPickerService(results).LookupChoice;
+            return new GuiResultPickerService(null).Pick(results);
         }
     }
 }

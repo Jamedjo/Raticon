@@ -4,7 +4,7 @@
         xmlns:rc="clr-namespace:Raticon.Control"
         rc:DialogCloser.DialogResult="{Binding DialogResult}"
         DataContext="{Binding SearchResultPicker, Source={StaticResource Locator}}"
-        Title="Select a Film Search Result" Height="350" Width="350">
+        Title="Select a Film Search Result" Height="385" Width="360">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="35"/>
@@ -44,7 +44,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="45">
+                    <GridViewColumn Width="Auto">
                         <GridViewColumn.Header>
                             <GridViewColumnHeader Tag="Year">Year</GridViewColumnHeader>
                         </GridViewColumn.Header>

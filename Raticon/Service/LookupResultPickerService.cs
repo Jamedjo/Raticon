@@ -7,23 +7,41 @@ using System.Windows;
 
 namespace Raticon.Service
 {
-    public class LookupResultPickerService
+    public interface IResultPicker
     {
-        public LookupChoice LookupChoice { get; private set; }
-        public LookupResultPickerService(List<LookupResult> results, Window parentWindow = null)
-        {
-            var popupWindow = new SearchResultPicker();
-            popupWindow.DataContext = new SearchResultPickerViewModel(results);
-            popupWindow.Owner = parentWindow;
-            popupWindow.ShowDialog();
+        LookupChoice Pick(List<LookupResult> results);
+    }
 
-            if(popupWindow.DialogResult==true)
+    public class FirstResultPicker : IResultPicker
+    {
+        public LookupChoice Pick(List<LookupResult> results)
+        {
+            return new LookupChoice(results.First());
+        }
+    }
+
+    public class GuiResultPickerService : IResultPicker
+    {
+        private Window parentWindow;
+        public GuiResultPickerService(Window parentWindow)
+        {
+            this.parentWindow = parentWindow;
+        }
+
+        public LookupChoice Pick(List<LookupResult> results)
+        {
+            SearchResultPicker picker = new SearchResultPicker();
+            picker.DataContext = new SearchResultPickerViewModel(results);
+            picker.Owner = parentWindow;
+            picker.ShowDialog();
+
+            if(picker.DialogResult==true)
             {
-                LookupChoice = ((SearchResultPickerViewModel)popupWindow.DataContext).LookupChoice;
+                return ((SearchResultPickerViewModel)picker.DataContext).LookupChoice;
             }
             else
             {
-                LookupChoice = new LookupChoice(LookupChoice.Action.GiveUp);
+                return new LookupChoice(LookupChoice.Action.GiveUp);
             }
         }
     }

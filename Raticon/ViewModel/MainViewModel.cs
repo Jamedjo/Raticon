@@ -43,7 +43,7 @@ namespace Raticon.ViewModel
             var dialog = new CommonOpenFileDialog { IsFolderPicker = true };
             if (dialog.ShowDialog(Application.Current.MainWindow) == CommonFileDialogResult.Ok)
             {
-                Collection = new MediaCollection(dialog.FileName);
+                Collection = new MediaCollection<GuiFilm>(dialog.FileName);
             }
         }
 

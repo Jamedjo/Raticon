@@ -62,7 +62,7 @@ namespace RaticonTest
         //
         #endregion
 
-        Film film;
+        CachedFilm film;
         IFileSystem defaultFileSystem;
         string test_path = @"C:\Some\Path\To\In.the.Heat.of.the.Night.1967";
 
@@ -73,7 +73,7 @@ namespace RaticonTest
             {
                 { @"C:\Some\Path\To\In.the.Heat.of.the.Night.1967\InTheHeatofTheNight_imdb_.nfo", new MockFileData("http://www.imdb.com/title/tt0061811/") }
             });
-            film = new Film(test_path, defaultFileSystem, new MockRatingService());
+            film = new CachedFilm(test_path, defaultFileSystem, new MockRatingService());
         }
 
 
@@ -139,7 +139,7 @@ namespace RaticonTest
         [TestMethod]
         public void It_shouldnt_request_folderJpg_from_empty_url()
         {
-            film = new Film(test_path, defaultFileSystem, new MockInvalidFilmRatingService());
+            film = new CachedFilm(test_path, defaultFileSystem, new MockInvalidFilmRatingService());
             var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData> {
                 {film.Path, new MockDirectoryData() }
             });
