@@ -15,6 +15,7 @@ namespace Raticon.Model
         public override bool Equals(object obj)
         {
             RatingResult rr = obj as RatingResult;
+            if (rr == null) { return false; }
             return Title == rr.Title && Year == rr.Year && Rating == rr.Rating;
         }
 

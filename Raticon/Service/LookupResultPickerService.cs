@@ -19,7 +19,7 @@ namespace Raticon.Service
 
             if(popupWindow.DialogResult==true)
             {
-                LookupChoice = new LookupChoice("what");
+                LookupChoice = ((SearchResultPickerViewModel)popupWindow.DataContext).LookupChoice;
             }
             else
             {

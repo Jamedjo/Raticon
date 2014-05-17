@@ -141,6 +141,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Constants.cs" />
+    <Compile Include="Control\DialogCloser.cs" />
     <Compile Include="Control\FilmListView.xaml.cs">
       <DependentUpon>FilmListView.xaml</DependentUpon>
     </Compile>
