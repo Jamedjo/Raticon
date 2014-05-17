@@ -15,6 +15,9 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
+using Raticon.Model;
+using Raticon.Service;
+using System.Collections.Generic;
 
 namespace Raticon.ViewModel
 {
@@ -31,11 +34,11 @@ namespace Raticon.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            ////if (ViewModelBase.IsInDesignModeStatic)
-            ////{
-            ////    // Create design time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DesignDataService>();
-            ////}
+            //if (ViewModelBase.IsInDesignModeStatic)
+            //{
+                // Create design time view services and models
+                SimpleIoc.Default.Register<List<LookupResult>, DummyResults>();
+            //}
             ////else
             ////{
             ////    // Create run time view services and models
@@ -43,15 +46,11 @@ namespace Raticon.ViewModel
             ////}
 
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<SearchResultPickerViewModel>();
         }
 
-        public MainViewModel Main
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<MainViewModel>();
-            }
-        }
+        public MainViewModel Main { get { return ServiceLocator.Current.GetInstance<MainViewModel>(); } }
+        public SearchResultPickerViewModel SearchResultPicker { get { return ServiceLocator.Current.GetInstance<SearchResultPickerViewModel>(); } }
         
         public static void Cleanup()
         {
