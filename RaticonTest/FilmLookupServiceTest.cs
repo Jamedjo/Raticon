@@ -14,14 +14,14 @@ namespace RaticonTest
         [TestMethod]
         public void Search_returns_multiple_results_for_ambiguous_titles()
         {
-            var results = new FilmLookupService().Search("Italian Job");
+            var results = new FilmLookupService().Search("Italian Job", new MockHttpService(FullMyApiFilmsResponse));
             Assert.IsTrue(results.Count >= 2);
         }
 
         [TestMethod]
         public void Search_gets_a_correct_imdb_id()
         {
-            var results = new FilmLookupService().Search("Italian Job");
+             var results = new FilmLookupService().Search("Italian Job", new MockHttpService(FullMyApiFilmsResponse));
             var ids = results.Select(r => r.ImdbId).ToList();
             CollectionAssert.Contains(ids, "tt0064505");
         }
@@ -29,15 +29,23 @@ namespace RaticonTest
         [TestMethod]
         public void Search_filters_titles_before_using_them()
         {
-            var results = new FilmLookupService().Search("Italian.Job.1969.Directors.Cut");
-            Assert.IsTrue(results.Count >= 1);
+            var results = new FilmLookupService().Search("Italian.Job.1969.Directors.Cut", new MockHttpService(url => {
+                if (url.Contains("Directors"))
+                {
+                    throw new Exception("Search was not filtered and tried to call url '"+url+"'");
+                }
+                else
+                {
+                    return MyApiFilmsResponse;
+                }
+            }));
         }
 
         [TestMethod]
         public void Search_returns_an_empty_list_when_no_results_found()
         {
             //"This is a movie which doesn't exist and never will unless someone reads this an makes one to prove a point"
-            var results = new FilmLookupService().Search("32498238409");
+            var results = new FilmLookupService().Search("32498238409", new MockHttpService("{\"code\":110,\"message\":\"Movie not found\"}"));
             Assert.IsTrue(results.Count == 0);
         }
 
@@ -57,6 +65,7 @@ namespace RaticonTest
         string folderPath = @"C:\Trailers\Italian Job";
         string filmName = "Italian Job";
         string MyApiFilmsResponse = "[{'idIMDB':'tt0064505'}]";
+        string FullMyApiFilmsResponse = "[{\"idIMDB\":\"tt0391247\",\"rating\":\"6.7\",\"title\":\"The Italian Job\",\"urlIMDB\":\"http://www.imdb.com/title/tt0391247\",\"year\":\"2003\"}, {\"idIMDB\":\"tt0317740\",\"rating\":\"7.0\",\"title\":\"The Italian Job\",\"urlIMDB\":\"http://www.imdb.com/title/tt0317740\",\"year\":\"2003\"}, {\"idIMDB\":\"tt0064505\",\"rating\":\"7.4\",\"title\":\"The Italian Job\",\"urlIMDB\":\"http://www.imdb.com/title/tt0064505\",\"year\":\"1969\"}]";
         string MyApiFilmsSupermanResponse = "[{'idIMDB':'tt0078346'}]";
 
         [TestInitialize]
