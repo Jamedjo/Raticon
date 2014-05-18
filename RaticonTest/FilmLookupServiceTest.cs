@@ -79,14 +79,14 @@ namespace RaticonTest
         [TestMethod]
         public void CachingFilmLookup_caches_result_after_search()
         {
-            new CachingFilmLookupService(folderPath, mockFilmFolder, new MockHttpService(MyApiFilmsResponse)).Lookup(filmName, (rs) => new LookupChoice(rs.First()));
+            new CachingFilmLookupService(folderPath, mockFilmFolder, new MockHttpService(MyApiFilmsResponse)).Lookup(filmName, (l) => new LookupChoice(l.Results.First()));
             Assert.IsTrue(mockFilmFolder.File.Exists(@"C:\Trailers\Italian Job\Italian.Job_imdb_.nfo"));
         }
 
         [TestMethod]
         public void FilmLookup_returns_null_if_callback_tells_it_to_give_up()
         {
-            string imdbId = new FilmLookupService(new MockHttpService(MyApiFilmsResponse)).Lookup(filmName, (rs) => new LookupChoice(LookupChoice.Action.GiveUp));
+            string imdbId = new FilmLookupService(new MockHttpService(MyApiFilmsResponse)).Lookup(filmName, (l) => new LookupChoice(LookupChoice.Action.GiveUp));
             Assert.IsNull(imdbId);
         }
 
@@ -94,8 +94,8 @@ namespace RaticonTest
         public void FilmLookup_returns_id_chosen_by_callback()
         {
             LookupResult pick = null;
-            string imdbId = new FilmLookupService(new MockHttpService(MyApiFilmsResponse)).Lookup(filmName, (rs) => {
-                pick = rs.ElementAt(new Random().Next(0, rs.Count - 1));
+            string imdbId = new FilmLookupService(new MockHttpService(MyApiFilmsResponse)).Lookup(filmName, (lookup) => {
+                pick = lookup.Results.ElementAt(new Random().Next(0, lookup.Results.Count - 1));
                 return new LookupChoice(pick);
             });
             Assert.AreEqual(imdbId, pick.ImdbId);
@@ -105,11 +105,19 @@ namespace RaticonTest
         public void FilmLookup_searches_again_for_new_title_given_by_callback()
         {
             int attempt = 0;
-            string imdbId = new FilmLookupService(new MockHttpService(url => (url.Contains("Superman")) ? MyApiFilmsSupermanResponse : MyApiFilmsResponse)).Lookup("Superman", (rs) => {
+            string imdbId = new FilmLookupService(new MockHttpService(url => (url.Contains("Superman")) ? MyApiFilmsSupermanResponse : MyApiFilmsResponse)).Lookup("Superman", (lookup) => {
                 attempt++;
-                return (attempt == 1) ? new LookupChoice(LookupChoice.Action.NewSearch, filmName) : new LookupChoice(rs.First());
+                return (attempt == 1) ? new LookupChoice(LookupChoice.Action.NewSearch, filmName) : new LookupChoice(lookup.Results.First());
             });
             Assert.AreEqual("tt0064505", imdbId);
+        }
+
+        [TestMethod]
+        public void FilmLookup_provides_title_to_callback()
+        {
+            string query = "";
+            string imdbId = new FilmLookupService(new MockHttpService(MyApiFilmsResponse)).Lookup(filmName, (lookup) => { query = lookup.Query; return new LookupChoice(LookupChoice.Action.GiveUp); });
+            Assert.AreEqual(filmName, query);
         }
 
         //The callback should be able to ask for 10 more results

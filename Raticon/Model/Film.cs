@@ -64,7 +64,7 @@ namespace Raticon.Model
 
         protected virtual void setImdbFromService()
         {
-            imdbIdCache = idLookupService.Lookup(FolderName, (rs) => resultPicker.Pick(rs));
+            imdbIdCache = idLookupService.Lookup(FolderName, (l) => resultPicker.Pick(l));
         }
 
         protected RatingResult ratingResultCache;
@@ -142,7 +142,7 @@ namespace Raticon.Model
             if(!lookupInvoked)
             {
                 Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => {
-                    imdbIdCache = idLookupService.Lookup(FolderName, (rs) => resultPicker.Pick(rs));
+                    imdbIdCache = idLookupService.Lookup(FolderName, (lookup) => resultPicker.Pick(lookup));
                     OnPropertyChanged("Title");
                     OnPropertyChanged("Rating");
                     OnPropertyChanged("Year");

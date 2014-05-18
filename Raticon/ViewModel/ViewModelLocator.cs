@@ -37,7 +37,7 @@ namespace Raticon.ViewModel
             //if (ViewModelBase.IsInDesignModeStatic)
             //{
                 // Create design time view services and models
-                SimpleIoc.Default.Register<List<LookupResult>, DummyResults>();
+                SimpleIoc.Default.Register<LookupContext, DummyLookupContext>();
             //}
             ////else
             ////{

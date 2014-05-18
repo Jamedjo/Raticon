@@ -12,6 +12,10 @@ namespace Raticon.ViewModel
     {
         private string searchText = "Try a different title...";
         public string SearchText { get { return searchText; } set { searchText = value; RaisePropertyChanged("SearchText"); } }
+        private string queryTitle;
+        public string QueryTitle { get { return queryTitle; } set { queryTitle = value; RaisePropertyChanged("QueryTitle"); } }
+
+
         public List<LookupResult> LookupResultList { get; private set; }
         public LookupResult SelectedItem { get; set; }
 
@@ -34,10 +38,12 @@ namespace Raticon.ViewModel
             DialogResult = true;
         }
 
-        public SearchResultPickerViewModel(List<LookupResult> results)
+        public SearchResultPickerViewModel(LookupContext lookup)
         {
-            LookupResultList = results;
+            LookupResultList = lookup.Results;
             //RaisePropertyChanged("LookupResultList");
+
+            QueryTitle = lookup.Query;
 
             SearchCommand = new RelayCommand(RetrySearch);
             PickSelectedCommand = new RelayCommand(PickSelected);

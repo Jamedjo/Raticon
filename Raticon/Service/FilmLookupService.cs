@@ -23,15 +23,15 @@ namespace Raticon.Service
         /// <param name="nfoFolder">Path to the folder where the _imdb_.nfo file will be found or cached</param>
         /// <param name="choiceCallback"></param>
         /// <returns></returns>
-        public virtual string Lookup(string unsanitized_title, Func<List<LookupResult>, LookupChoice> choiceCallback)
+        public virtual string Lookup(string unsanitized_title, Func<LookupContext, LookupChoice> choiceCallback)
         {
             return ResultFromSearch(unsanitized_title, choiceCallback);
         }
 
-        protected virtual string ResultFromSearch(string unsanitized_title, Func<List<LookupResult>, LookupChoice> choiceCallback)
+        protected virtual string ResultFromSearch(string unsanitized_title, Func<LookupContext, LookupChoice> choiceCallback)
         {
             List<LookupResult> results = Search(unsanitized_title);
-            LookupChoice choice = choiceCallback(results);
+            LookupChoice choice = choiceCallback(new LookupContext(results, unsanitized_title));
             return choice.Run(newTitleToSearch => ResultFromSearch(newTitleToSearch, choiceCallback));
         }
 
@@ -74,7 +74,7 @@ namespace Raticon.Service
             this.nfoFolder = nfoFolder;
         }
 
-        public override string Lookup(string unsanitized_title, Func<List<LookupResult>, LookupChoice> choiceCallback)
+        public override string Lookup(string unsanitized_title, Func<LookupContext, LookupChoice> choiceCallback)
         {
             string cachedId = new ImdbIdCacheService().ReadFromFolder(nfoFolder, fileSystem);
             if (cachedId != null)
@@ -87,7 +87,7 @@ namespace Raticon.Service
             }
         }
 
-        protected override string ResultFromSearch(string unsanitized_title, Func<List<LookupResult>, LookupChoice> choiceCallback)
+        protected override string ResultFromSearch(string unsanitized_title, Func<LookupContext, LookupChoice> choiceCallback)
         {
             string imdbId = base.ResultFromSearch(unsanitized_title, choiceCallback);
 
@@ -102,5 +102,16 @@ namespace Raticon.Service
     public class LookupResult : RatingResult
     {
         public string ImdbId { get; set; }
+    }
+
+    public class LookupContext
+    {
+        public List<LookupResult> Results { get; private set; }
+        public string Query { get; private set; }
+        public LookupContext(List<LookupResult> results, string query)
+        {
+            Results = results;
+            Query = query;
+        }
     }
 }

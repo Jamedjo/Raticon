@@ -45,4 +45,9 @@ namespace Raticon.Model
             Add(new LookupResult { ImdbId = "tt1465513", Title = "The Italian Key", Year = "2011", Rating = "5.4", Poster = "" });
         }
     }
+
+    public class DummyLookupContext : LookupContext
+    {
+        public DummyLookupContext() : base(new DummyResults(), "Italian Job") { }
+    }
 }

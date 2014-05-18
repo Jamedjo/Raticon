@@ -9,14 +9,14 @@ namespace Raticon.Service
 {
     public interface IResultPicker
     {
-        LookupChoice Pick(List<LookupResult> results);
+        LookupChoice Pick(LookupContext lookup);
     }
 
     public class FirstResultPicker : IResultPicker
     {
-        public LookupChoice Pick(List<LookupResult> results)
+        public LookupChoice Pick(LookupContext lookup)
         {
-            LookupResult pick = results.FirstOrDefault();
+            LookupResult pick = lookup.Results.FirstOrDefault();
             return (pick != null) ? new LookupChoice(pick) : new LookupChoice(LookupChoice.Action.GiveUp);
         }
     }
@@ -29,10 +29,10 @@ namespace Raticon.Service
             this.parentWindow = parentWindow;
         }
 
-        public LookupChoice Pick(List<LookupResult> results)
+        public LookupChoice Pick(LookupContext lookup)
         {
             SearchResultPicker picker = new SearchResultPicker();
-            picker.DataContext = new SearchResultPickerViewModel(results);
+            picker.DataContext = new SearchResultPickerViewModel(lookup);
             picker.Owner = parentWindow;
             picker.ShowDialog();
 
