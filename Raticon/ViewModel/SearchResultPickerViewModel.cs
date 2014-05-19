@@ -10,7 +10,7 @@ namespace Raticon.ViewModel
 {
     public class SearchResultPickerViewModel : ViewModelBase
     {
-        private string searchText = "Try a different title...";
+        private string searchText;
         public string SearchText { get { return searchText; } set { searchText = value; RaisePropertyChanged("SearchText"); } }
         private string queryTitle;
         public string QueryTitle { get { return queryTitle; } set { queryTitle = value; RaisePropertyChanged("QueryTitle"); } }

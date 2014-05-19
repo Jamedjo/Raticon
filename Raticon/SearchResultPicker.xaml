@@ -1,86 +1,109 @@
-﻿<Window x:Class="Raticon.SearchResultPicker"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:rc="clr-namespace:Raticon.Control"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" x:Class="Raticon.SearchResultPicker"
         rc:DialogCloser.DialogResult="{Binding DialogResult}"
         DataContext="{Binding SearchResultPicker, Source={StaticResource Locator}}"
         Title="Select a Film Search Result" Height="385" Width="360">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="35"/>
-            <RowDefinition Height="231*"/>
-            <RowDefinition Height="35*"/>
-            <RowDefinition Height="41"/>
-        </Grid.RowDefinitions>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="25"/>
+			<RowDefinition Height="35"/>
+			<RowDefinition Height="231*"/>
+			<RowDefinition Height="35*"/>
+			<RowDefinition Height="41"/>
+		</Grid.RowDefinitions>
 
-        <TextBlock Text="{Binding QueryTitle}" TextAlignment="Center" VerticalAlignment="Center"/>
+		<TextBlock Text="{Binding QueryTitle}" TextAlignment="Center" VerticalAlignment="Center"/>
 
-        <Grid Margin="25,5" Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="100"/>
-            </Grid.ColumnDefinitions>
+		<Grid Margin="25,5" Grid.Row="1">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="100"/>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="100"/>
+			</Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" Command="{Binding PickSelectedCommand}" IsDefault="True" Margin="10,0,0,0">Pick Selected</Button>
-            <!--<Button Grid.Column="1" Margin="10,0,0,0">Search</Button>-->
+			<Button Grid.Column="0" Command="{Binding PickSelectedCommand}" IsDefault="True" Margin="10,0,0,0" Content="Pick Selected"/>
+			<!--<Button Grid.Column="1" Margin="10,0,0,0">Search</Button>-->
 
-            <Button Grid.Column="2" IsCancel="True" Margin="10,0,0,0">Skip Film</Button>
-        </Grid>
+			<Button Grid.Column="2" IsCancel="True" Margin="10,0,0,0" Content="Skip Film"/>
+		</Grid>
 
-        <ListView Grid.Row="2" ItemsSource="{Binding LookupResultList}" SelectedItem="{Binding SelectedItem}">
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding Title}" Width="190">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Title">Title</GridViewColumnHeader>
-                        </GridViewColumn.Header>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Title}"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Width="Auto">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Year">Year</GridViewColumnHeader>
-                        </GridViewColumn.Header>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Year}" HorizontalAlignment="Center"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn>
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Rating">Rating</GridViewColumnHeader>
-                        </GridViewColumn.Header>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Rating}" HorizontalAlignment="Center"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView >
+		<ListView Grid.Row="2" ItemsSource="{Binding LookupResultList}" SelectedItem="{Binding SelectedItem}">
+			<ListView.ItemContainerStyle>
+				<Style TargetType="{x:Type ListViewItem}">
+					<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+				</Style>
+			</ListView.ItemContainerStyle>
+			<ListView.View>
+				<GridView>
+					<GridViewColumn DisplayMemberBinding="{Binding Title}" Width="190">
+						<GridViewColumn.CellTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding Title}"/>
+							</DataTemplate>
+						</GridViewColumn.CellTemplate>
+						<GridViewColumnHeader Tag="Title" Content="Title"/>
+					</GridViewColumn>
+					<GridViewColumn Width="Auto">
+						<GridViewColumn.CellTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding Year}" HorizontalAlignment="Center"/>
+							</DataTemplate>
+						</GridViewColumn.CellTemplate>
+						<GridViewColumnHeader Tag="Year" Content="Year"/>
+					</GridViewColumn>
+					<GridViewColumn>
+						<GridViewColumn.CellTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding Rating}" HorizontalAlignment="Center"/>
+							</DataTemplate>
+						</GridViewColumn.CellTemplate>
+						<GridViewColumnHeader Tag="Rating" Content="Rating"/>
+					</GridViewColumn>
+				</GridView>
+			</ListView.View>
+		</ListView>
 
-        <TextBlock Grid.Row="3" VerticalAlignment="Center" TextAlignment="Center" FontStyle="Italic" FontFamily="Segoe UI Mono">~ OR ~</TextBlock>
-        
-        <Grid Margin="10,0,10,10" Grid.Row="4">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="80"/>
-            </Grid.ColumnDefinitions>
+		<TextBlock Grid.Row="3" VerticalAlignment="Center" TextAlignment="Center" FontStyle="Italic" FontFamily="Segoe UI Mono"><Run Text="~ OR ~"/></TextBlock>
 
-            <TextBox Grid.Column="0" Text="{Binding SearchText}" VerticalContentAlignment="Center" Padding="10,0"></TextBox>
-            <Button Grid.Column="1" Command="{Binding SearchCommand}" Margin="10,0,0,0">Search</Button>
-        </Grid>
-    </Grid>
+		<Grid Margin="10,0,10,10" Grid.Row="4">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="80"/>
+			</Grid.ColumnDefinitions>
+
+			<TextBox x:Name="SearchBox" Grid.Column="0" Text="{Binding SearchText}" VerticalContentAlignment="Center" Padding="10,0">
+                <TextBox.Style>
+                    <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                        <Style.Triggers>
+                            <Trigger Property="rc:PlaceholderTextBehavior.IsPlaceholderActive" Value="True">
+                                <Setter Property="Foreground" Value="Gray" />
+                                <Setter Property="FontStyle" Value="Italic" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+                <i:Interaction.Behaviors>
+					<rc:PlaceholderTextBehavior Text="Try search with a different title..."/>
+				</i:Interaction.Behaviors>
+			</TextBox>
+            
+            <Button Grid.Column="1" Command="{Binding SearchCommand}" Margin="10,0,0,0" Content="Search">
+                <Button.Style>
+                    <Style>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                <Setter Property="Button.IsEnabled" Value="False" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="Try search with a different title...">
+                                <Setter Property="Button.IsEnabled" Value="False" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+		</Grid>
+	</Grid>
 </Window>
