@@ -108,45 +108,11 @@ namespace RaticonTest
         }
 
         [TestMethod]
-        public void It_should_create_folderJpg_when_required()
-        {
-            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData> {
-                { film.Path, new MockDirectoryData() }
-            });
-            var httpService = new MockBinaryHttpService(fileSystem);
-            film.RequireFolderJpg(fileSystem,httpService);
-            Assert.IsTrue(fileSystem.File.Exists(film.PathTo("folder.jpg")));
-        }
-
-        [TestMethod]
-        public void It_shouldnt_create_folderJpg_if_it_exists()
-        {
-            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData> {
-                {film.Path, new MockDirectoryData() },
-                {film.PathTo("folder.jpg"), new MockFileData("")}
-            });
-            var httpService = new MockBinaryHttpService(fileSystem);
-            film.RequireFolderJpg(fileSystem, httpService);
-            Assert.IsFalse(httpService.WasCalled);
-        }
-
-        [TestMethod]
         public void It_shouldnt_operate_on_non_film_folders()
         {
 
         }
 
-        [TestMethod]
-        public void It_shouldnt_request_folderJpg_from_empty_url()
-        {
-            film = new CachedFilm(test_path, defaultFileSystem, new MockInvalidFilmRatingService());
-            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData> {
-                {film.Path, new MockDirectoryData() }
-            });
-            var httpService = new MockBinaryHttpService(fileSystem);
-            film.RequireFolderJpg(fileSystem, httpService);
-            Assert.IsFalse(httpService.WasCalled);
-        }
     }
 
     public class MockRatingService : IRatingService
@@ -157,31 +123,5 @@ namespace RaticonTest
         }
     }
 
-    public class MockInvalidFilmRatingService : IRatingService
-    {
-        public override RatingResult GetRating(string imdbId)
-        {
-            return new RatingResult {};
-        }
-    }
 
-    public class MockBinaryHttpService : IHttpService
-    {
-        IFileSystem fileSystem;
-        public bool WasCalled = false;
-        public MockBinaryHttpService(IFileSystem fileSystem)
-        {
-            this.fileSystem = fileSystem;
-        }
-        public override void GetBinary(string url, string path)
-        {
-            WasCalled = true;
-            fileSystem.File.Create(path);
-        }
-
-        public override string Get(string url)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }

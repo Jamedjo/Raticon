@@ -11,17 +11,17 @@ namespace Raticon.Service
 {
     public class IconService
     {
-        public void ProcessCollection(IMediaCollection collection)
+        public void ProcessCollection(IMediaCollection<IFilmFromFolder> collection)
         {
             var validFilms = collection.Items.Where(f => !string.IsNullOrWhiteSpace(f.Rating));
-            foreach (IFilm film in validFilms)
+            foreach (IFilmFromFolder film in validFilms)
             {
                 Process(film);
             }
             MessageBox.Show("Complete!\n\n" + validFilms.Count() + " folders have been processed and icons added.", "Complete!",MessageBoxButton.OK,MessageBoxImage.Information);
         }
 
-        public void Process(IFilm film)
+        public void Process(IFilmFromFolder film)
         {
             if (System.IO.File.Exists(film.PathTo("folder.ico")) || String.IsNullOrWhiteSpace(film.Rating) ) { return; }
             RaiseErrorIfImageMagickInvalid(film.Path);
@@ -63,11 +63,13 @@ namespace Raticon.Service
             System.IO.File.SetAttributes(path, System.IO.FileAttributes.ReadOnly);
         }
 
-        private void BuildFolderIco(IFilm film)
+        private void BuildFolderIco(IFilmFromFolder film)
         {
             //Required files
             new ResourceService().ExtractTo("Raticon.star.png", film.PathTo("star.png"));
-            film.RequireFolderJpg();
+
+            new PosterService().Download(film.Poster, film.PathTo("folder.jpg"), (url, path) =>
+                MessageBox.Show("Couldn't download folder.jpg for '" + film.Title + "' from url '" + film.Poster + "' to '" + film.PathTo("folder.jpg") + "'", "Error downloading folder.jpg", MessageBoxButton.OK, MessageBoxImage.Error));
 
             //Run Resources/IconScript.tt
             string script = new IconScript(film.Rating).TransformText();

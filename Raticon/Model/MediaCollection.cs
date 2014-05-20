@@ -7,20 +7,22 @@ using System.Reflection;
 
 namespace Raticon.Model
 {
-    public class IMediaCollection
+    public interface IMediaCollection<out T> where T : IFilm
     {
-        public IList<IFilm> Items { get; protected set; }
+        IEnumerable<T> Items { get; }
     }
-    public class MediaCollection<T> : IMediaCollection where T : IFilm
+    public class MediaCollection<T> : IMediaCollection<T> where T : IFilmFromFolder
     {
         private IFileSystem fileSystem;
+        public IEnumerable<T> Items { get; protected set; }
+
         public MediaCollection(string folder, IFileSystem fileSystem=null)
         {
             if (fileSystem == null) fileSystem = new FileSystem();
             this.fileSystem = fileSystem;
 
             string[] subfolders = fileSystem.Directory.GetDirectories(folder);
-            Items = subfolders.Select(f => (T)CreateInstance(typeof(T), f, fileSystem)).ToList<IFilm>();
+            Items = subfolders.Select(f => (T)CreateInstance(typeof(T), f, fileSystem));
         }
 
         //Fix Activator.CreateInstance so it handles Constructor with optional params

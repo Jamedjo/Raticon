@@ -12,7 +12,7 @@ namespace RaticonTest
     [TestClass]
     public class IconServiceTest
     {
-        IFilm filmMock = new FilmMock(@"C:\Temp");
+        IFilmFromFolder filmMock = new FilmMock(@"C:\Temp");
 
         public void IconServiceTestInitialize()
         {
@@ -110,7 +110,8 @@ namespace RaticonTest
         }
     }
 
-    public class FilmMock : IFilm
+
+    public class FilmMock : AbstractFilmFromFolder
     {
         public FilmMock(string base_path)
         {
@@ -118,8 +119,9 @@ namespace RaticonTest
             Rating = "8.0";
             Poster = @"http://i.imgur.com/OXGEGDr.jpg";
         }
+
     }
-    public class NotAFilmMock : IFilm
+    public class NotAFilmMock : AbstractFilmFromFolder
     {
         public NotAFilmMock(string base_path)
         {

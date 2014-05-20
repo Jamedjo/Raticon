@@ -12,35 +12,33 @@ using System.ComponentModel;
 
 namespace Raticon.Model
 {
-    public abstract class IFilm
+    public interface IFilm
     {
-        public virtual string FolderName { get; protected set; }
-        public virtual string Path { get; protected set; }
-        public virtual string ImdbId { get; protected set; }
-        public virtual string Rating { get; protected set; }
-        public virtual string Title { get; protected set; }
-        public virtual string Year { get; protected set; }
-        public virtual string Poster { get; protected set; }
+        string ImdbId { get; }
+        string Rating { get; }
+        string Title { get; }
+        string Year { get; }
+        string Poster { get; }
+    }
+    public interface IFilmFromFolder : IFilm
+    {
+        string Path { get; }
+        string FolderName { get; }
+        string PathTo(string fileName);
+    }
+    public abstract class AbstractFilm : IFilm
+    {
+        public string ImdbId { get; protected set; }
+        public string Rating { get; protected set; }
+        public string Title { get; protected set; }
+        public string Year { get; protected set; }
+        public string Poster { get; protected set; }
+    }
+    public abstract class AbstractFilmFromFolder : AbstractFilm, IFilmFromFolder
+    {
+        public string Path { get; protected set; }
+        public string FolderName { get; protected set; }
 
-        public void RequireFolderJpg(IFileSystem fileSystem = null, IHttpService httpService = null)
-        {
-            fileSystem = fileSystem ?? new FileSystem();
-            if (!fileSystem.File.Exists(PathTo("folder.jpg")) && Poster != null && Poster.Length > 0)
-            {
-                try
-                {
-                    (httpService ?? new HttpService()).GetBinary(Poster, PathTo("folder.jpg"));
-                }
-                catch
-                {
-#if DEBUG
-                    throw;
-#else
-                    MessageBox.Show("Couldn't download folder.jpg for '"+Title+"' from url '"+Poster+"' to '"+PathTo("folder.jpg")+"'","Error downloading folder.jpg",MessageBoxButton.OK,MessageBoxImage.Error);
-#endif
-                }
-            }
-        }
 
         public string PathTo(string fileName)
         {
@@ -50,7 +48,7 @@ namespace Raticon.Model
     public class Film : IFilm
     {
         protected string imdbIdCache;
-        public override string ImdbId
+        public string ImdbId
         {
             get
             {
@@ -64,7 +62,8 @@ namespace Raticon.Model
 
         protected virtual void setImdbFromService()
         {
-            imdbIdCache = idLookupService.Lookup(FolderName, (l) => resultPicker.Pick(l));
+            throw new NotImplementedException();
+            //imdbIdCache = idLookupService.Lookup(FolderName, (l) => resultPicker.Pick(l));
         }
 
         protected RatingResult ratingResultCache;
@@ -81,19 +80,19 @@ namespace Raticon.Model
             return getProperty(ratingResultCache);
         }
 
-        public override string Rating
+        public string Rating
         {
             get { return getResult("", r => r.Rating); }
         }
-        public override string Title
+        public string Title
         {
             get { return getResult("", r => r.Title); }
         }
-        public override string Year
+        public string Year
         {
             get { return getResult("", r => r.Year); }
         }
-        public override string Poster
+        public string Poster
         {
             get { return getResult("", r => r.Poster); }
         }
@@ -103,7 +102,7 @@ namespace Raticon.Model
         protected IResultPicker resultPicker;
         protected FilmLookupService idLookupService;
 
-        public Film(string path, IFileSystem fileSystem = null, IRatingService ratingService = null, IResultPicker resultPicker = null)
+        public Film(IFileSystem fileSystem = null, IRatingService ratingService = null, IResultPicker resultPicker = null)
         {
             this.fileSystem = fileSystem ?? new FileSystem();
             this.ratingService = ratingService ?? new RatingService();
@@ -111,14 +110,32 @@ namespace Raticon.Model
 
             this.idLookupService = new FilmLookupService();
 
-            Path = path;
+        }
+    }
 
+    public class FilmFromFolder : Film, IFilmFromFolder
+    {
+        public virtual string Path { get; protected set; }
+        public virtual string FolderName { get; protected set; }
+
+        public FilmFromFolder(string path, IFileSystem fileSystem, IRatingService ratingService = null, IResultPicker resultPicker = null) : base(fileSystem, ratingService, resultPicker)
+        {
+            this.Path = path;
             FolderName = fileSystem.Path.GetFileName(path);
         }
 
+        public string PathTo(string fileName)
+        {
+            return System.IO.Path.Combine(Path, fileName);
+        }
+
+        protected override void setImdbFromService()
+        {
+            imdbIdCache = idLookupService.Lookup(FolderName, (l) => resultPicker.Pick(l));
+        }
     }
 
-    public class CachedFilm : Film
+    public class CachedFilm : FilmFromFolder
     {
         public CachedFilm(string path, IFileSystem fileSystem, IRatingService ratingService, IResultPicker resultPicker = null) : base(path, fileSystem, ratingService, resultPicker)
         {

@@ -20,7 +20,7 @@ namespace RaticonDemo
             {
                 Directory.CreateDirectory(Path.Combine(base_path, FilterPath(films[i])));
             }
-            MediaCollection<CachedFilm> collection = new MediaCollection<CachedFilm>(base_path);
+            IMediaCollection<IFilmFromFolder> collection = new MediaCollection<CachedFilm>(base_path);
             new IconService().ProcessCollection(collection);
             new ShellService().Execute("explorer " + base_path);
         }

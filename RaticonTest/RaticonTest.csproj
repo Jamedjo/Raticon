@@ -79,6 +79,7 @@
     <Compile Include="RatingServiceTest.cs" />
     <Compile Include="ShellServiceTest.cs" />
     <Compile Include="TitleCleanerTest.cs" />
+    <Compile Include="PosterServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

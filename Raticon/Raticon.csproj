@@ -165,6 +165,7 @@
     <Compile Include="Service\ImdbIdCacheService.cs" />
     <Compile Include="Service\LookupChoice.cs" />
     <Compile Include="Service\LookupResultPickerService.cs" />
+    <Compile Include="Service\PosterService.cs" />
     <Compile Include="Service\RatingService.cs" />
     <Compile Include="Service\ShellService.cs" />
     <Compile Include="Service\TitleCleaner.cs" />

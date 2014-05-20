@@ -59,8 +59,8 @@ namespace Raticon.ViewModel
             new ShellService().Execute("cleanmgr","");
         }
 
-        private IMediaCollection collection;
-        public IMediaCollection Collection
+        private IMediaCollection<IFilmFromFolder> collection;
+        public IMediaCollection<IFilmFromFolder> Collection
         {
             get { return collection; }
             set
