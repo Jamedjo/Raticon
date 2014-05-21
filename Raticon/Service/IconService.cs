@@ -11,9 +11,9 @@ namespace Raticon.Service
 {
     public class IconService
     {
-        public void ProcessCollection(IMediaCollection<IFilmFromFolder> collection)
+        public void ProcessCollection(IEnumerable<IFilmFromFolder> films)
         {
-            var validFilms = collection.Items.Where(f => !string.IsNullOrWhiteSpace(f.Rating));
+            var validFilms = films.Where(f => !string.IsNullOrWhiteSpace(f.Rating));
             foreach (IFilmFromFolder film in validFilms)
             {
                 Process(film);

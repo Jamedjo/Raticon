@@ -107,11 +107,11 @@ namespace RaticonTest
             Assert.AreEqual(film.Rating, "7.0");
         }
 
-        [TestMethod]
-        public void It_shouldnt_operate_on_non_film_folders()
-        {
+        //[TestMethod]
+        //public void It_shouldnt_operate_on_non_film_folders()
+        //{
 
-        }
+        //}
 
     }
 

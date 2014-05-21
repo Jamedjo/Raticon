@@ -40,7 +40,14 @@ namespace Raticon.Service
 
         public void WriteToNfoFile(string nfoFile, string imdbId, IFileSystem fileSystem)
         {
-            fileSystem.File.WriteAllText(nfoFile, @"http://www.imdb.com/title/" + imdbId + @"/");
+            try
+            {
+                fileSystem.File.WriteAllText(nfoFile, @"http://www.imdb.com/title/" + imdbId + @"/");
+            }
+            catch(System.IO.DirectoryNotFoundException)
+            {
+
+            }
         }
     }
 }

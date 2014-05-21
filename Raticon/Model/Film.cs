@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO.Abstractions;
-using System.Text.RegularExpressions;
 using Raticon.Service;
 using System.Windows;
 using System.Windows.Threading;
-using GalaSoft.MvvmLight.Messaging;
 using System.ComponentModel;
 
 namespace Raticon.Model
@@ -45,7 +40,7 @@ namespace Raticon.Model
             return System.IO.Path.Combine(Path, fileName);
         }
     }
-    public class Film : IFilm
+    public abstract class FilmFromApi : IFilm
     {
         protected string imdbIdCache;
         public string ImdbId
@@ -58,13 +53,10 @@ namespace Raticon.Model
                 }
                 return imdbIdCache;
             }
+            set { imdbIdCache = value; }
         }
 
-        protected virtual void setImdbFromService()
-        {
-            throw new NotImplementedException();
-            //imdbIdCache = idLookupService.Lookup(FolderName, (l) => resultPicker.Pick(l));
-        }
+        protected abstract void setImdbFromService();
 
         protected RatingResult ratingResultCache;
         protected T getResult<T>(T default_value, Func<RatingResult, T> getProperty)
@@ -102,7 +94,7 @@ namespace Raticon.Model
         protected IResultPicker resultPicker;
         protected FilmLookupService idLookupService;
 
-        public Film(IFileSystem fileSystem = null, IRatingService ratingService = null, IResultPicker resultPicker = null)
+        public FilmFromApi(IFileSystem fileSystem = null, IRatingService ratingService = null, IResultPicker resultPicker = null)
         {
             this.fileSystem = fileSystem ?? new FileSystem();
             this.ratingService = ratingService ?? new RatingService();
@@ -113,7 +105,7 @@ namespace Raticon.Model
         }
     }
 
-    public class FilmFromFolder : Film, IFilmFromFolder
+    public class FilmFromFolder : FilmFromApi, IFilmFromFolder
     {
         public virtual string Path { get; protected set; }
         public virtual string FolderName { get; protected set; }
@@ -121,7 +113,7 @@ namespace Raticon.Model
         public FilmFromFolder(string path, IFileSystem fileSystem, IRatingService ratingService = null, IResultPicker resultPicker = null) : base(fileSystem, ratingService, resultPicker)
         {
             this.Path = path;
-            FolderName = fileSystem.Path.GetFileName(path);
+            FolderName = this.fileSystem.Path.GetFileName(path);
         }
 
         public string PathTo(string fileName)

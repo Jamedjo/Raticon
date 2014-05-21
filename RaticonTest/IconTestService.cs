@@ -119,8 +119,8 @@ namespace RaticonTest
             Rating = "8.0";
             Poster = @"http://i.imgur.com/OXGEGDr.jpg";
         }
-
     }
+
     public class NotAFilmMock : AbstractFilmFromFolder
     {
         public NotAFilmMock(string base_path)
