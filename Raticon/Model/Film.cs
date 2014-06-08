@@ -154,23 +154,16 @@ namespace Raticon.Model
             if(!lookupInvoked)
             {
                 var ui = TaskScheduler.FromCurrentSynchronizationContext();
-                //Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => {
-                    var task = idLookupService.LookupAsync(FolderName, (lookup) =>
-                    {
-                        var guiTask = Task.Factory.StartNew(()=>resultPicker.Pick(lookup), CancellationToken.None, TaskCreationOptions.AttachedToParent, ui);
-                        guiTask.Wait();
-                        return guiTask.Result;
-                    });
-                    task.ContinueWith((t) =>
-                    {
-                        imdbIdCache = t.Result;
-                        OnPropertyChanged("Title");
-                        OnPropertyChanged("Rating");
-                        OnPropertyChanged("Year");
-                        OnPropertyChanged("Poster");
-                    });
-                    //, TaskScheduler.FromCurrentSynchronizationContext()
-                //}));
+                var task = idLookupService.LookupAsync(FolderName, (lookup) => resultPicker.Pick(lookup));
+                task.ContinueWith((t) =>
+                {
+                    imdbIdCache = t.Result;
+                    OnPropertyChanged("Title");
+                    OnPropertyChanged("Rating");
+                    OnPropertyChanged("Year");
+                    OnPropertyChanged("Poster");
+                });
+                //, TaskScheduler.FromCurrentSynchronizationContext()
                 lookupInvoked = true;
             }
         }

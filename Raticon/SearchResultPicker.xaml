@@ -5,6 +5,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" x:Class="Raticon.SearchResultPicker"
         rc:DialogCloser.DialogResult="{Binding DialogResult}"
         DataContext="{Binding SearchResultPicker, Source={StaticResource Locator}}"
+        WindowStartupLocation="CenterOwner"
         Title="Select a Film Search Result" Height="385" Width="360">
 	<Grid>
 		<Grid.RowDefinitions>

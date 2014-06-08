@@ -1,8 +1,11 @@
 ﻿using Raticon.ViewModel;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace Raticon.Service
@@ -24,17 +27,33 @@ namespace Raticon.Service
     public class GuiResultPickerService : IResultPicker
     {
         private Window parentWindow;
+        private TaskScheduler uiTaskScheduler;
+
+        private static ConcurrentQueue<Task<LookupChoice>> queue = new ConcurrentQueue<Task<LookupChoice>>();
+
+        private static bool isPickerVisible = false;
+
         public GuiResultPickerService(Window parentWindow)
         {
             this.parentWindow = parentWindow;
+            this.uiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         }
 
         public LookupChoice Pick(LookupContext lookup)
+        {
+            var guiTask = EnqueuePick(lookup);
+            guiTask.Wait();
+            return guiTask.Result;
+        }
+
+        private LookupChoice ShowPicker(LookupContext lookup)
         {
             SearchResultPicker picker = new SearchResultPicker();
             picker.DataContext = new SearchResultPickerViewModel(lookup);
             picker.Owner = parentWindow;
             picker.ShowDialog();
+
+            isPickerVisible = false;
 
             if(picker.DialogResult==true)
             {
@@ -45,5 +64,38 @@ namespace Raticon.Service
                 return new LookupChoice(LookupChoice.Action.GiveUp);
             }
         }
+
+        private async Task<LookupChoice> EnqueuePick(LookupContext lookup)
+        {
+            Task<LookupChoice> task = new Task<LookupChoice>(()=> ShowPicker(lookup),CancellationToken.None, TaskCreationOptions.AttachedToParent);
+            queue.Enqueue(task);
+
+            //If task is the only item in queue we need to run it immediately
+            TryDequeueNextPick();
+
+            var choice = await task;
+
+            //After dialog closes, continue by attempting to open next picker
+            TryDequeueNextPick();
+
+            return choice;
+        }
+
+        private void TryDequeueNextPick()
+        {
+            Console.WriteLine("isPickerVisible=" + isPickerVisible);
+            if(isPickerVisible)
+            {
+                return;
+            }
+
+            Task<LookupChoice> lookupTask;
+            if (queue.TryDequeue(out lookupTask))
+            {
+                isPickerVisible = true;
+                lookupTask.Start(uiTaskScheduler);
+            }
+        }
+
     }
 }
