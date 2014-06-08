@@ -24,16 +24,6 @@ namespace RaticonTest
 
         //}
 
-        [TestMethod]
-        public void FilmLookupShouldFetchInBackground()
-        {
-            AsyncContext.Run(async () =>
-            {
-                var idLookupService = new FilmLookupService(new MockHttpService(""));
-                string result = await idLookupService.LookupAsync("Superman", (l) => new LookupChoice("tt0078346"));
-                Assert.AreEqual("tt0078346", result);
-            });
-        }
 
         //Total time to get 5 backgroundRequests should be no more than twice the average time.
         //Film rating should fetch in background

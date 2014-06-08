@@ -5,6 +5,7 @@ using System.Linq;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using System.Collections.Generic;
+using Nito.AsyncEx;
 
 namespace RaticonTest
 {
@@ -118,6 +119,17 @@ namespace RaticonTest
             string query = "";
             string imdbId = new FilmLookupService(new MockHttpService(MyApiFilmsResponse)).Lookup(filmName, (lookup) => { query = lookup.Query; return new LookupChoice(LookupChoice.Action.GiveUp); });
             Assert.AreEqual(filmName, query);
+        }
+
+        [TestMethod]
+        public void FilmLookup_async_fetches_ids_in_background()
+        {
+            AsyncContext.Run(async () =>
+            {
+                var idLookupService = new FilmLookupService(new MockHttpService(""));
+                string result = await idLookupService.LookupAsync("Superman", (l) => new LookupChoice("tt0078346"));
+                Assert.AreEqual("tt0078346", result);
+            });
         }
 
         //The callback should be able to ask for 10 more results

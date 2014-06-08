@@ -28,6 +28,7 @@ namespace Raticon.Service
     {
         private Window parentWindow;
         private TaskScheduler uiTaskScheduler;
+        private Thread uiThread;
 
         private static ConcurrentQueue<Task<LookupChoice>> queue = new ConcurrentQueue<Task<LookupChoice>>();
 
@@ -36,11 +37,24 @@ namespace Raticon.Service
         public GuiResultPickerService(Window parentWindow)
         {
             this.parentWindow = parentWindow;
-            this.uiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+
+            if (Thread.CurrentThread.GetApartmentState() == ApartmentState.STA)
+            {
+                this.uiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+                this.uiThread = Thread.CurrentThread;
+            }
+            else
+            {
+                throw new ThreadStateException("GuiResultPickerService must be instantiated from STA thread");
+            }
         }
 
         public LookupChoice Pick(LookupContext lookup)
         {
+            if(uiThread == Thread.CurrentThread)
+            {
+                throw new ThreadStateException("Pick should be called from another thread");
+            }
             var guiTask = EnqueuePick(lookup);
             guiTask.Wait();
             return guiTask.Result;
