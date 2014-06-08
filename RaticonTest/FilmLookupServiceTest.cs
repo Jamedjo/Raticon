@@ -79,7 +79,7 @@ namespace RaticonTest
         [TestMethod]
         public void CachingFilmLookup_caches_result_after_search()
         {
-            new CachingFilmLookupService(folderPath, mockFilmFolder, new MockHttpService(MyApiFilmsResponse)).Lookup(filmName, (l) => new LookupChoice(l.Results.First()));
+            new CachingFilmLookupService(folderPath, mockFilmFolder, new MockHttpService(MyApiFilmsResponse)).Lookup(filmName, (l)=>new FirstResultPicker().Pick(l));
             Assert.IsTrue(mockFilmFolder.File.Exists(@"C:\Trailers\Italian Job\Italian.Job_imdb_.nfo"));
         }
 

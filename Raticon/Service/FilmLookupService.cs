@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Raticon.Service
 {
@@ -17,15 +18,19 @@ namespace Raticon.Service
         }
 
         /// <summary>
-        /// Returns the imdbId of a movie. First checks its folder for a cached id.
+        /// Returns the imdbId of a movie.
         /// </summary>
         /// <param name="unsanitized_title">Title of the film to search for, such as the folder name or the filename of a trailer</param>
-        /// <param name="nfoFolder">Path to the folder where the _imdb_.nfo file will be found or cached</param>
         /// <param name="choiceCallback"></param>
         /// <returns></returns>
         public virtual string Lookup(string unsanitized_title, Func<LookupContext, LookupChoice> choiceCallback)
         {
             return ResultFromSearch(unsanitized_title, choiceCallback);
+        }
+
+        public async Task<string> LookupAsync(string unsanitized_title, Func<LookupContext, LookupChoice> choiceCallback)
+        {
+            return await Task.Factory.StartNew<string>(()=>Lookup(unsanitized_title, choiceCallback));
         }
 
         protected virtual string ResultFromSearch(string unsanitized_title, Func<LookupContext, LookupChoice> choiceCallback)
@@ -68,6 +73,11 @@ namespace Raticon.Service
     {
         private string nfoFolder;
         private IFileSystem fileSystem;
+
+        /// <summary>
+        /// ImdbId lookup service which first checks its nfoFolder folder for a cached id.
+        /// </summary>
+        /// <param name="nfoFolder">Path to the folder where the _imdb_.nfo file will be found or cached</param>
         public CachingFilmLookupService(string nfoFolder, IFileSystem fileSystem = null, IHttpService httpService = null) : base(httpService)
         {
             this.fileSystem = fileSystem ?? new FileSystem();

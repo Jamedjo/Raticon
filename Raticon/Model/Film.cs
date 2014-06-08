@@ -4,6 +4,9 @@ using Raticon.Service;
 using System.Windows;
 using System.Windows.Threading;
 using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Raticon.Model
 {
@@ -150,13 +153,24 @@ namespace Raticon.Model
         {
             if(!lookupInvoked)
             {
-                Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => {
-                    imdbIdCache = idLookupService.Lookup(FolderName, (lookup) => resultPicker.Pick(lookup));
-                    OnPropertyChanged("Title");
-                    OnPropertyChanged("Rating");
-                    OnPropertyChanged("Year");
-                    OnPropertyChanged("Poster");
-                }));
+                var ui = TaskScheduler.FromCurrentSynchronizationContext();
+                //Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => {
+                    var task = idLookupService.LookupAsync(FolderName, (lookup) =>
+                    {
+                        var guiTask = Task.Factory.StartNew(()=>resultPicker.Pick(lookup), CancellationToken.None, TaskCreationOptions.AttachedToParent, ui);
+                        guiTask.Wait();
+                        return guiTask.Result;
+                    });
+                    task.ContinueWith((t) =>
+                    {
+                        imdbIdCache = t.Result;
+                        OnPropertyChanged("Title");
+                        OnPropertyChanged("Rating");
+                        OnPropertyChanged("Year");
+                        OnPropertyChanged("Poster");
+                    });
+                    //, TaskScheduler.FromCurrentSynchronizationContext()
+                //}));
                 lookupInvoked = true;
             }
         }
