@@ -48,7 +48,7 @@ namespace Raticon.Service
             try
             {
                 JArray objects = JArray.Parse(data);
-                return objects.Select(o => parseOne(o)).ToList<LookupResult>();
+                return objects.Select(o => parseOne(o, title)).OrderBy(r => -r.SearchScore).ToList<LookupResult>();
             }
             catch(JsonReaderException)
             {
@@ -56,15 +56,23 @@ namespace Raticon.Service
             }
         }
 
-        private LookupResult parseOne(JToken o)
+        private LookupResult parseOne(JToken o, string unsanitized_title)
         {
+            int score = 0;
+            score = new MatchScoreService(unsanitized_title).Score(new MatchScoreService.Fields
+            {
+                Year = (o["year"] ?? "").ToString(),
+                Runtime = ((o["runtime"] ?? new JArray()).First ?? "").ToString(),
+                PlotLength = (o["plot"] ?? o["simplePlot"] ?? "").ToString().Length
+            });
             return new LookupResult
             {
                 ImdbId = (o["idIMDB"] ?? "").ToString(),
                 Title = (o["title"] ?? "").ToString(),
                 Year = (o["year"] ?? "").ToString(),
                 Rating = (o["rating"] ?? "").ToString(),
-                Poster = (o["urlPoster"] ?? "").ToString()
+                Poster = (o["urlPoster"] ?? "").ToString(),
+                SearchScore = score
             };
         }
     }
@@ -112,6 +120,7 @@ namespace Raticon.Service
     public class LookupResult : RatingResult
     {
         public string ImdbId { get; set; }
+        public int SearchScore { get; set; }
     }
 
     public class LookupContext

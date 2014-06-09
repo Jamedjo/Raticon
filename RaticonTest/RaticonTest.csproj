@@ -108,6 +108,7 @@
     <Compile Include="ShellServiceTest.cs" />
     <Compile Include="TitleCleanerTest.cs" />
     <Compile Include="PosterServiceTest.cs" />
+    <Compile Include="MatchScoreServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

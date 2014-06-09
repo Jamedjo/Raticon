@@ -67,6 +67,7 @@ namespace RaticonTest
         string filmName = "Italian Job";
         string MyApiFilmsResponse = "[{'idIMDB':'tt0064505'}]";
         string FullMyApiFilmsResponse = "[{\"idIMDB\":\"tt0391247\",\"rating\":\"6.7\",\"title\":\"The Italian Job\",\"urlIMDB\":\"http://www.imdb.com/title/tt0391247\",\"year\":\"2003\"}, {\"idIMDB\":\"tt0317740\",\"rating\":\"7.0\",\"title\":\"The Italian Job\",\"urlIMDB\":\"http://www.imdb.com/title/tt0317740\",\"year\":\"2003\"}, {\"idIMDB\":\"tt0064505\",\"rating\":\"7.4\",\"title\":\"The Italian Job\",\"urlIMDB\":\"http://www.imdb.com/title/tt0064505\",\"year\":\"1969\"}]";
+        string MatrixResultsWithSpoofResponse = "[{\"genres\":[\"Comedy\",\"Short\"],\"idIMDB\":\"tt0274085\",\"plot\":\"A spoof created for the 2000 MTV Movie Awards, combining The Matrix and \\\"Sex in the City\\\".\",\"rating\":\"7.2\",\"runtime\":[\"6 min\"],\"simplePlot\":\"A spoof created for the 2000 MTV Movie Awards, combining The Matrix and \\\"Sex in the City\\\".\",\"title\":\"Sex and the Matrix\",\"year\":\"2000\"},{\"countries\":[\"USA\",\"Australia\"],\"directors\":[{\"name\":\"Andy Wachowski\",\"nameId\":\"nm0905152\"},{\"name\":\"Lana Wachowski\",\"nameId\":\"nm0905154\"}],\"filmingLocations\":[\"AON Tower, Kent Street, Sydney, New South Wales, Australia\"],\"genres\":[\"Action\",\"Sci-Fi\"],\"idIMDB\":\"tt0133093\",\"languages\":[\"English\"],\"metascore\":\"8.7\",\"plot\":\"Thomas A. Anderson is a man living two lives. By day he is an average computer programmer and by night a hacker known as Neo. Neo has always questioned his reality, but the truth is far beyond his imagination. Neo finds himself targeted by the police when he is contacted by Morpheus, a legendary computer hacker branded a terrorist by the government. Morpheus awakens Neo to the real world, a ravaged wasteland where most of humanity have been captured by a race of machines that live off of the humans' body heat and electrochemical energy and who imprison their minds within an artificial reality known as the Matrix. As a rebel against the machines, Neo must return to the Matrix and confront the agents: super-powerful computer programs devoted to snuffing out Neo and the entire human rebellion. Written by redcommander27\",\"rated\":\"R\",\"rating\":\"8.7\",\"releaseDate\":\"19990331\",\"runtime\":[\"136 min\"],\"simplePlot\":\"A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.\",\"title\":\"The Matrix\",\"urlIMDB\":\"http://www.imdb.com/title/tt0133093\",\"urlPoster\":\"http://ia.media-imdb.com/images/M/MV5BMTkxNDYxOTA4M15BMl5BanBnXkFtZTgwNTk0NzQxMTE@._V1_SX214_AL_.jpg\",\"writers\":[{\"name\":\"Andy Wachowski\",\"nameId\":\"nm0905152\"},{\"name\":\"Lana Wachowski\",\"nameId\":\"nm0905154\"}],\"year\":\"1999\"}]";
         string MyApiFilmsSupermanResponse = "[{'idIMDB':'tt0078346'}]";
 
         [TestInitialize]
@@ -130,6 +131,15 @@ namespace RaticonTest
                 string result = await idLookupService.LookupAsync("Superman", (l) => new LookupChoice("tt0078346"));
                 Assert.AreEqual("tt0078346", result);
             });
+        }
+
+        [TestMethod]
+        public void Search_sorts_results_by_score()
+        {
+            var results = new FilmLookupService(new MockHttpService(MatrixResultsWithSpoofResponse)).Search("The Matrix 1999");
+            var ids = results.Select(r => r.ImdbId).ToList();
+            Assert.AreEqual(ids.First(), "tt0133093");
+            Assert.AreEqual(ids.Last(), "tt0274085");
         }
 
         //The callback should be able to ask for 10 more results

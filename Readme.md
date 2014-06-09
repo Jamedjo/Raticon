@@ -18,7 +18,7 @@ Quickly find your movie trailers, notes, etc. and view imdb ratings from within 
 [![download](https://cloud.githubusercontent.com/assets/1028741/3213106/f63cc552-ef80-11e3-85d2-39107b3a0096.png)](https://github.com/Jamedjo/Raticon/releases/latest)
 
 
-### Film Lookup
+### Film Search
 
 * If the film has an ambiguous title you will be asked to pick the correct film.
 * If the sub-folder already contains a `_imdb_.nfo` file it will use the id from that file.
