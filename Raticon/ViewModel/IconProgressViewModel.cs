@@ -17,9 +17,13 @@ namespace Raticon.ViewModel
             {
                 progressPercentage = value;
                 RaisePropertyChanged("ProgressPercentage");
+                RaisePropertyChanged("ProgressMessage");
             }
         }
-        //string ProgressMessage [get ====> execute some callback?
+        public string ProgressMessage
+        {
+            get { return "Processing: " + ProgressPercentage + "% of folders have been processed and icons added."; }
+        }
 
         public IconProgressViewModel()
         {

@@ -3,7 +3,8 @@
 * `Make icons` should be disabled until load complete.
 * Get ratings in background thread
 * Enable "Make Icons" button only when ratings complete and update status bar.
-* Progressbar on "Make Icons"
+* Should be able to cancel "Make Icons"
+* Progress dialog should change on completion. Could have message + button to launch folder.
 
 ### Ideas
 

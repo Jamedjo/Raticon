@@ -93,7 +93,6 @@ namespace Raticon.Service
     public class GuiIconService : IconService
     {
         private Window parentWindow;
-        private TaskScheduler taskScheduler;
 
         private IconProgressViewModel viewModel;
         private IEnumerable<IFilmFromFolder> films;
@@ -101,7 +100,6 @@ namespace Raticon.Service
         public GuiIconService(Window parentWindow)
         {
             this.parentWindow = parentWindow;
-            this.taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         }
 
         private void BeginBackgroundProcess()
@@ -117,7 +115,7 @@ namespace Raticon.Service
 
         void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            Task.Factory.StartNew(() => viewModel.ProgressPercentage = e.ProgressPercentage, CancellationToken.None, TaskCreationOptions.None, taskScheduler);
+            viewModel.ProgressPercentage = e.ProgressPercentage;
         }
 
         private void BackgroundProcess(object sender, DoWorkEventArgs e, BackgroundWorker worker, IEnumerable<IFilmFromFolder> films)
@@ -125,8 +123,7 @@ namespace Raticon.Service
             for (int i = 0; i < films.Count(); i++ )
             {
                 IFilmFromFolder film = films.ElementAt(i);
-                //Process(film);
-                Thread.Sleep(500);
+                Process(film);
                 worker.ReportProgress((int)((i + 1) * 100 / (double)films.Count()));
             }
         }
