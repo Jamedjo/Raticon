@@ -51,7 +51,7 @@ namespace Raticon.ViewModel
         public RelayCommand MakeIconsCommand { get; private set; }
         public void MakeIcons()
         {
-            new IconService().ProcessCollection(Collection);
+            new GuiIconService(Application.Current.MainWindow).ProcessCollection(Collection);
         }
 
         public RelayCommand ClearThumbCacheCommand { get; private set; }

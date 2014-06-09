@@ -176,6 +176,9 @@
     </Compile>
     <Compile Include="Control\PlaceholderTextBehavior.cs" />
     <Compile Include="Converter\BoolInverterConverter.cs" />
+    <Compile Include="IconProgressBox.xaml.cs">
+      <DependentUpon>IconProgressBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Model\DesignData.cs" />
     <Compile Include="Model\MediaCollection.cs" />
     <Compile Include="Model\Film.cs" />
@@ -200,10 +203,15 @@
     <Compile Include="Service\RatingService.cs" />
     <Compile Include="Service\ShellService.cs" />
     <Compile Include="Service\TitleCleaner.cs" />
+    <Compile Include="ViewModel\IconProgressViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\SearchResultPickerViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="Control\FilmListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="IconProgressBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

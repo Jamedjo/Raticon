@@ -6,19 +6,29 @@ using Raticon.Model;
 using Raticon.Resources;
 using System.Text.RegularExpressions;
 using System.Windows;
+using Raticon.ViewModel;
+using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Raticon.Service
 {
     public class IconService
     {
-        public void ProcessCollection(IEnumerable<IFilmFromFolder> films)
+        public virtual void ProcessCollection(IEnumerable<IFilmFromFolder> films)
         {
-            var validFilms = films.Where(f => !string.IsNullOrWhiteSpace(f.Rating));
+            var validFilms = ValidFilms(films);
+
             foreach (IFilmFromFolder film in validFilms)
             {
                 Process(film);
             }
             MessageBox.Show("Complete!\n\n" + validFilms.Count() + " folders have been processed and icons added.", "Complete!",MessageBoxButton.OK,MessageBoxImage.Information);
+        }
+
+        protected IEnumerable<IFilmFromFolder> ValidFilms(IEnumerable<IFilmFromFolder> films)
+        {
+            return films.Where(f => !string.IsNullOrWhiteSpace(f.Rating));
         }
 
         public void Process(IFilmFromFolder film)
@@ -77,6 +87,60 @@ namespace Raticon.Service
 
             //Cleanup
             System.IO.File.Delete(film.PathTo("star.png"));
+        }
+    }
+
+    public class GuiIconService : IconService
+    {
+        private Window parentWindow;
+        private TaskScheduler taskScheduler;
+
+        private IconProgressViewModel viewModel;
+        private IEnumerable<IFilmFromFolder> films;
+
+        public GuiIconService(Window parentWindow)
+        {
+            this.parentWindow = parentWindow;
+            this.taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        }
+
+        private void BeginBackgroundProcess()
+        {
+            BackgroundWorker backgroundWorker = new BackgroundWorker
+            {
+                WorkerReportsProgress = true
+            };
+            backgroundWorker.DoWork += (s, e) => BackgroundProcess(s, e, backgroundWorker, films);
+            backgroundWorker.ProgressChanged += backgroundWorker_ProgressChanged;
+            backgroundWorker.RunWorkerAsync();
+        }
+
+        void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            Task.Factory.StartNew(() => viewModel.ProgressPercentage = e.ProgressPercentage, CancellationToken.None, TaskCreationOptions.None, taskScheduler);
+        }
+
+        private void BackgroundProcess(object sender, DoWorkEventArgs e, BackgroundWorker worker, IEnumerable<IFilmFromFolder> films)
+        {
+            for (int i = 0; i < films.Count(); i++ )
+            {
+                IFilmFromFolder film = films.ElementAt(i);
+                //Process(film);
+                Thread.Sleep(500);
+                worker.ReportProgress((int)((i + 1) * 100 / (double)films.Count()));
+            }
+        }
+
+        public override void ProcessCollection(IEnumerable<IFilmFromFolder> films)
+        {
+            this.viewModel = new IconProgressViewModel();
+            this.films = ValidFilms(films);
+
+            IconProgressBox progressBox = new IconProgressBox();
+            progressBox.DataContext = viewModel;
+            BeginBackgroundProcess();
+            progressBox.Owner = parentWindow;
+            progressBox.ShowDialog();
         }
 
     }
