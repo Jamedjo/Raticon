@@ -1,5 +1,6 @@
 ### Todo
 
+* Should either install ImageMagerick or use COM object dll.
 * `Make icons` should be disabled until load complete.
 * Get ratings in background thread
 * Enable "Make Icons" button only when ratings complete and update status bar.

@@ -1,9 +1,8 @@
-# Raticon
+# Decorate your Movie Collection
 
-Turn folder icons into movie posters with imdb ratings.
+Album Art for your movies! Transforms your movie folders to look like movie posters with imdb ratings.
 
-![Turns folders into Posters](https://cloud.githubusercontent.com/assets/1028741/3212890/0f523b06-ef79-11e3-9978-c93cb34147be.png)
-
+![Turns folders into Posters](https://cloud.githubusercontent.com/assets/1028741/3223815/a88088fa-f028-11e3-93b0-14ee8e821542.png)
 
 ## Instructions
 
