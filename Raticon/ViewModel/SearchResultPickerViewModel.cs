@@ -27,6 +27,10 @@ namespace Raticon.ViewModel
         public RelayCommand SearchCommand { get; private set; }
         public void RetrySearch()
         {
+            if(String.IsNullOrWhiteSpace(SearchText))
+            {
+                return;
+            }
             LookupChoice = new LookupChoice(LookupChoice.Action.NewSearch, SearchText);
             DialogResult = true;
         }

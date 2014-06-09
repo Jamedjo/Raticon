@@ -11,7 +11,7 @@ namespace Raticon.Service
 
         private string imdbId;
         private string newTitleToSearch;
-        private LookupChoice.Action action;
+        private LookupChoice.Action? action = null;
 
         public LookupChoice(LookupResult choice)
         {
@@ -31,7 +31,7 @@ namespace Raticon.Service
         {
             if (action!=LookupChoice.Action.NewSearch)
             {
-                throw new Exception("Invalid. Action must be set to LookupChoice.Action.NewSearch when using a newTitleToSearch");
+                throw new ArgumentException("Invalid. Action must be set to LookupChoice.Action.NewSearch when using a newTitleToSearch");
             }
             this.action = action;
             this.newTitleToSearch = newTitleToSearch;
@@ -41,7 +41,7 @@ namespace Raticon.Service
         {
             if (action == LookupChoice.Action.NewSearch)
             {
-                throw new Exception("Invalid LookupChoice. NewSerch needs a new title to use.");
+                throw new ArgumentException("Invalid LookupChoice. NewSerch needs a new title to use.");
             }
             this.action = action;
         }
