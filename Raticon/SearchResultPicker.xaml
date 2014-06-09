@@ -31,13 +31,13 @@
 				<ColumnDefinition Width="100"/>
 			</Grid.ColumnDefinitions>
 
-			<Button Grid.Column="0" Command="{Binding PickSelectedCommand}" IsEnabled="{Binding IsDefault, ElementName=SearchButton, Converter={StaticResource BoolInverter}}" IsDefault="{Binding IsDefault, ElementName=SearchButton, Converter={StaticResource BoolInverter}}" Margin="10,0,0,0" Content="Pick Selected"/>
+			<Button x:Name="PickButton" Grid.Column="0" Command="{Binding PickSelectedCommand}" IsEnabled="{Binding IsDefault, ElementName=SearchButton, Converter={StaticResource BoolInverter}}" IsDefault="{Binding IsDefault, ElementName=SearchButton, Converter={StaticResource BoolInverter}}" Margin="10,0,0,0" Content="Pick Selected"/>
 			<!--<Button Grid.Column="1" Margin="10,0,0,0">Search</Button>-->
 
 			<Button Grid.Column="2" IsCancel="True" Margin="10,0,0,0" Content="Skip Film"/>
 		</Grid>
 
-		<ListView Grid.Row="2" ItemsSource="{Binding LookupResultList}" SelectedItem="{Binding SelectedItem}">
+		<ListView Grid.Row="2" ItemsSource="{Binding LookupResultList}" SelectedItem="{Binding SelectedItem}" MouseDoubleClick="ListView_MouseDoubleClick">
 			<ListView.ItemContainerStyle>
 				<Style TargetType="{x:Type ListViewItem}">
 					<Setter Property="HorizontalContentAlignment" Value="Stretch" />

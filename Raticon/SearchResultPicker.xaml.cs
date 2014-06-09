@@ -22,5 +22,14 @@ namespace Raticon
         {
             InitializeComponent();
         }
+
+        void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var item = ((FrameworkElement)e.OriginalSource).DataContext as Raticon.Service.LookupResult;
+            if (item != null)
+            {
+                PickButton.Command.Execute(null);
+            }
+        }
     }
 }
