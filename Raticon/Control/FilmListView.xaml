@@ -21,7 +21,7 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <ListView x:Name="FilmList" GridViewColumnHeader.Click="SortClickHandler" ItemsSource="{Binding Collection.Items}">
+    <ListView x:Name="FilmList" GridViewColumnHeader.Click="SortClickHandler" ItemsSource="{Binding Collection}">
         <ListView.ItemContainerStyle>
             <Style TargetType="ListViewItem">
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />

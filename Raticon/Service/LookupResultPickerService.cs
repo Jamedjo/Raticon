@@ -97,7 +97,6 @@ namespace Raticon.Service
 
         private void TryDequeueNextPick()
         {
-            Console.WriteLine("isPickerVisible=" + isPickerVisible);
             if(isPickerVisible)
             {
                 return;

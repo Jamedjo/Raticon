@@ -20,7 +20,7 @@ namespace Raticon.Control
     /// </summary>
     public partial class FilmListView : UserControl
     {
-        public FilmListView()
+        public FilmListView() : base()
         {
             InitializeComponent();
         }

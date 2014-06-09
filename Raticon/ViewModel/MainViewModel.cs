@@ -5,6 +5,7 @@ using GalaSoft.MvvmLight.Command;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Windows;
 using Raticon.Service;
+using System.Collections.Generic;
 
 namespace Raticon.ViewModel
 {
@@ -29,7 +30,7 @@ namespace Raticon.ViewModel
         {
             if (IsInDesignMode)
             {
-                Collection = new DummyCollection();
+                Collection = new DummyCollection().Items;
             }
 
             AddFolderCommand = new RelayCommand(AddFolder);
@@ -43,14 +44,14 @@ namespace Raticon.ViewModel
             var dialog = new CommonOpenFileDialog { IsFolderPicker = true };
             if (dialog.ShowDialog(Application.Current.MainWindow) == CommonFileDialogResult.Ok)
             {
-                Collection = new MediaCollection<GuiFilm>(dialog.FileName);
+                Collection = new MediaCollection<GuiFilm>(dialog.FileName).Items;
             }
         }
 
         public RelayCommand MakeIconsCommand { get; private set; }
         public void MakeIcons()
         {
-            new IconService().ProcessCollection(Collection.Items);
+            new IconService().ProcessCollection(Collection);
         }
 
         public RelayCommand ClearThumbCacheCommand { get; private set; }
@@ -59,8 +60,8 @@ namespace Raticon.ViewModel
             new ShellService().Execute("cleanmgr","");
         }
 
-        private IMediaCollection<IFilmFromFolder> collection;
-        public IMediaCollection<IFilmFromFolder> Collection
+        private IEnumerable<IFilmFromFolder> collection;
+        public IEnumerable<IFilmFromFolder> Collection
         {
             get { return collection; }
             set
