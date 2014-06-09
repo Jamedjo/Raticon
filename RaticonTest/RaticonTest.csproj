@@ -106,7 +106,6 @@
     <Compile Include="FilmTest.cs" />
     <Compile Include="RatingServiceTest.cs" />
     <Compile Include="ShellServiceTest.cs" />
-    <Compile Include="ThreadingTest.cs" />
     <Compile Include="TitleCleanerTest.cs" />
     <Compile Include="PosterServiceTest.cs" />
   </ItemGroup>
