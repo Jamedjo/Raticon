@@ -22,7 +22,7 @@ namespace Raticon.Model
             this.fileSystem = fileSystem;
 
             string[] subfolders = fileSystem.Directory.GetDirectories(folder);
-            Items = subfolders.Select(f => (T)CreateInstance(typeof(T), f, fileSystem));
+            Items = subfolders.Select(f => (T)CreateInstance(typeof(T), f, fileSystem)).ToList();
         }
 
         //Fix Activator.CreateInstance so it handles Constructor with optional params
