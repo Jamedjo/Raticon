@@ -1,2 +1,2 @@
 <#@ template language="C#" #>
-convert star.png -resize 100x100 -fill black -font Tahoma-Bold -pointsize 28 -gravity center -annotate 0x0 <#= rating #> rating.png && convert folder.jpg -thumbnail "256x256>" -background transparent -gravity center -extent 256x256 folder.png && composite -gravity southeast rating.png folder.png folder.png && del rating.png && convert folder.png -define icon:auto-resize folder.ico && del folder.png
+convert star.png -resize 100x100 -fill black -font Tahoma-Bold -pointsize 28 -gravity center -annotate 0x0 <#= rating #> rating.png && convert folder.jpg -thumbnail "256x256>" -background transparent -gravity center -extent 256x256 folder.png && composite -gravity southeast rating.png folder.png folder.png && del rating.png

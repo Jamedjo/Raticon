@@ -85,8 +85,12 @@ namespace Raticon.Service
             string script = new IconScript(film.Rating).TransformText();
             string output = new ShellService().Execute(script, film.Path);
 
+            //convert folder.png -define icon:auto-resize folder.ico
+            new PngToIcoService().Convert(film.PathTo("folder.png"), film.PathTo("folder.ico"));
+
             //Cleanup
             System.IO.File.Delete(film.PathTo("star.png"));
+            System.IO.File.Delete(film.PathTo("folder.png"));
         }
     }
 

@@ -33,7 +33,9 @@ namespace Raticon.Resources
             
             #line default
             #line hidden
-            this.Write(@" rating.png && convert folder.jpg -thumbnail ""256x256>"" -background transparent -gravity center -extent 256x256 folder.png && composite -gravity southeast rating.png folder.png folder.png && del rating.png && convert folder.png -define icon:auto-resize folder.ico && del folder.png");
+            this.Write(" rating.png && convert folder.jpg -thumbnail \"256x256>\" -background transparent -" +
+                    "gravity center -extent 256x256 folder.png && composite -gravity southeast rating" +
+                    ".png folder.png folder.png && del rating.png");
             return this.GenerationEnvironment.ToString();
         }
     }
