@@ -53,26 +53,6 @@ namespace RaticonTest
             Assert.AreEqual(FileAttributes.Hidden, File.GetAttributes(filmMock.PathTo("desktop.ini")));
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(Raticon.Service.IconService.ImageMagickNotInstalledException))]
-        public void It_should_throw_an_exception_if_imagemagick_not_installed()
-        {
-            string path = @"C:\Temp\RaticonNoImageMagickInstalledTest";
-            Directory.CreateDirectory(path);
-            File.WriteAllLines(path + @"\convert.bat", new[] { "" });
-            new IconService().RaiseErrorIfImageMagickInvalid(path);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(Raticon.Service.IconService.ImageMagickVersionException))]
-        public void It_should_throw_an_exception_if_imagemagick_version_isnt_suitable()
-        {
-            string path = @"C:\Temp\RaticonWrongImageMagickVersionTest";
-            Directory.CreateDirectory(path);
-            File.WriteAllLines(path + @"\convert.bat", new[] { "echo Version: ImageMagick 6.8.8-2 Q14 x64 2014-02-08" });
-            new IconService().RaiseErrorIfImageMagickInvalid(path);
-        }
-
         [TestCleanup]
         public void IconServiceTestCleanup()
         {
@@ -90,26 +70,23 @@ namespace RaticonTest
     public class ResourceServiceTest
     {
         [TestMethod]
-        public void It_should_extract_embedded_resource_to_filesytem()
+        public void ResourceService_extracts_embedded_resource_to_filesytem()
+        {
+            string path = @"C:\Temp\logo.png";
+            new EmbeddedResourceService(typeof(ResourceServiceTest)).ExtractTo("RaticonTest.Logo.png", path);
+            Assert.IsTrue(System.IO.File.Exists(path));
+            System.IO.File.Delete(path);
+        }
+
+        [TestMethod]
+        public void ResourceService_extracts_wpf_resource_to_filesystem()
         {
             string path = @"C:\Temp\star.png";
-            new ResourceService().ExtractTo("Raticon.star.png", path);
+            new ResourceService().ExtractTo(new Uri("pack://application:,,,/Raticon;component/star.png"), path);
             Assert.IsTrue(System.IO.File.Exists(path));
             System.IO.File.Delete(path);
         }
     }
-
-    [TestClass]
-    public class IconScriptTest
-    {
-        [TestMethod]
-        public void It_should_print_rating_into_script()
-        {
-            string output = new Raticon.Resources.IconScript("7.3").TransformText();
-            StringAssert.Contains(output, "7.3 rating.png");
-        }
-    }
-
 
     public class FilmMock : AbstractFilmFromFolder
     {

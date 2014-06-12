@@ -181,6 +181,9 @@
     <Compile Include="Control\FilmListView.xaml.cs">
       <DependentUpon>FilmListView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Control\IconLayout.xaml.cs">
+      <DependentUpon>IconLayout.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Control\PlaceholderTextBehavior.cs" />
     <Compile Include="Converter\BoolInverterConverter.cs" />
     <Compile Include="IconProgressBox.xaml.cs">
@@ -190,12 +193,6 @@
     <Compile Include="Model\MediaCollection.cs" />
     <Compile Include="Model\Film.cs" />
     <Compile Include="Model\RatingResult.cs" />
-    <Compile Include="Resources\IconScript.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>IconScript.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Resources\IconScriptParams.cs" />
     <Compile Include="SearchResultPicker.xaml.cs">
       <DependentUpon>SearchResultPicker.xaml</DependentUpon>
     </Compile>
@@ -209,13 +206,20 @@
     <Compile Include="Service\PngToIcoService.cs" />
     <Compile Include="Service\PosterService.cs" />
     <Compile Include="Service\RatingService.cs" />
+    <Compile Include="Service\ResourceService.cs" />
     <Compile Include="Service\ShellService.cs" />
     <Compile Include="Service\TitleCleaner.cs" />
+    <Compile Include="Utils\StaTask.cs" />
+    <Compile Include="ViewModel\IconLayoutViewModel.cs" />
     <Compile Include="ViewModel\IconProgressViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\SearchResultPickerViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="Control\FilmListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Control\IconLayout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -269,7 +273,7 @@
     <EmbeddedResource Include="Resources\desktop.ini" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="star.png" />
+    <Resource Include="star.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
@@ -295,12 +299,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="FodyWeavers.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\IconScript.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>IconScript.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

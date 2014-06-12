@@ -1,4 +1,5 @@
 ﻿using Raticon.Service;
+using Raticon.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,5 +53,22 @@ namespace Raticon.Model
     public class DummyLookupContext : LookupContext
     {
         public DummyLookupContext() : base(new DummyResults(), "Italian Job") { }
+    }
+
+    public class DummyIconLayoutViewModel : IconLayoutViewModel
+    {
+        public DummyIconLayoutViewModel() : base(DummyFolderJpg(), "8.1")
+        {
+        }
+
+        private static string DummyFolderJpg()
+        {
+            var folderJpgPath = @"C:\Temp\folder.jpg";
+            if (!System.IO.File.Exists(folderJpgPath))
+            {
+                new PosterService().Download(@"http://ia.media-imdb.com/images/M/MV5BODU4MjU4NjIwNl5BMl5BanBnXkFtZTgwMDU2MjEyMDE@._V1_SX300.jpg", folderJpgPath);
+            }
+            return folderJpgPath;
+        }
     }
 }

@@ -1,11 +1,11 @@
 ### Todo
 
-* Should either install ImageMagerick or use COM object dll.
 * `Make icons` should be disabled until load complete.
 * Get ratings in background thread
 * Enable "Make Icons" button only when ratings complete and update status bar.
 * Should be able to cancel "Make Icons"
 * Progress dialog should change on completion. Could have message + button to launch folder.
+* Get `folder.jpg`s in background instead of during icon creation
 
 ### Ideas
 
