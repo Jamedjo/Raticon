@@ -1,4 +1,3 @@
-using System.Linq;
 using GalaSoft.MvvmLight;
 using Raticon.Model;
 using GalaSoft.MvvmLight.Command;
@@ -35,7 +34,6 @@ namespace Raticon.ViewModel
 
             AddFolderCommand = new RelayCommand(AddFolder);
             MakeIconsCommand = new RelayCommand(MakeIcons);
-            ClearThumbCacheCommand = new RelayCommand(ClearThumbCache);
         }
 
         public RelayCommand AddFolderCommand { get; private set; }
@@ -54,11 +52,6 @@ namespace Raticon.ViewModel
             new GuiIconService(Application.Current.MainWindow).ProcessCollection(Collection);
         }
 
-        public RelayCommand ClearThumbCacheCommand { get; private set; }
-        public void ClearThumbCache()
-        {
-            new ShellService().Execute("cleanmgr","");
-        }
 
         private IEnumerable<IFilmFromFolder> collection;
         public IEnumerable<IFilmFromFolder> Collection

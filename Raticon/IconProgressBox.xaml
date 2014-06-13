@@ -1,8 +1,29 @@
 ﻿<Window x:Class="Raticon.IconProgressBox"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Building Icons..." Height="150" Width="350">
-    <Grid Margin="15">
+        xmlns:vm="clr-namespace:Raticon.ViewModel"
+        Title="{Binding WindowTitle}" Height="150" Width="350">
+    <Window.Resources>
+        <Style TargetType="Grid" x:Key="ShowOnComplete">
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCompleted}" Value="True">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Grid" x:Key="HideOnComplete">
+            <Setter Property="Visibility" Value="Visible"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCompleted}" Value="True">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="15,10">
+        <Grid Style="{StaticResource HideOnComplete}">
         <Grid.RowDefinitions>
             <RowDefinition Height="80*" />
             <RowDefinition Height="20" />
@@ -10,5 +31,21 @@
         </Grid.RowDefinitions>
         <TextBlock Text="{Binding ProgressMessage}" Grid.Row="0" TextWrapping="Wrap"/>
         <ProgressBar Grid.Row="1" Value="{Binding ProgressPercentage}"/>
+        </Grid>
+        <Grid Style="{StaticResource ShowOnComplete}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="25" />
+            </Grid.RowDefinitions>
+            <TextBlock Text="{Binding CompletionMessage}" TextWrapping="Wrap"/>
+            <DockPanel Grid.Row="1">
+                <Grid DockPanel.Dock="Right">
+                    <Button IsCancel="True" Padding="40,0">Done</Button>
+                </Grid>
+                <StackPanel  Orientation="Horizontal">
+                    <Button Command="{Binding ClearThumbCacheCommand}">Clear Thumbnail Cache</Button>
+                </StackPanel>
+            </DockPanel>
+        </Grid>
     </Grid>
 </Window>

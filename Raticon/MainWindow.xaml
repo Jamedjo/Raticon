@@ -17,15 +17,12 @@
                     <Setter Property="Orientation" Value="Vertical"/>
                 </Style>
             </ToolBar.Resources>
-            <DockPanel>
-                <Grid DockPanel.Dock="Right">
-                    <Button Command="{Binding ClearThumbCacheCommand}">Clear Windows Thumbnail Cache</Button>
-                </Grid>
+
                 <StackPanel  DockPanel.Dock="Left" Orientation="Horizontal">
                     <Button Command="{Binding AddFolderCommand}">Select Folder</Button>
                     <Button Command="{Binding MakeIconsCommand}">Make Icons</Button>
                 </StackPanel>
-            </DockPanel>
+
         </ToolBar>
 
         <rc:FilmListView Grid.Row="1"/>
