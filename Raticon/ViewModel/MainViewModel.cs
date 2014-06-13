@@ -5,6 +5,8 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Windows;
 using Raticon.Service;
 using System.Collections.Generic;
+using System.Linq;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace Raticon.ViewModel
 {
@@ -34,6 +36,14 @@ namespace Raticon.ViewModel
 
             AddFolderCommand = new RelayCommand(AddFolder);
             MakeIconsCommand = new RelayCommand(MakeIcons);
+
+            Messenger.Default.Register<GuiFilm>(this, "FilmUpdated", (film) =>
+            {
+                RaisePropertyChanged("FilmsLoadingCount");
+                RaisePropertyChanged("IsLoading");
+                RaisePropertyChanged("IsLoadingComplete");
+                RaisePropertyChanged("LoadingMessage");
+            });
         }
 
         public RelayCommand AddFolderCommand { get; private set; }
@@ -52,7 +62,6 @@ namespace Raticon.ViewModel
             new GuiIconService(Application.Current.MainWindow).ProcessCollection(Collection);
         }
 
-
         private IEnumerable<IFilmFromFolder> collection;
         public IEnumerable<IFilmFromFolder> Collection
         {
@@ -63,5 +72,20 @@ namespace Raticon.ViewModel
                 RaisePropertyChanged("Collection");
             }
         }
+
+        public int FilmsLoadingCount
+        {
+            get
+            {
+                if (collection == null)
+                {
+                    return 0;
+                }
+                return collection.Count((film) => ((GuiFilm)film).IsLoading);
+            }
+        }
+        public bool IsLoading { get { return collection != null && FilmsLoadingCount != 0; } }
+        public bool IsLoadingComplete { get { return collection != null && FilmsLoadingCount == 0; } }
+        public string LoadingMessage { get { return "Loading details for " + FilmsLoadingCount + " films..."; } }
     }
 }

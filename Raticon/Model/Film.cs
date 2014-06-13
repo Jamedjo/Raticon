@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace Raticon.Model
 {
@@ -146,7 +147,10 @@ namespace Raticon.Model
         {
         }
 
+        public bool IsLoading { get { return (idLookupInvoked && !idLookupComplete) || (ratingLookupInvoked && !ratingLookupComplete); } }
+
         private bool ratingLookupInvoked = false;
+        private bool ratingLookupComplete = false;
         protected override T getResult<T>(T default_value, Func<RatingResult, T> getProperty)
         {
             if (ratingResultCache == null)
@@ -156,10 +160,12 @@ namespace Raticon.Model
                     if (!ratingLookupInvoked)
                     {
                         ratingLookupInvoked = true;
+                        Messenger.Default.Send(this, "FilmUpdated");
                         Task.Factory.StartNew<RatingResult>(() => ratingService.GetRating(ImdbId)).ContinueWith((t) =>
                         {
                             ratingResultCache = t.Result;
                             OnRatingChanged();
+                            ratingLookupComplete = true;
                         });
                     }
                 }
@@ -172,22 +178,27 @@ namespace Raticon.Model
         public void IconUpdated() { OnPropertyChanged("Icon"); }
 
         private bool idLookupInvoked = false;
+        private bool idLookupComplete = false;
         protected override void setImdbFromService()
         {
             if(!idLookupInvoked)
             {
                 idLookupInvoked = true;
+                Messenger.Default.Send(this, "FilmUpdated");
                 var task = idLookupService.LookupAsync(FolderName, (lookup) => resultPicker.Pick(lookup));
                 task.ContinueWith((t) =>
                 {
                     imdbIdCache = t.Result;
                     OnRatingChanged();
+                    idLookupComplete = true;
                 });
             }
         }
 
         private void OnRatingChanged()
         {
+            Messenger.Default.Send(this, "FilmUpdated");
+            OnPropertyChanged("IsLoading");
             OnPropertyChanged("Title");
             OnPropertyChanged("Rating");
             OnPropertyChanged("Year");

@@ -17,12 +17,31 @@
                     <Setter Property="Orientation" Value="Vertical"/>
                 </Style>
             </ToolBar.Resources>
-
-                <StackPanel  DockPanel.Dock="Left" Orientation="Horizontal">
+            <DockPanel>
+                <DockPanel.Resources>
+                    <Style TargetType="FrameworkElement" x:Key="ShowWhenLoadingComplete">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsLoadingComplete}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                    <Style TargetType="FrameworkElement" x:Key="ShowWhileLoading">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DockPanel.Resources>
+                <Button Command="{Binding MakeIconsCommand}" DockPanel.Dock="Right" Style="{StaticResource ShowWhenLoadingComplete}">Make Icons</Button>
+                <TextBlock Text="{Binding LoadingMessage}" DockPanel.Dock="Right" Style="{StaticResource ShowWhileLoading}"/>
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                     <Button Command="{Binding AddFolderCommand}">Select Folder</Button>
-                    <Button Command="{Binding MakeIconsCommand}">Make Icons</Button>
                 </StackPanel>
-
+            </DockPanel>
         </ToolBar>
 
         <rc:FilmListView Grid.Row="1"/>

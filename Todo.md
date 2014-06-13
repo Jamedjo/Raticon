@@ -1,6 +1,5 @@
 ### Todo
 
-* `Make icons` should be disabled until load complete.
 * Should be able to cancel "Make Icons"
 * Get `folder.jpg`s in background instead of during icon creation
 
