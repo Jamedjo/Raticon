@@ -1,7 +1,6 @@
 ### Todo
 
 * `Make icons` should be disabled until load complete.
-* Get ratings in background thread
 * Should be able to cancel "Make Icons"
 * Get `folder.jpg`s in background instead of during icon creation
 

@@ -55,13 +55,12 @@ namespace Raticon.Model
                 }
                 return imdbIdCache;
             }
-            set { imdbIdCache = value; }
         }
 
         protected abstract void setImdbFromService();
 
         protected RatingResult ratingResultCache;
-        protected T getResult<T>(T default_value, Func<RatingResult, T> getProperty)
+        protected virtual T getResult<T>(T default_value, Func<RatingResult, T> getProperty)
         {
             if (ratingResultCache == null)
             {
@@ -147,27 +146,52 @@ namespace Raticon.Model
         {
         }
 
+        private bool ratingLookupInvoked = false;
+        protected override T getResult<T>(T default_value, Func<RatingResult, T> getProperty)
+        {
+            if (ratingResultCache == null)
+            {
+                if (ImdbId != null)
+                {
+                    if (!ratingLookupInvoked)
+                    {
+                        ratingLookupInvoked = true;
+                        Task.Factory.StartNew<RatingResult>(() => ratingService.GetRating(ImdbId)).ContinueWith((t) =>
+                        {
+                            ratingResultCache = t.Result;
+                            OnRatingChanged();
+                        });
+                    }
+                }
+                return default_value;
+            }
+            return getProperty(ratingResultCache);
+        }
+
         public string Icon { get { return PathTo("folder.ico"); } }
         public void IconUpdated() { OnPropertyChanged("Icon"); }
 
-        private bool lookupInvoked = false;
+        private bool idLookupInvoked = false;
         protected override void setImdbFromService()
         {
-            if(!lookupInvoked)
+            if(!idLookupInvoked)
             {
-                var ui = TaskScheduler.FromCurrentSynchronizationContext();
+                idLookupInvoked = true;
                 var task = idLookupService.LookupAsync(FolderName, (lookup) => resultPicker.Pick(lookup));
                 task.ContinueWith((t) =>
                 {
                     imdbIdCache = t.Result;
-                    OnPropertyChanged("Title");
-                    OnPropertyChanged("Rating");
-                    OnPropertyChanged("Year");
-                    OnPropertyChanged("Poster");
+                    OnRatingChanged();
                 });
-                //, TaskScheduler.FromCurrentSynchronizationContext()
-                lookupInvoked = true;
             }
+        }
+
+        private void OnRatingChanged()
+        {
+            OnPropertyChanged("Title");
+            OnPropertyChanged("Rating");
+            OnPropertyChanged("Year");
+            OnPropertyChanged("Poster");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
