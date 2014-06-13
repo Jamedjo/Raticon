@@ -23,7 +23,7 @@ namespace Raticon.Service
             {
                 Process(film);
             }
-            MessageBox.Show("Complete!\n\n" + validFilms.Count() + " folders have been processed and icons added.", "Complete!",MessageBoxButton.OK,MessageBoxImage.Information);
+            MessageBox.Show("Complete!\n\n" + validFilms.Count() + " folders have been processed and icons added.", "Complete!", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         protected IEnumerable<IFilmFromFolder> ValidFilms(IEnumerable<IFilmFromFolder> films)
@@ -89,10 +89,11 @@ namespace Raticon.Service
 
         private void BackgroundProcess(object sender, DoWorkEventArgs e, BackgroundWorker worker, IEnumerable<IFilmFromFolder> films)
         {
-            for (int i = 0; i < films.Count(); i++ )
+            for (int i = 0; i < films.Count(); i++)
             {
                 IFilmFromFolder film = films.ElementAt(i);
                 Process(film);
+                ((GuiFilm)film).IconUpdated();
                 worker.ReportProgress((int)((i + 1) * 100 / (double)films.Count()));
             }
         }

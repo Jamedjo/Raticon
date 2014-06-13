@@ -32,7 +32,7 @@ namespace Raticon.Control
         {
             GridViewColumnHeader headerClicked = e.OriginalSource as GridViewColumnHeader;
 
-            if (headerClicked == null || headerClicked.Role == GridViewColumnHeaderRole.Padding)
+            if (headerClicked == null || headerClicked.Content == null || headerClicked.Role == GridViewColumnHeaderRole.Padding)
             {
                 return;
             }

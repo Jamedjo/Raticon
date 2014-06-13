@@ -37,7 +37,6 @@ namespace Raticon.Model
         public string Path { get; protected set; }
         public string FolderName { get; protected set; }
 
-
         public string PathTo(string fileName)
         {
             return System.IO.Path.Combine(Path, fileName);
@@ -147,6 +146,9 @@ namespace Raticon.Model
         public GuiFilm(string path, IFileSystem fileSystem = null) : base(path, fileSystem, new GuiResultPickerService(Application.Current.MainWindow))
         {
         }
+
+        public string Icon { get { return PathTo("folder.ico"); } }
+        public void IconUpdated() { OnPropertyChanged("Icon"); }
 
         private bool lookupInvoked = false;
         protected override void setImdbFromService()

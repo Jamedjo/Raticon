@@ -29,15 +29,20 @@
         </ListView.ItemContainerStyle>
         <ListView.View>
             <GridView>
+                <GridViewColumn Width="50">
+                    <GridViewColumn.Header>
+                        <GridViewColumnHeader Tag="Icon"></GridViewColumnHeader>
+                    </GridViewColumn.Header>
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding Icon}" Margin="-6,-1.5" />
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
                 <GridViewColumn DisplayMemberBinding="{Binding Title}" Width="190">
                     <GridViewColumn.Header>
                         <GridViewColumnHeader Tag="Title">Title</GridViewColumnHeader>
                     </GridViewColumn.Header>
-                    <GridViewColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Title}"/>
-                        </DataTemplate>
-                    </GridViewColumn.CellTemplate>
                 </GridViewColumn>
                 <GridViewColumn Width="45">
                     <GridViewColumn.Header>

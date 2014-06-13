@@ -26,6 +26,9 @@ namespace Raticon.Model
     public class DummyFilm : AbstractFilmFromFolder
     {
         private string[] titles = new[]{"A Film","B Movie","C Sequel","D Drama","E Episode","F Fantasy"};
+
+        public string Icon { get { return "pack://application:,,,/Resources/Folder.ico"; } }
+
         public DummyFilm(Random r)
         {
             Title = titles[r.Next(0,titles.Length)];

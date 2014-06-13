@@ -12,7 +12,7 @@ namespace Raticon.Service
         public void Convert(Bitmap bitmap, string icoPath)
         {
             MultiIcon mIcon = new MultiIcon();
-            mIcon.Add("Untitled").CreateFrom(bitmap, IconOutputFormat.FromWin95);
+            mIcon.Add("Untitled").CreateFrom(bitmap, IconOutputFormat.Vista);
             mIcon.SelectedIndex = 0;
             mIcon.Save(icoPath, MultiIconFormat.ICO);
         }

@@ -46,6 +46,7 @@ namespace RaticonTest
         //    }
         //    bitmap.Save(path, ImageFormat.Png);
         //    new Raticon.Service.ShellService().Execute(@"explorer.exe C:\Temp");
+        //    new Raticon.Service.PngToIcoService().Convert(new Bitmap(path), @"C:\Temp\folder.ico");
         //    throw new Exception("Doesn't look right");
         //}
     }
