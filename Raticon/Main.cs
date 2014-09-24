@@ -7,11 +7,17 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Forms;
 
 namespace Raticon
 {
     public class EntryPoint
     {
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern IntPtr GetConsoleWindow();
+
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern IntPtr GetForegroundWindow();
 
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool FreeConsole();
@@ -41,7 +47,6 @@ namespace Raticon
                 help.AddOptions(this);
                 return help;
             }
-
         }
  
         /// <summary>
@@ -57,8 +62,17 @@ namespace Raticon
             else
             {
                 RunConsoleApp(args);
-                FreeConsole();
+                DisposeConsole();
             }
+        }
+
+        static void DisposeConsole()
+        {
+            if (GetConsoleWindow() == GetForegroundWindow())
+            {
+                SendKeys.SendWait("{ENTER}");
+            }
+            FreeConsole();
         }
 
         static void StartGuiApp()
