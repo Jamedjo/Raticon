@@ -69,7 +69,15 @@ namespace Raticon.Model
                 {
                     return default_value;
                 }
-                ratingResultCache = ratingService.GetRating(ImdbId);
+
+                try
+                {
+                    ratingResultCache = ratingService.GetRating(ImdbId);
+                }
+                catch(System.Net.WebException)
+                {
+                    return default_value;
+                }
             }
             return getProperty(ratingResultCache);
         }
@@ -161,10 +169,14 @@ namespace Raticon.Model
                     {
                         ratingLookupInvoked = true;
                         Messenger.Default.Send(this, "FilmUpdated");
-                        Task.Factory.StartNew<RatingResult>(() => ratingService.GetRating(ImdbId)).ContinueWith((t) =>
+
+                        Task.Factory.StartNew<RatingResult>(() => getRatingSafe()).ContinueWith((t) =>
                         {
-                            ratingResultCache = t.Result;
-                            OnRatingChanged();
+                            if (t != null)
+                            {
+                                ratingResultCache = t.Result;
+                                OnRatingChanged();
+                            }
                             ratingLookupComplete = true;
                         });
                     }
@@ -172,6 +184,18 @@ namespace Raticon.Model
                 return default_value;
             }
             return getProperty(ratingResultCache);
+        }
+
+        private RatingResult getRatingSafe()
+        {
+            try
+            {
+                return ratingService.GetRating(ImdbId);
+            }
+            catch (System.Net.WebException)
+            {
+                return null;
+            }
         }
 
         public string Icon { get { return PathTo("folder.ico"); } }

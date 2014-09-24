@@ -107,6 +107,13 @@ namespace RaticonTest
             Assert.AreEqual(film.Rating, "7.0");
         }
 
+        [TestMethod]
+        public void It_should_not_fail_when_internet_down()
+        {
+            var no_internet_film = new CachedFilm(test_path, defaultFileSystem, new InternetDownRatingService());
+            Assert.AreEqual(no_internet_film.Rating, "");
+        }
+
         //[TestMethod]
         //public void It_shouldnt_operate_on_non_film_folders()
         //{
@@ -123,5 +130,11 @@ namespace RaticonTest
         }
     }
 
-
+    public class InternetDownRatingService : IRatingService
+    {
+        public override RatingResult GetRating(string imdbId)
+        {
+            throw new System.Net.WebException();
+        }
+    }
 }
