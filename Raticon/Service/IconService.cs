@@ -17,14 +17,21 @@ namespace Raticon.Service
     {
         public virtual void ProcessCollection(IEnumerable<IFilmFromFolder> films)
         {
+            ProcessCollection(films,validFilms=>
+                MessageBox.Show("Complete!\n\n" + validFilms.Count() + " folders have been processed and icons added.", "Complete!", MessageBoxButton.OK, MessageBoxImage.Information));
+        }
+
+        public void ProcessCollection(IEnumerable<IFilmFromFolder> films, Action<IEnumerable<IFilmFromFolder>> onComplete)
+        {
             var validFilms = ValidFilms(films);
 
             foreach (IFilmFromFolder film in validFilms)
             {
                 Process(film);
             }
-            MessageBox.Show("Complete!\n\n" + validFilms.Count() + " folders have been processed and icons added.", "Complete!", MessageBoxButton.OK, MessageBoxImage.Information);
+            onComplete(validFilms);
         }
+
 
         protected IEnumerable<IFilmFromFolder> ValidFilms(IEnumerable<IFilmFromFolder> films)
         {

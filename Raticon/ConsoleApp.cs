@@ -1,6 +1,7 @@
 ﻿using CommandLine;
 using CommandLine.Text;
 using Raticon.Model;
+using Raticon.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +13,20 @@ namespace Raticon
     {
         class Options
         {
-            [Option('f', "folder", HelpText = "Folder to scan.")]
-            public string Folder { get; set; }
+            [Option('l', "list", HelpText = "List ratings for all films in folder", MutuallyExclusiveSet = "action")]
+            public bool List { get; set; }
 
-            [Option("gui", HelpText = "Run Raticon as a graphical windows app.")]
+            [Option('d', "decorate", HelpText = "Decorate all movies in the folder with icons", MutuallyExclusiveSet = "action")]
+            public bool Decorate { get; set; }
+
+            //[Option('w', "watch", HelpText = "", MutuallyExclusiveSet = "watch")]
+            //public bool Watch { get; set; }
+
+            [Option("gui", HelpText = "Run Raticon as a graphical windows app.", MutuallyExclusiveSet = "action")]
             public bool RunGui { get; set; }
+
+            [ValueList(typeof(List<string>))]
+            public IList<string> Folders { get; set; }
 
             [HelpOption]
             public string GetUsage()
@@ -26,7 +36,8 @@ namespace Raticon
                     AdditionalNewLineAfterOption = false,
                     AddDashesToOption = true
                 };
-                help.AddPreOptionsLine(@"Usage: Raticon -f D:\Path\To\Media");
+                help.AddPreOptionsLine(@"Usage: Raticon --decorate D:\Path\To\Media");
+                //help.AddPreOptionsLine(@"       Raticon --list D:\Path\To\Media");
                 help.AddOptions(this);
                 return help;
             }
@@ -35,18 +46,34 @@ namespace Raticon
         public static void Run(string[] args)
         {
             var options = new Options();
-            if (!CommandLine.Parser.Default.ParseArguments(args, options))
+            var parser = new CommandLine.Parser(s =>
+            {
+                s.CaseSensitive = false;
+                s.MutuallyExclusive = true;
+                s.HelpWriter = Console.Out;
+                s.ParsingCulture = System.Globalization.CultureInfo.InvariantCulture;
+            });
+            if (!parser.ParseArguments(args, options))
             {
                 return;
             }
 
-            if (options.Folder != null)
+            if (options.Folders.Count > 0)
             {
-                var collection = new MediaCollection<CachedFilm>(options.Folder.ToString()).Items;
+                var collection = new MediaCollection<CachedFilm>(options.Folders.First()).Items;
 
-                foreach(var film in collection)
+                if (options.List)
                 {
-                    Console.WriteLine(String.Format("{0,-3} {1,-9} {2}", film.Rating, film.ImdbId, film.FolderName));
+                    foreach (var film in collection)
+                    {
+                        Console.WriteLine(String.Format("{0,-3} {1,-9} {2}", film.Rating, film.ImdbId, film.FolderName));
+                    }
+                }
+
+                if(options.Decorate)
+                {
+                    new IconService().ProcessCollection(collection, validFilms =>
+                        Console.WriteLine("Complete! " + validFilms.Count() + " folders have been decorated with icons."));
                 }
             }
 
