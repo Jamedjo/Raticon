@@ -96,6 +96,9 @@
   <PropertyGroup>
     <ApplicationIcon>Raticon.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Raticon.EntryPoint</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="GalaSoft.MvvmLight">
       <HintPath>packages\MvvmLightLibs.4.4.32.1\lib\net40\GalaSoft.MvvmLight.dll</HintPath>
@@ -189,6 +192,7 @@
     <Compile Include="IconProgressBox.xaml.cs">
       <DependentUpon>IconProgressBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Main.cs" />
     <Compile Include="Model\DesignData.cs" />
     <Compile Include="Model\MediaCollection.cs" />
     <Compile Include="Model\Film.cs" />
