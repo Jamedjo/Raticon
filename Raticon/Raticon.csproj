@@ -183,6 +183,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ConsoleApp.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Control\DialogCloser.cs" />
     <Compile Include="Control\FilmListView.xaml.cs">
@@ -193,6 +194,7 @@
     </Compile>
     <Compile Include="Control\PlaceholderTextBehavior.cs" />
     <Compile Include="Converter\BoolInverterConverter.cs" />
+    <Compile Include="GuiApp.cs" />
     <Compile Include="IconProgressBox.xaml.cs">
       <DependentUpon>IconProgressBox.xaml</DependentUpon>
     </Compile>
