@@ -44,13 +44,17 @@ namespace Raticon.Service
         public List<LookupResult> Search(string title)
         {
             string clean_title = new TitleCleaner().Clean(title);
-            string data = httpService.Get(@"http://www.myapifilms.com/title?limit=10&title=" + clean_title);
             try
             {
+                string data = httpService.Get(@"http://www.myapifilms.com/title?limit=10&title=" + clean_title);
                 JArray objects = JArray.Parse(data);
                 return objects.Select(o => parseOne(o, title)).OrderBy(r => -r.SearchScore).ToList<LookupResult>();
             }
-            catch(JsonReaderException)
+            catch (JsonReaderException)
+            {
+                return new List<LookupResult>();
+            }
+            catch (System.Net.WebException)
             {
                 return new List<LookupResult>();
             }

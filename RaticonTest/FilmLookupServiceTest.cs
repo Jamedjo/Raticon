@@ -51,6 +51,13 @@ namespace RaticonTest
         }
 
         [TestMethod]
+        public void Search_doesnt_throw_exception_when_internet_down()
+        {
+            var results = new FilmLookupService(new MockHttpService(s => { throw new System.Net.WebException("Internet down"); })).Search("32498238409");
+            Assert.IsTrue(results.Count == 0);
+        }
+
+        [TestMethod]
         public void CachingFilmLookup_doesnt_use_http_if_nfo_is_present()
         {
             IFileSystem mockFileSystem = new MockFileSystem(new Dictionary<string, MockFileData> {
