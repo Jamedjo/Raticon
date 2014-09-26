@@ -58,7 +58,11 @@ namespace Raticon.Model
             }
         }
 
-        protected abstract void setImdbFromService(Action onComplete = null);
+        protected void setImdbFromService()
+        {
+            setImdbFromService(delegate { });
+        }
+        protected abstract void setImdbFromService(Action onComplete);
 
         protected RatingResult ratingResultCache;
         protected T getResult<T>(T default_value, Func<RatingResult, T> getProperty)
@@ -146,7 +150,7 @@ namespace Raticon.Model
             return System.IO.Path.Combine(Path, fileName);
         }
 
-        protected override void setImdbFromService(Action onComplete = null)
+        protected override void setImdbFromService(Action onComplete)
         {
             imdbIdCache = idLookupService.Lookup(FolderName, (l) => resultPicker.Pick(l));
             onComplete();
@@ -209,7 +213,7 @@ namespace Raticon.Model
 
         private bool idLookupInvoked = false;
         private bool idLookupComplete = false;
-        protected override void setImdbFromService(Action onComplete = null)
+        protected override void setImdbFromService(Action onComplete)
         {
             if (!idLookupInvoked)
             {
