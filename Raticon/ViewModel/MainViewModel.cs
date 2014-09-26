@@ -37,7 +37,7 @@ namespace Raticon.ViewModel
             AddFolderCommand = new RelayCommand(AddFolder);
             MakeIconsCommand = new RelayCommand(MakeIcons);
 
-            Messenger.Default.Register<GuiFilm>(this, "FilmUpdated", (film) =>
+            Messenger.Default.Register<GuiFilm>(this, "FilmLoadingChanged", (film) =>
             {
                 RaisePropertyChanged("FilmsLoadingCount");
                 RaisePropertyChanged("IsLoading");

@@ -61,25 +61,36 @@ namespace Raticon.Model
         protected abstract void setImdbFromService();
 
         protected RatingResult ratingResultCache;
-        protected virtual T getResult<T>(T default_value, Func<RatingResult, T> getProperty)
+        protected T getResult<T>(T default_value, Func<RatingResult, T> getProperty)
         {
+            if (ratingResultCache == null && ImdbId != null)
+            {
+                updateRatingResultCache();
+            }
+
             if (ratingResultCache == null)
             {
-                if (ImdbId == null)
-                {
-                    return default_value;
-                }
-
-                try
-                {
-                    ratingResultCache = ratingService.GetRating(ImdbId);
-                }
-                catch(System.Net.WebException)
-                {
-                    return default_value;
-                }
+                return default_value;
             }
+
             return getProperty(ratingResultCache);
+        }
+
+        protected virtual void updateRatingResultCache()
+        {
+            ratingResultCache = getRatingSafe();
+        }
+
+        protected RatingResult getRatingSafe()
+        {
+            try
+            {
+                return ratingService.GetRating(ImdbId);
+            }
+            catch (System.Net.WebException)
+            {
+                return null;
+            }
         }
 
         public string Rating
@@ -111,7 +122,6 @@ namespace Raticon.Model
             this.resultPicker = resultPicker ?? new FirstResultPicker();
 
             this.idLookupService = new FilmLookupService();
-
         }
     }
 
@@ -159,42 +169,22 @@ namespace Raticon.Model
 
         private bool ratingLookupInvoked = false;
         private bool ratingLookupComplete = false;
-        protected override T getResult<T>(T default_value, Func<RatingResult, T> getProperty)
+        protected override void updateRatingResultCache()
         {
-            if (ratingResultCache == null)
+            if (!ratingLookupInvoked)
             {
-                if (ImdbId != null)
+                ratingLookupInvoked = true;
+                Messenger.Default.Send(this, "FilmLoadingChanged");
+
+                Task.Factory.StartNew<RatingResult>(() => getRatingSafe()).ContinueWith((t) =>
                 {
-                    if (!ratingLookupInvoked)
+                    if (t != null)
                     {
-                        ratingLookupInvoked = true;
-                        Messenger.Default.Send(this, "FilmUpdated");
-
-                        Task.Factory.StartNew<RatingResult>(() => getRatingSafe()).ContinueWith((t) =>
-                        {
-                            if (t != null)
-                            {
-                                ratingResultCache = t.Result;
-                                OnRatingChanged();
-                            }
-                            ratingLookupComplete = true;
-                        });
+                        ratingResultCache = t.Result;
+                        OnRatingChanged();
                     }
-                }
-                return default_value;
-            }
-            return getProperty(ratingResultCache);
-        }
-
-        private RatingResult getRatingSafe()
-        {
-            try
-            {
-                return ratingService.GetRating(ImdbId);
-            }
-            catch (System.Net.WebException)
-            {
-                return null;
+                    ratingLookupComplete = true;
+                });
             }
         }
 
@@ -208,7 +198,7 @@ namespace Raticon.Model
             if(!idLookupInvoked)
             {
                 idLookupInvoked = true;
-                Messenger.Default.Send(this, "FilmUpdated");
+                Messenger.Default.Send(this, "FilmLoadingChanged");
                 var task = idLookupService.LookupAsync(FolderName, (lookup) => resultPicker.Pick(lookup));
                 task.ContinueWith((t) =>
                 {
@@ -221,7 +211,7 @@ namespace Raticon.Model
 
         private void OnRatingChanged()
         {
-            Messenger.Default.Send(this, "FilmUpdated");
+            Messenger.Default.Send(this, "FilmLoadingChanged");
             OnPropertyChanged("IsLoading");
             OnPropertyChanged("Title");
             OnPropertyChanged("Rating");
