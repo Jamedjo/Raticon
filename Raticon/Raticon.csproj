@@ -200,6 +200,7 @@
       <DependentUpon>IconProgressBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main.cs" />
+    <Compile Include="Model\ConsoleFilm.cs" />
     <Compile Include="Model\DesignData.cs" />
     <Compile Include="Model\GuiFilm.cs" />
     <Compile Include="Model\MediaCollection.cs" />

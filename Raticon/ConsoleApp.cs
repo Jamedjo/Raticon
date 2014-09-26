@@ -60,7 +60,7 @@ namespace Raticon
 
             if (options.Folders.Count > 0)
             {
-                var collection = new MediaCollection<CachedFilm>(options.Folders.First()).Items;
+                var collection = new MediaCollection<ConsoleFilm>(options.Folders.First()).Items;
 
                 if (options.List)
                 {
