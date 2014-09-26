@@ -201,6 +201,7 @@
     </Compile>
     <Compile Include="Main.cs" />
     <Compile Include="Model\DesignData.cs" />
+    <Compile Include="Model\GuiFilm.cs" />
     <Compile Include="Model\MediaCollection.cs" />
     <Compile Include="Model\Film.cs" />
     <Compile Include="Model\RatingResult.cs" />
