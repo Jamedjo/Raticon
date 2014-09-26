@@ -58,7 +58,7 @@ namespace Raticon.Model
             }
         }
 
-        protected abstract void setImdbFromService();
+        protected abstract void setImdbFromService(Action onComplete = null);
 
         protected RatingResult ratingResultCache;
         protected T getResult<T>(T default_value, Func<RatingResult, T> getProperty)
@@ -83,6 +83,11 @@ namespace Raticon.Model
 
         protected RatingResult getRatingSafe()
         {
+            if(ImdbId == null)
+            {
+                return null;
+            }
+
             try
             {
                 return ratingService.GetRating(ImdbId);
@@ -141,9 +146,10 @@ namespace Raticon.Model
             return System.IO.Path.Combine(Path, fileName);
         }
 
-        protected override void setImdbFromService()
+        protected override void setImdbFromService(Action onComplete = null)
         {
             imdbIdCache = idLookupService.Lookup(FolderName, (l) => resultPicker.Pick(l));
+            onComplete();
         }
     }
 
@@ -163,6 +169,12 @@ namespace Raticon.Model
     {
         public GuiFilm(string path, IFileSystem fileSystem = null) : base(path, fileSystem, new GuiResultPickerService(Application.Current.MainWindow))
         {
+            FetchData();
+        }
+
+        public void FetchData()
+        {
+            setImdbFromService(() => updateRatingResultCache());
         }
 
         public bool IsLoading { get { return (idLookupInvoked && !idLookupComplete) || (ratingLookupInvoked && !ratingLookupComplete); } }
@@ -178,11 +190,8 @@ namespace Raticon.Model
 
                 Task.Factory.StartNew<RatingResult>(() => getRatingSafe()).ContinueWith((t) =>
                 {
-                    if (t != null)
-                    {
-                        ratingResultCache = t.Result;
-                        OnRatingChanged();
-                    }
+                    ratingResultCache = t.Result;
+                    OnRatingChanged();
                     ratingLookupComplete = true;
                 });
             }
@@ -193,9 +202,9 @@ namespace Raticon.Model
 
         private bool idLookupInvoked = false;
         private bool idLookupComplete = false;
-        protected override void setImdbFromService()
+        protected override void setImdbFromService(Action onComplete = null)
         {
-            if(!idLookupInvoked)
+            if (!idLookupInvoked)
             {
                 idLookupInvoked = true;
                 Messenger.Default.Send(this, "FilmLoadingChanged");
@@ -205,6 +214,7 @@ namespace Raticon.Model
                     imdbIdCache = t.Result;
                     OnRatingChanged();
                     idLookupComplete = true;
+                    onComplete();
                 });
             }
         }
