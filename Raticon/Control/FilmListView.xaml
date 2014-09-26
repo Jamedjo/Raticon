@@ -37,7 +37,7 @@
                     </GridViewColumn.Header>
                     <GridViewColumn.CellTemplate>
                         <DataTemplate>
-                            <Image>
+                            <Image RenderOptions.BitmapScalingMode="HighQuality">
                                 <Image.Style>
                                     <Style TargetType="{x:Type Image}">
                                         <Setter Property="Source" Value="{Binding Icon}"/>

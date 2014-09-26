@@ -14,14 +14,14 @@
     </UserControl.DataContext>
 
     <Grid>
-        <Image Source="{Binding FolderJpg}" Grid.Row="0"/>
+        <Image Source="{Binding FolderJpg}" RenderOptions.BitmapScalingMode="HighQuality" Grid.Row="0"/>
         <Grid Grid.Row="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="100" />
             </Grid.RowDefinitions>
             <Grid Grid.Row="1" Width="100" HorizontalAlignment="Right">
-                <Image x:Name="Star" Source="/Raticon;component/star.png" Grid.Row="0"/>
+                <Image x:Name="Star" Source="/Raticon;component/star.png" RenderOptions.BitmapScalingMode="HighQuality" Grid.Row="0"/>
                 <TextBlock Grid.Row="0" Text="{Binding Rating}" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Tahoma" FontWeight="Bold" FontSize="28"/>
             </Grid>
         </Grid>
