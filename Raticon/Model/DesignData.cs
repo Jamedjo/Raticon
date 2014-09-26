@@ -27,7 +27,14 @@ namespace Raticon.Model
     {
         private string[] titles = new[]{"A Film","B Movie","C Sequel","D Drama","E Episode","F Fantasy"};
 
-        public string Icon { get { return "pack://application:,,,/Resources/Folder.ico"; } }
+        private bool iconMissing;
+        public string Icon
+        {
+            get
+            {
+                return (iconMissing) ? null : "pack://application:,,,/Raticon;component/Resources/Folder.ico";
+            }
+        }
 
         public DummyFilm(Random r)
         {
@@ -36,6 +43,7 @@ namespace Raticon.Model
             ImdbId = "tt"+r.Next(0,9999999).ToString("0000000");
             Year = r.Next(1937,2015).ToString();
             Rating = (5.0 + r.NextDouble()*5.0).ToString("0.0");
+            iconMissing = r.NextDouble() < 0.2;
             FolderName = Title;
         }
     }

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:rv="clr-namespace:Raticon.Converter"
              mc:Ignorable="d"
              DataContext="{Binding Main, Source={StaticResource Locator}}"
              d:DesignHeight="400" d:DesignWidth="500">
@@ -19,6 +20,7 @@
                 <Path x:Name="arrow" StrokeThickness="1" Fill="gray" Data="M 5,5 L 10,10 L 15,5 L 5,5"/>
             </DockPanel>
         </DataTemplate>
+        <rv:SystemIconConverter x:Key="SysIconConverter"/>
     </UserControl.Resources>
 
     <ListView x:Name="FilmList" GridViewColumnHeader.Click="SortClickHandler" ItemsSource="{Binding Collection}">
@@ -35,7 +37,20 @@
                     </GridViewColumn.Header>
                     <GridViewColumn.CellTemplate>
                         <DataTemplate>
-                            <Image Source="{Binding Icon}" Margin="-6,-1.5" />
+                            <Image>
+                                <Image.Style>
+                                    <Style TargetType="{x:Type Image}">
+                                        <Setter Property="Source" Value="{Binding Icon}"/>
+                                        <Setter Property="Margin" Value="-6,-1.5"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Icon}" Value="{x:Null}">
+                                                <Setter Property="Source" Value="{Binding Converter={StaticResource SysIconConverter}, ConverterParameter=Error}" />
+                                                <Setter Property="Margin" Value="5,3"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
                         </DataTemplate>
                     </GridViewColumn.CellTemplate>
                 </GridViewColumn>

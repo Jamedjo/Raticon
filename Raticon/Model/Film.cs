@@ -197,7 +197,14 @@ namespace Raticon.Model
             }
         }
 
-        public string Icon { get { return PathTo("folder.ico"); } }
+        public string Icon
+        {
+            get
+            {
+                string iconPath = PathTo("folder.ico");
+                return (fileSystem.File.Exists(iconPath)) ? iconPath : null;
+            }
+        }
         public void IconUpdated() { OnPropertyChanged("Icon"); }
 
         private bool idLookupInvoked = false;

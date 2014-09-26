@@ -194,6 +194,7 @@
     </Compile>
     <Compile Include="Control\PlaceholderTextBehavior.cs" />
     <Compile Include="Converter\BoolInverterConverter.cs" />
+    <Compile Include="Converter\SystemIconConverter.cs" />
     <Compile Include="GuiApp.cs" />
     <Compile Include="IconProgressBox.xaml.cs">
       <DependentUpon>IconProgressBox.xaml</DependentUpon>
