@@ -59,6 +59,11 @@ namespace Raticon.Service
             new PosterService().Download(film.Poster, film.PathTo("folder.jpg"), (url, path) =>
                 MessageBox.Show("Couldn't download folder.jpg for '" + film.Title + "' from url '" + film.Poster + "' to '" + film.PathTo("folder.jpg") + "'", "Error downloading folder.jpg", MessageBoxButton.OK, MessageBoxImage.Error));
 
+            if(!System.IO.File.Exists(film.PathTo("folder.jpg")))
+            {
+                return;
+            }
+
             Task<Bitmap> task = StaTask.Start<Bitmap>(() => new IconLayout(new IconLayoutViewModel(film.PathTo("folder.jpg"), film.Rating)).RenderToBitmap());
             task.Wait();
             Bitmap icon = task.Result;
