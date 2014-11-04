@@ -7,31 +7,18 @@ using System.Text;
 
 namespace Raticon.Service
 {
-    //enum WatchAction
-    //{
-    //    Process<GuiFilm>
-    //    Process<ConsoleFilm>
-    //    Alert(action)
-
-    //Create Gui/Console Film
-    //GetImdb
-    //onComplete GetRating
-    //onComplete IconService.Process(film)
-
-    //}
-
-    public interface IFolderWatcherService
+    public interface IFolderWatcher
     {
         void Watch(string path);
         void Stop();
     }
 
-    public class FolderWatcherService : IFolderWatcherService
+    public class FolderWatcher : IFolderWatcher
     {
-        FileSystemWatcher watcher;
+        protected FileSystemWatcher watcher;
         Action<string> onCreate;
 
-        public FolderWatcherService(Action<string> onCreate)
+        public FolderWatcher(Action<string> onCreate)
         {
             this.onCreate = onCreate;
             watcher = new FileSystemWatcher()
@@ -58,16 +45,32 @@ namespace Raticon.Service
         }
     }
 
+    public class WaitingFolderWatcher : FolderWatcher
+    {
+        public WaitingFolderWatcher(Action<string> onCreate) : base(onCreate) { }
+
+        public void WaitForChange()
+        {
+            watcher.WaitForChanged(WatcherChangeTypes.All);
+        }
+    }
+
     public class IconMakingFilmFolderWatcher
     {
-        public IFolderWatcherService watcher;
-        public IconMakingFilmFolderWatcher(Func<string, IFilmFromFolder> filmFactory, Func<Action<string>, IFolderWatcherService> watcherFactory, IFilmProcessor filmProcessor)
+        public IFolderWatcher Watcher { get; private set; }
+
+        public IconMakingFilmFolderWatcher(Func<string, IFilmFromFolder> filmFactory, Func<Action<string>, IFolderWatcher> watcherFactory, IFilmProcessor filmProcessor)
         {
-            watcher = watcherFactory(path => filmProcessor.Process(filmFactory(path)));
+            Watcher = watcherFactory(path => filmProcessor.Process(filmFactory(path)));
+        }
+
+        public IconMakingFilmFolderWatcher(Func<string, IFilmFromFolder> filmFactory, Func<Action<string>, IFolderWatcher> watcherFactory)
+            : this(filmFactory, watcherFactory, new IconService())
+        {
         }
 
         public IconMakingFilmFolderWatcher(Func<string, IFilmFromFolder> filmFactory)
-            : this(filmFactory, action => new FolderWatcherService(action), new IconService())
+            : this(filmFactory, action => new FolderWatcher(action))
         {
         }
     }
@@ -79,6 +82,22 @@ namespace Raticon.Service
 
     public class ConsoleFilmFolderWatcher : IconMakingFilmFolderWatcher
     {
-        public ConsoleFilmFolderWatcher() : base(path => new ConsoleFilm(path)) { }
+
+        public ConsoleFilmFolderWatcher(string watchPath) : base(path => FilmFactory(path) , action => new WaitingFolderWatcher(action))
+        {
+            Watcher.Watch(watchPath);
+        }
+
+        private static IFilmFromFolder FilmFactory(string path)
+        {
+            Console.WriteLine("Detected change: " + path);
+            return new ConsoleFilm(path);
+        }
+
+        public void InfiniteWait()
+        {
+            while (true) ((WaitingFolderWatcher)Watcher).WaitForChange();
+        }
+
     }
 }

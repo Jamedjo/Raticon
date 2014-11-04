@@ -19,8 +19,8 @@ namespace Raticon
             [Option('d', "decorate", HelpText = "Decorate all movies in the folder with icons", MutuallyExclusiveSet = "action")]
             public bool Decorate { get; set; }
 
-            //[Option('w', "watch", HelpText = "", MutuallyExclusiveSet = "watch")]
-            //public bool Watch { get; set; }
+            [Option('w', "watch", HelpText = "", MutuallyExclusiveSet = "watch")]
+            public bool Watch { get; set; }
 
             [Option("gui", HelpText = "Run Raticon as a graphical windows app.", MutuallyExclusiveSet = "action")]
             public bool RunGui { get; set; }
@@ -60,7 +60,8 @@ namespace Raticon
 
             if (options.Folders.Count > 0)
             {
-                var collection = new MediaCollection<ConsoleFilm>(options.Folders.First()).Items;
+                var firstFolder = options.Folders.First();
+                var collection = new MediaCollection<ConsoleFilm>(firstFolder).Items;
 
                 if (options.List)
                 {
@@ -74,6 +75,11 @@ namespace Raticon
                 {
                     new IconService().ProcessValidFilms(collection, validFilms =>
                         Console.WriteLine("Complete! " + validFilms.Count() + " folders have been decorated with icons."));
+                }
+
+                if(options.Watch)
+                {
+                    new ConsoleFilmFolderWatcher(firstFolder).InfiniteWait();
                 }
             }
 

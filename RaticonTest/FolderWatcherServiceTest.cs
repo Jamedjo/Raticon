@@ -9,10 +9,10 @@ using Raticon.Model;
 namespace RaticonTest
 {
     [TestClass]
-    public class FolderWatcherServiceTest
+    public class FolderWatcherTest
     {
         string watchPath, filmPath;
-        IFolderWatcherService watcher;
+        IFolderWatcher watcher;
         [TestInitialize()]
         public void FolderWatcher_TestInitialize()
         {
@@ -39,7 +39,7 @@ namespace RaticonTest
         public void FolderWatcher_calls_onCreate_after_directory_created()
         {
             bool called = false;
-            watcher = new FolderWatcherService(path => called = true);
+            watcher = new FolderWatcher(path => called = true);
             StartAndTriggerWatcher();
             Assert.IsTrue(called);
         }
@@ -53,13 +53,13 @@ namespace RaticonTest
         {
             IFilmFromFolder lastProcessed = null;
             var filmProcessor = new MockFilmProcessor(f => lastProcessed = f);
-            Func<Action<string>, IFolderWatcherService> watcherFactory = action => new MockFolderWatcher(action);
-            MockFolderWatcher watcher = (MockFolderWatcher)new IconMakingFilmFolderWatcher(path => new FilmMock(path), watcherFactory, filmProcessor).watcher;
+            Func<Action<string>, IFolderWatcher> watcherFactory = action => new MockFolderWatcher(action);
+            MockFolderWatcher watcher = (MockFolderWatcher)new IconMakingFilmFolderWatcher(path => new FilmMock(path), watcherFactory, filmProcessor).Watcher;
             watcher.TriggerChange(@"Z:\mock\path");
             Assert.AreEqual(@"Z:\mock\path", lastProcessed.Path);
         }
 
-        class MockFolderWatcher : IFolderWatcherService
+        class MockFolderWatcher : IFolderWatcher
         {
             Action<string> onChange;
             internal MockFolderWatcher(Action<string> onChange)
@@ -67,12 +67,12 @@ namespace RaticonTest
                 this.onChange = onChange;
             }
 
-            void IFolderWatcherService.Watch(string path)
+            void IFolderWatcher.Watch(string path)
             {
                 throw new NotImplementedException();
             }
 
-            void IFolderWatcherService.Stop()
+            void IFolderWatcher.Stop()
             {
                 throw new NotImplementedException();
             }
