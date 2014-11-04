@@ -52,6 +52,15 @@ namespace Raticon.Model
             }
         }
 
+        public void FetchData()
+        {
+            FetchData(delegate { });
+        }
+        public void FetchData(Action onComplete)
+        {
+            setImdbFromService(() => updateRatingResultCache(onComplete));
+        }
+
         protected void setImdbFromService()
         {
             setImdbFromService(delegate { });
@@ -74,9 +83,15 @@ namespace Raticon.Model
             return getProperty(ratingResultCache);
         }
 
-        protected virtual void updateRatingResultCache()
+
+        protected void updateRatingResultCache()
+        {
+            updateRatingResultCache(delegate { });
+        }
+        protected virtual void updateRatingResultCache(Action onComplete)
         {
             ratingResultCache = getRatingSafe();
+            onComplete();
         }
 
         protected RatingResult getRatingSafe()

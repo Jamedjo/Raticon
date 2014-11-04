@@ -18,16 +18,11 @@ namespace Raticon.Model
             FetchData();
         }
 
-        public void FetchData()
-        {
-            setImdbFromService(() => updateRatingResultCache());
-        }
-
         public bool IsLoading { get { return (idLookupInvoked && !idLookupComplete) || (ratingLookupInvoked && !ratingLookupComplete); } }
 
         private bool ratingLookupInvoked = false;
         private bool ratingLookupComplete = false;
-        protected override void updateRatingResultCache()
+        protected override void updateRatingResultCache(Action onComplete)
         {
             if (!ratingLookupInvoked)
             {
@@ -39,6 +34,7 @@ namespace Raticon.Model
                     ratingResultCache = t.Result;
                     OnRatingChanged();
                     ratingLookupComplete = true;
+                    onComplete();
                 });
             }
         }
