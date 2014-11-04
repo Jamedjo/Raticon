@@ -12,18 +12,17 @@ namespace RaticonTest
     [TestClass]
     public class IconServiceTest
     {
-        IFilmFromFolder filmMock = new FilmMock(@"C:\Temp");
+        IFilmFromFolder filmMock = FilmMock.FromBasePath(@"C:\Temp");
 
-        public void IconServiceTestInitialize()
+        [TestInitialize]
+        public void IconServiceTest_Initialize()
         {
             System.IO.Directory.CreateDirectory(filmMock.Path);
-            new IconService().Process(filmMock);
         }
 
         [TestMethod]
         public void It_shouldnt_attempt_much_if_folderIco_already_exists()
         {
-            System.IO.Directory.CreateDirectory(filmMock.Path);
             File.WriteAllText(filmMock.PathTo("folder.ico"),"");
             new IconService().Process(filmMock);
             Assert.IsFalse(File.Exists(filmMock.PathTo("desktop.ini")));
@@ -34,21 +33,21 @@ namespace RaticonTest
         public void It_shouldnt_attempt_much_if_folder_has_no_rating()
         {
             filmMock = new NotAFilmMock(@"C:\Temp");
-            IconServiceTestInitialize();
+            new IconService().Process(filmMock);
             Assert.IsFalse(File.Exists(filmMock.PathTo("desktop.ini")));
         }
 
         [TestMethod]
         public void It_should_make_an_icon()
         {
-            IconServiceTestInitialize();
+            new IconService().Process(filmMock);
             Assert.IsTrue(System.IO.File.Exists(filmMock.PathTo("folder.ico")));
         }
 
         [TestMethod]
         public void It_should_set_correct_attributes()
         {
-            IconServiceTestInitialize();
+            new IconService().Process(filmMock);
             Assert.AreEqual(FileAttributes.ReadOnly | FileAttributes.Directory, File.GetAttributes(filmMock.Path));
             Assert.AreEqual(FileAttributes.Hidden, File.GetAttributes(filmMock.PathTo("desktop.ini")));
         }
@@ -90,11 +89,16 @@ namespace RaticonTest
 
     public class FilmMock : AbstractFilmFromFolder
     {
-        public FilmMock(string base_path)
+        public FilmMock(string path)
         {
-            Path = base_path+@"\In.the.Heat.of.the.Night.1967";
+            Path = path;
             Rating = "8.0";
             Poster = @"http://i.imgur.com/OXGEGDr.jpg";
+        }
+
+        public static FilmMock FromBasePath(string base_path)
+        {
+            return new FilmMock(base_path + @"\In.the.Heat.of.the.Night.1967");
         }
     }
 

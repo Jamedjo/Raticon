@@ -109,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FilmLookupServiceTest.cs" />
+    <Compile Include="FolderWatcherServiceTest.cs" />
     <Compile Include="IconTestService.cs" />
     <Compile Include="MediaCollectionTest.cs" />
     <Compile Include="MockHttpService.cs" />

@@ -72,7 +72,7 @@ namespace Raticon
 
                 if(options.Decorate)
                 {
-                    new IconService().ProcessCollection(collection, validFilms =>
+                    new IconService().ProcessValidFilms(collection, validFilms =>
                         Console.WriteLine("Complete! " + validFilms.Count() + " folders have been decorated with icons."));
                 }
             }

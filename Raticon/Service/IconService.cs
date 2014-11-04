@@ -13,15 +13,21 @@ using System.Threading.Tasks;
 
 namespace Raticon.Service
 {
-    public class IconService
+    public interface IFilmProcessor
     {
+        void Process(IFilmFromFolder film);
+        void ProcessCollection(IEnumerable<IFilmFromFolder> films);
+    }
+
+    public abstract class AbstractFilmProcessor : IFilmProcessor
+    {
+        public abstract void Process(IFilmFromFolder film);
         public virtual void ProcessCollection(IEnumerable<IFilmFromFolder> films)
         {
-            ProcessCollection(films,validFilms=>
-                MessageBox.Show("Complete!\n\n" + validFilms.Count() + " folders have been processed and icons added.", "Complete!", MessageBoxButton.OK, MessageBoxImage.Information));
+            ProcessValidFilms(films, f => { });
         }
 
-        public void ProcessCollection(IEnumerable<IFilmFromFolder> films, Action<IEnumerable<IFilmFromFolder>> onComplete)
+        public void ProcessValidFilms(IEnumerable<IFilmFromFolder> films, Action<IEnumerable<IFilmFromFolder>> onComplete)
         {
             var validFilms = ValidFilms(films);
 
@@ -29,16 +35,25 @@ namespace Raticon.Service
             {
                 Process(film);
             }
+
             onComplete(validFilms);
         }
-
 
         protected IEnumerable<IFilmFromFolder> ValidFilms(IEnumerable<IFilmFromFolder> films)
         {
             return films.Where(f => !string.IsNullOrWhiteSpace(f.Rating));
         }
+    }
 
-        public void Process(IFilmFromFolder film)
+    public class IconService : AbstractFilmProcessor
+    {
+        public override void ProcessCollection(IEnumerable<IFilmFromFolder> films)
+        {
+            ProcessValidFilms(films,processedFilms=>
+                MessageBox.Show("Complete!\n\n" + processedFilms.Count() + " folders have been processed and icons added.", "Complete!", MessageBoxButton.OK, MessageBoxImage.Information));
+        }
+
+        public override void Process(IFilmFromFolder film)
         {
             if (System.IO.File.Exists(film.PathTo("folder.ico")) || String.IsNullOrWhiteSpace(film.Rating)) { return; }
             BuildFolderIco(film);
