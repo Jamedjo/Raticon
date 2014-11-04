@@ -68,7 +68,7 @@ namespace RaticonTest
             IFilmFromFolder lastProcessed = null;
             var filmProcessor = new MockFilmProcessor(f => lastProcessed = f);
             Func<Action<string>, IFolderWatcher> watcherFactory = action => new MockFolderWatcher(action);
-            MockFolderWatcher watcher = (MockFolderWatcher)new IconMakingFilmFolderWatcher(path => new FilmMock(path), watcherFactory, filmProcessor).Watcher;
+            MockFolderWatcher watcher = (MockFolderWatcher)new IconMakingFilmFolderWatcher<FilmMock>(watcherFactory, filmProcessor).Watcher;
             watcher.TriggerChange(@"Z:\mock\path");
             Assert.AreEqual(@"Z:\mock\path", lastProcessed.Path);
         }
