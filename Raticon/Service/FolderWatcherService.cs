@@ -16,21 +16,27 @@ namespace Raticon.Service
     public class FolderWatcher : IFolderWatcher
     {
         protected FileSystemWatcher watcher;
-        Action<string> onCreate;
+        Action<string> onChange;
 
-        public FolderWatcher(Action<string> onCreate)
+        public FolderWatcher(Action<string> onChange)
         {
-            this.onCreate = onCreate;
+            this.onChange = onChange;
             watcher = new FileSystemWatcher()
             {
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.DirectoryName
             };
             watcher.Created += new FileSystemEventHandler(OnCreatedEvent);
+            watcher.Renamed += new RenamedEventHandler(OnRenamedEvent);
         }
 
         private void OnCreatedEvent(object source, FileSystemEventArgs e)
         {
-            onCreate(e.FullPath);
+            onChange(e.FullPath);
+        }
+
+        private void OnRenamedEvent(object source, RenamedEventArgs e)
+        {
+            onChange(e.FullPath);
         }
 
         public void Watch(string path)

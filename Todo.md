@@ -24,3 +24,4 @@
 * CLI `--gui D:\Path` could set GUI folder.
 * CLI `--decorate --norating` could make it process folder.jpg into .ico without any film lookup or ratings. Use for TV shows?
 * Watcher taskbar notification could show recently processed films.
+* Should not be able to pick both --watch and --gui until that is made possible. Or could make watch always use gui.

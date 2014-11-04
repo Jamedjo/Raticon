@@ -17,8 +17,8 @@ namespace RaticonTest
         public void FolderWatcher_TestInitialize()
         {
             watchPath = @"C:\Temp\RaticonWatch";
-            filmPath = System.IO.Path.Combine(watchPath, "Italian Job");
             System.IO.Directory.CreateDirectory(watchPath);
+            filmPath = System.IO.Path.Combine(watchPath, "Italian Job");
         }
 
         [TestCleanup()]
@@ -28,20 +28,34 @@ namespace RaticonTest
             System.IO.Directory.Delete(watchPath, true);
         }
 
-        void StartAndTriggerWatcher()
+        void WatchAction(Action action)
         {
             watcher.Watch(watchPath);
-            System.IO.Directory.CreateDirectory(filmPath);
+            action();
             for (int i = 0; i < 5; i++) System.Threading.Thread.Sleep(1);
         }
 
-        [TestMethod]
-        public void FolderWatcher_calls_onCreate_after_directory_created()
+        void AssertWatchTriggeredBy(Action action)
         {
             bool called = false;
             watcher = new FolderWatcher(path => called = true);
-            StartAndTriggerWatcher();
+            WatchAction(action);
             Assert.IsTrue(called);
+        }
+
+        [TestMethod]
+        public void FolderWatcher_reacts_to_directory_created()
+        {
+            AssertWatchTriggeredBy(() => System.IO.Directory.CreateDirectory(filmPath));
+        }
+
+        [TestMethod]
+        public void FolderWatcher_reacts_to_folder_rename()
+        {
+            string preExistingFilmPath = System.IO.Path.Combine(watchPath, "New Folder");
+            System.IO.Directory.CreateDirectory(preExistingFilmPath);
+
+            AssertWatchTriggeredBy(() => System.IO.Directory.Move(preExistingFilmPath, filmPath));
         }
     }
     
