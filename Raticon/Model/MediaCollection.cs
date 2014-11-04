@@ -13,16 +13,22 @@ namespace Raticon.Model
     }
     public class MediaCollection<T> : IMediaCollection<T> where T : IFilmFromFolder
     {
-        private IFileSystem fileSystem;
         public IEnumerable<T> Items { get; protected set; }
 
         public MediaCollection(string folder, IFileSystem fileSystem=null)
         {
             if (fileSystem == null) fileSystem = new FileSystem();
-            this.fileSystem = fileSystem;
 
             string[] subfolders = fileSystem.Directory.GetDirectories(folder);
-            Items = subfolders.Select(f => (T)CreateInstance(typeof(T), f, fileSystem)).ToList();
+            Items = subfolders.Select(f => FilmFactory<T>.BuildFilm(f, fileSystem)).ToList();
+        }
+    }
+
+    public static class FilmFactory<T>
+    {
+        public static T BuildFilm(params object[] args)
+        {
+            return (T)CreateInstance(typeof(T), args);
         }
 
         //Fix Activator.CreateInstance so it handles Constructor with optional params

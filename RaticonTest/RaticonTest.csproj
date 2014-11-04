@@ -108,6 +108,7 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FilmFactoryTest.cs" />
     <Compile Include="FilmLookupServiceTest.cs" />
     <Compile Include="FolderWatcherServiceTest.cs" />
     <Compile Include="IconTestService.cs" />
