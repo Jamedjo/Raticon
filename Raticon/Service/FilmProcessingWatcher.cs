@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 
 namespace Raticon.Service
 {
@@ -21,22 +22,24 @@ namespace Raticon.Service
             Watcher.Watch(watchPath);
         }
 
-        private T FilmToProcess(string path)
+        protected virtual T FilmToProcess(string path)
         {
-            BeforeProcess(path);
             return FilmFactory<T>.BuildFilm(path);
         }
-
-        protected virtual void BeforeProcess(string path) { }
     }
 
     public class GuiFilmProcessingWatcher : FilmProcessingWatcher<GuiFilm>
     {
-        public GuiFilmProcessingWatcher(string watchPath) : base(watchPath) { }
-
-        protected override void BeforeProcess(string path)
+        IResultPicker resultPicker;
+        public GuiFilmProcessingWatcher(string watchPath) : base(watchPath)
         {
-            //Message
+            resultPicker = new GuiResultPickerService(Application.Current.MainWindow);
+        }
+
+        protected override GuiFilm FilmToProcess(string path)
+        {
+            MessageBox.Show("Detected change: " + path);
+            return new GuiFilm(path, null, resultPicker);
         }
     }
 
@@ -44,9 +47,10 @@ namespace Raticon.Service
     {
         public ConsoleFilmProcessingWatcher(string watchPath) : base(watchPath) { }
 
-        protected override void BeforeProcess(string path)
+        protected override ConsoleFilm FilmToProcess(string path)
         {
             Console.WriteLine("Detected change: " + path);
+            return base.FilmToProcess(path);
         }
 
         public void InfiniteWait()

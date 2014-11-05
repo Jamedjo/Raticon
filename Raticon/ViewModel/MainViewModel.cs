@@ -36,6 +36,7 @@ namespace Raticon.ViewModel
 
             AddFolderCommand = new RelayCommand(AddFolder);
             MakeIconsCommand = new RelayCommand(MakeIcons);
+            WatchFolderCommand = new RelayCommand(WatchFolder);
 
             Messenger.Default.Register<GuiFilm>(this, "FilmLoadingChanged", (film) =>
             {
@@ -47,13 +48,22 @@ namespace Raticon.ViewModel
         }
 
         public RelayCommand AddFolderCommand { get; private set; }
+        private string openFolder;
         public void AddFolder()
         {
             var dialog = new CommonOpenFileDialog { IsFolderPicker = true };
             if (dialog.ShowDialog(Application.Current.MainWindow) == CommonFileDialogResult.Ok)
             {
-                Collection = new MediaCollection<GuiFilm>(dialog.FileName).Items;
+                openFolder = dialog.FileName;
+                Collection = new MediaCollection<GuiFilm>(openFolder).Items;
             }
+        }
+
+        public RelayCommand WatchFolderCommand { get; private set; }
+        public void WatchFolder()
+        {
+            new GuiFilmProcessingWatcher(openFolder);
+            MessageBox.Show("Watching " + openFolder + "\nIcons will be built when a new film is added.");
         }
 
         public RelayCommand MakeIconsCommand { get; private set; }

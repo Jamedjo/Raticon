@@ -37,6 +37,7 @@
                     </Style>
                 </DockPanel.Resources>
                 <Button Command="{Binding MakeIconsCommand}" DockPanel.Dock="Right" Style="{StaticResource ShowWhenLoadingComplete}">Make Icons</Button>
+                <Button Command="{Binding WatchFolderCommand}" DockPanel.Dock="Right" ToolTip="Watch this folder for new films" Style="{StaticResource ShowWhenLoadingComplete}">Auto Watch</Button>
                 <TextBlock Text="{Binding LoadingMessage}" DockPanel.Dock="Right" Style="{StaticResource ShowWhileLoading}"/>
                 <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                     <Button Command="{Binding AddFolderCommand}">Select Folder</Button>

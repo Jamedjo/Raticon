@@ -13,7 +13,9 @@ namespace Raticon.Model
 {
     public class GuiFilm : CachedFilm, INotifyPropertyChanged
     {
-        public GuiFilm(string path, IFileSystem fileSystem = null) : base(path, fileSystem, new GuiResultPickerService(Application.Current.MainWindow))
+        public GuiFilm(string path, IFileSystem fileSystem = null) : this(path, fileSystem, new GuiResultPickerService(Application.Current.MainWindow)) { }
+
+        public GuiFilm(string path, IFileSystem fileSystem, IResultPicker resultPicker) : base(path, fileSystem, resultPicker)
         {
             FetchData();
         }
