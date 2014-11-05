@@ -71,7 +71,7 @@ namespace Raticon.Model
         public DummyErrorLookupContext()
             : base(new List<LookupResult>(), "Italian.Job",
             new System.Net.WebException("The operation has timed out", System.Net.WebExceptionStatus.Timeout),
-            @"http://www.myapifilms.com/title?limit=10&title=Italian%20Job") { }
+            @"http://www.myapifilms.com/title?limit=10&title=Italian%20Job", "{\"code\":508,\"message\":\"The server does not accept more requests for lack of resources. Please try again later\"}") { }
     }
 
     public class DummyIconLayoutViewModel : IconLayoutViewModel

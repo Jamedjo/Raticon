@@ -44,20 +44,21 @@ namespace Raticon.Service
         {
             string clean_title = new TitleCleaner().Clean(title);
             string queryUrl = @"http://www.myapifilms.com/title?limit=10&title=" + clean_title;
+            string response = "No Response";
             try
             {
-                string data = httpService.Get(queryUrl);
-                JArray objects = JArray.Parse(data);
+                response = httpService.Get(queryUrl);
+                JArray objects = JArray.Parse(response);
                 var results = objects.Select(o => parseOne(o, title)).OrderBy(r => -r.SearchScore);
                 return new LookupContext(results.ToList<LookupResult>(), title);
             }
             catch (JsonReaderException e)
             {
-                return new LookupContext(new List<LookupResult>(), title, e, queryUrl);
+                return new LookupContext(new List<LookupResult>(), title, e, queryUrl, response);
             }
             catch (System.Net.WebException e)
             {
-                return new LookupContext(new List<LookupResult>(), title, e, queryUrl);
+                return new LookupContext(new List<LookupResult>(), title, e, queryUrl, response);
             }
         }
 
@@ -141,10 +142,12 @@ namespace Raticon.Service
 
         private Exception exception = null;
         private string queryUrl;
-        public LookupContext(List<LookupResult> results, string query, Exception e, string queryUrl) : this(results, query)
+        private string response;
+        public LookupContext(List<LookupResult> results, string query, Exception e, string queryUrl, string response) : this(results, query)
         {
             this.exception = e;
             this.queryUrl = queryUrl;
+            this.response = response;
         }
 
         public string FailureMessage()
@@ -154,7 +157,7 @@ namespace Raticon.Service
                 return null;
             }
 
-            return "Search for " + Query + " failed.\n\nError: " + exception.Message + "\n\nUrl: " + queryUrl;
+            return "Search for " + Query + " failed.\n\nError: " + exception.Message + "\n\nUrl: " + queryUrl+"\n\nResponse: "+response;
         }
     }
 }
