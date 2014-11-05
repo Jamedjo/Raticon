@@ -12,6 +12,7 @@ Quickly find your movie trailers, notes, etc. and view imdb ratings from within 
 
 * The app will process your collection using the **name of each sub-folder** to lookup the imdb id. This means any files relating to a movie must be in a folder named after the movie.
 * When all films have loaded click "Make Icons".
+* You can 'Watch' a folder to automatically create icons when a new film is added.
 * You may need to clear your thumbnail cache and restart explorer for the icons to update.
 
 [![download](https://cloud.githubusercontent.com/assets/1028741/3213106/f63cc552-ef80-11e3-85d2-39107b3a0096.png)](https://github.com/Jamedjo/Raticon/releases/latest)

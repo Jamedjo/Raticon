@@ -2,14 +2,10 @@
 
 * Should be able to cancel "Make Icons"
 * Get `folder.jpg`s in background instead of during icon creation
-* LookupChoice GUI should be different when no movie found / no internet. Should not error on pick selected.
-* Ability to watch a folder for changes and setup icons when a film is added (don't get tangled with app creating the folder though).
 
 ### Ideas
 
 * Store folders in settings
-* Sort films by heading. Makes it easy to view top films
-* Double-click a film opens it in explorer
 * More than one folder at once
 * Tickboxes and option to build the following
   * hasFolder.jpg
@@ -25,3 +21,8 @@
 * CLI `--decorate --norating` could make it process folder.jpg into .ico without any film lookup or ratings. Use for TV shows?
 * Watcher taskbar notification could show recently processed films.
 * Should not be able to pick both --watch and --gui until that is made possible. Or could make watch always use gui.
+* FolderWatcher should wait for some delay after change. Scenarios: New Folder may be renamed. Folder without folder.jpg may get one from another service. Folder without imdb.nfo may get one from another service.
+* Gui Result picker error layout could be cleaner.
+* Could eliminate 'Make Icons' button and have them auto-process. Would need to find a place to mention clearing thumbnail cache.
+* MediaCollection should refresh on FileSystem change.
+* End2end testing could help prevent the introduction of threading bugs.
