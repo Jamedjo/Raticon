@@ -27,9 +27,9 @@ namespace Raticon.Model
         /// <summary>
         /// Creates a GuiFilm from any thread.
         /// </summary>
-        public GuiFilm BuildFilm(string path, IFileSystem fileSystem = null)
+        public GuiFilm BuildFilm(string path, IFilmProcessor autoProcessor = null, IFileSystem fileSystem = null)
         {
-            return new GuiFilm(path, fileSystem, resultPicker);
+            return new GuiFilm(path, fileSystem, resultPicker, autoProcessor);
         }
     }
 }

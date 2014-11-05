@@ -15,9 +15,16 @@ namespace Raticon.Model
     {
         public GuiFilm(string path, IFileSystem fileSystem = null) : this(path, fileSystem, new GuiResultPickerService(Application.Current.MainWindow)) { }
 
-        public GuiFilm(string path, IFileSystem fileSystem, IResultPicker resultPicker) : base(path, fileSystem, resultPicker)
+        public GuiFilm(string path, IFileSystem fileSystem, IResultPicker resultPicker, IFilmProcessor autoProcessor = null) : base(path, fileSystem, resultPicker)
         {
-            FetchData();
+            if (autoProcessor != null)
+            {
+                FetchData(() => autoProcessor.Process(this));
+            }
+            else
+            {
+                FetchData();
+            }
         }
 
         public bool IsLoading { get { return (idLookupInvoked && !idLookupComplete) || (ratingLookupInvoked && !ratingLookupComplete); } }

@@ -13,7 +13,7 @@ namespace Raticon.Service
 
         public FilmProcessingWatcher(Func<Action<string>, IFolderWatcher> watcherFactory, IFilmProcessor filmProcessor)
         {
-            Watcher = watcherFactory(path => filmProcessor.Process(FilmToProcess(path)));
+            Watcher = watcherFactory(path => OnChangeAction(path, filmProcessor));
         }
 
         public FilmProcessingWatcher(string watchPath)
@@ -22,9 +22,9 @@ namespace Raticon.Service
             Watcher.Watch(watchPath);
         }
 
-        protected virtual T FilmToProcess(string path)
+        protected virtual void OnChangeAction(string path, IFilmProcessor filmProcessor)
         {
-            return FilmFactory<T>.BuildFilm(path);
+            filmProcessor.Process(FilmFactory<T>.BuildFilm(path));
         }
     }
 
@@ -36,10 +36,10 @@ namespace Raticon.Service
             filmFactory = new GuiFilmFactory();
         }
 
-        protected override GuiFilm FilmToProcess(string path)
+        protected override void OnChangeAction(string path, IFilmProcessor filmProcessor)
         {
             MessageBox.Show("Detected change: " + path);
-            return filmFactory.BuildFilm(path);
+            filmFactory.BuildFilm(path, filmProcessor);
         }
     }
 
@@ -47,10 +47,10 @@ namespace Raticon.Service
     {
         public ConsoleFilmProcessingWatcher(string watchPath) : base(watchPath) { }
 
-        protected override ConsoleFilm FilmToProcess(string path)
+        protected override void OnChangeAction(string path, IFilmProcessor filmProcessor)
         {
             Console.WriteLine("Detected change: " + path);
-            return base.FilmToProcess(path);
+            base.OnChangeAction(path, filmProcessor);
         }
 
         public void InfiniteWait()
