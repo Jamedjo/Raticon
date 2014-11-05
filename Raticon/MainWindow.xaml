@@ -4,7 +4,7 @@
         xmlns:rc="clr-namespace:Raticon.Control"
         Icon="./Raticon.ico"
         DataContext="{Binding Main, Source={StaticResource Locator}}"
-        Title="Raticon v1.0.0" Height="430" Width="526">
+        Title="Raticon v1.1.0" Height="430" Width="526">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"></RowDefinition>
