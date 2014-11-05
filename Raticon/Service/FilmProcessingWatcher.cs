@@ -30,16 +30,16 @@ namespace Raticon.Service
 
     public class GuiFilmProcessingWatcher : FilmProcessingWatcher<GuiFilm>
     {
-        IResultPicker resultPicker;
+        GuiFilmFactory filmFactory;
         public GuiFilmProcessingWatcher(string watchPath) : base(watchPath)
         {
-            resultPicker = new GuiResultPickerService(Application.Current.MainWindow);
+            filmFactory = new GuiFilmFactory();
         }
 
         protected override GuiFilm FilmToProcess(string path)
         {
             MessageBox.Show("Detected change: " + path);
-            return new GuiFilm(path, null, resultPicker);
+            return filmFactory.BuildFilm(path);
         }
     }
 

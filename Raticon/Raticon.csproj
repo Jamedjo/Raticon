@@ -204,6 +204,7 @@
     <Compile Include="Model\DesignData.cs" />
     <Compile Include="Model\FilmFactory.cs" />
     <Compile Include="Model\GuiFilm.cs" />
+    <Compile Include="Model\GuiFilmFactory.cs" />
     <Compile Include="Model\MediaCollection.cs" />
     <Compile Include="Model\Film.cs" />
     <Compile Include="Model\RatingResult.cs" />
