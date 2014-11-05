@@ -15,6 +15,11 @@ namespace Raticon.ViewModel
         private string queryTitle;
         public string QueryTitle { get { return queryTitle; } set { queryTitle = value; RaisePropertyChanged("QueryTitle"); } }
 
+        private bool searchFailed;
+        public bool SearchFailed { get { return searchFailed; } set { searchFailed = value; RaisePropertyChanged("SearchFailed"); } }
+        private string errorMessage;
+        public string ErrorMessage { get { return errorMessage; } set { errorMessage = value; RaisePropertyChanged("ErrorMessage"); } }
+
 
         public List<LookupResult> LookupResultList { get; private set; }
         public LookupResult SelectedItem { get; set; }
@@ -46,6 +51,13 @@ namespace Raticon.ViewModel
         {
             LookupResultList = lookup.Results;
             //RaisePropertyChanged("LookupResultList");
+
+            ErrorMessage = lookup.FailureMessage();
+            SearchFailed = !String.IsNullOrEmpty(ErrorMessage);
+            if(SearchFailed)
+            {
+                SearchText = lookup.Query;
+            }
 
             QueryTitle = lookup.Query;
 

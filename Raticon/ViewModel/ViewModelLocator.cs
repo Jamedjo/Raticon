@@ -38,6 +38,8 @@ namespace Raticon.ViewModel
             //{
                 // Create design time view services and models
                 SimpleIoc.Default.Register<LookupContext, DummyLookupContext>();
+                //SimpleIoc.Default.Register<LookupContext, DummyErrorLookupContext>();
+
             //}
             ////else
             ////{

@@ -154,7 +154,7 @@ namespace Raticon.Service
                 return null;
             }
 
-            return "Search for " + Query + " failed:\nError: " + exception.Message + "\nUrl: " + queryUrl;
+            return "Search for " + Query + " failed.\n\nError: " + exception.Message + "\n\nUrl: " + queryUrl;
         }
     }
 }

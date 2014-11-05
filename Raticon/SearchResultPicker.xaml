@@ -11,6 +11,22 @@
 
     <Window.Resources>
         <rv:BoolInverterConverter x:Key="BoolInverter" />
+        <Style TargetType="FrameworkElement" x:Key="VisibleIfSearchFailed">
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding SearchFailed}" Value="True">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="FrameworkElement" x:Key="VisibleIfSearchSucceeded">
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding SearchFailed}" Value="False">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -24,58 +40,68 @@
 
 		<TextBlock Text="{Binding QueryTitle}" TextAlignment="Center" VerticalAlignment="Center"/>
 
-		<Grid Margin="25,5" Grid.Row="1">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="100"/>
-				<ColumnDefinition Width="*"/>
-				<ColumnDefinition Width="100"/>
-			</Grid.ColumnDefinitions>
+        <Grid Margin="25,5" Grid.Row="1">
+            <Grid Style="{StaticResource VisibleIfSearchSucceeded}" >
+			    <Grid.ColumnDefinitions>
+				    <ColumnDefinition Width="100"/>
+				    <ColumnDefinition Width="*"/>
+				    <ColumnDefinition Width="100"/>
+			    </Grid.ColumnDefinitions>
 
-			<Button x:Name="PickButton" Grid.Column="0" Command="{Binding PickSelectedCommand}" IsEnabled="{Binding IsDefault, ElementName=SearchButton, Converter={StaticResource BoolInverter}}" IsDefault="{Binding IsDefault, ElementName=SearchButton, Converter={StaticResource BoolInverter}}" Margin="10,0,0,0" Content="Pick Selected"/>
-			<!--<Button Grid.Column="1" Margin="10,0,0,0">Search</Button>-->
+			    <Button x:Name="PickButton" Grid.Column="0" Command="{Binding PickSelectedCommand}" IsEnabled="{Binding IsDefault, ElementName=SearchButton, Converter={StaticResource BoolInverter}}" IsDefault="{Binding IsDefault, ElementName=SearchButton, Converter={StaticResource BoolInverter}}" Margin="10,0,0,0" Content="Pick Selected"/>
+			    <!--<Button Grid.Column="1" Margin="10,0,0,0">Search</Button>-->
 
-			<Button Grid.Column="2" IsCancel="True" Margin="10,0,0,0" Content="Skip Film"/>
-		</Grid>
+			    <Button Grid.Column="2" IsCancel="True" Margin="10,0,0,0" Content="Skip Film"/>
+		    </Grid>
+            <Button IsCancel="True" Margin="100,0" Content="Skip Film" Style="{StaticResource VisibleIfSearchFailed}" />
+        </Grid>
 
-		<ListView Grid.Row="2" ItemsSource="{Binding LookupResultList}" SelectedItem="{Binding SelectedItem}" MouseDoubleClick="ListView_MouseDoubleClick">
-			<ListView.ItemContainerStyle>
-				<Style TargetType="{x:Type ListViewItem}">
-					<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-				</Style>
-			</ListView.ItemContainerStyle>
-			<ListView.View>
-				<GridView>
-					<GridViewColumn DisplayMemberBinding="{Binding Title}" Width="190">
-						<GridViewColumn.CellTemplate>
-							<DataTemplate>
-								<TextBlock Text="{Binding Title}"/>
-							</DataTemplate>
-						</GridViewColumn.CellTemplate>
-						<GridViewColumnHeader Tag="Title" Content="Title"/>
-					</GridViewColumn>
-					<GridViewColumn Width="Auto">
-						<GridViewColumn.CellTemplate>
-							<DataTemplate>
-								<TextBlock Text="{Binding Year}" HorizontalAlignment="Center"/>
-							</DataTemplate>
-						</GridViewColumn.CellTemplate>
-						<GridViewColumnHeader Tag="Year" Content="Year"/>
-					</GridViewColumn>
-					<GridViewColumn>
-						<GridViewColumn.CellTemplate>
-							<DataTemplate>
-								<TextBlock Text="{Binding Rating}" HorizontalAlignment="Center"/>
-							</DataTemplate>
-						</GridViewColumn.CellTemplate>
-						<GridViewColumnHeader Tag="Rating" Content="Rating"/>
-					</GridViewColumn>
-				</GridView>
-			</ListView.View>
-		</ListView>
+        <Grid Grid.Row="2">
+            <TextBlock Style="{StaticResource VisibleIfSearchFailed}" Text="{Binding ErrorMessage}" TextWrapping="Wrap" Margin="10,30"/>
 
-		<TextBlock Grid.Row="3" VerticalAlignment="Center" TextAlignment="Center" FontStyle="Italic" FontFamily="Segoe UI Mono"><Run Text="~ OR ~"/></TextBlock>
+            <ListView Style="{StaticResource VisibleIfSearchSucceeded}" ItemsSource="{Binding LookupResultList}" SelectedItem="{Binding SelectedItem}" MouseDoubleClick="ListView_MouseDoubleClick">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn DisplayMemberBinding="{Binding Title}" Width="190">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Title}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                            <GridViewColumnHeader Tag="Title" Content="Title"/>
+                        </GridViewColumn>
+                        <GridViewColumn Width="Auto">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Year}" HorizontalAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                            <GridViewColumnHeader Tag="Year" Content="Year"/>
+                        </GridViewColumn>
+                        <GridViewColumn>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Rating}" HorizontalAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                            <GridViewColumnHeader Tag="Rating" Content="Rating"/>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
 
-		<Grid Margin="10,0,10,10" Grid.Row="4">
+        <Grid Grid.Row="3">
+            <TextBlock Style="{StaticResource VisibleIfSearchSucceeded}" VerticalAlignment="Center" TextAlignment="Center" FontStyle="Italic" FontFamily="Segoe UI Mono"><Run Text="~ OR ~"/></TextBlock>
+            <TextBlock Style="{StaticResource VisibleIfSearchFailed}" VerticalAlignment="Center" TextAlignment="Center"><Run Text="Try Again:"/></TextBlock>
+        </Grid>
+
+        <Grid Margin="10,0,10,10" Grid.Row="4">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="*"/>
 				<ColumnDefinition Width="80"/>

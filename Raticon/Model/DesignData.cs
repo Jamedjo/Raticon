@@ -66,6 +66,14 @@ namespace Raticon.Model
         public DummyLookupContext() : base(new DummyResults(), "Italian Job") { }
     }
 
+    public class DummyErrorLookupContext : LookupContext
+    {
+        public DummyErrorLookupContext()
+            : base(new List<LookupResult>(), "Italian.Job",
+            new System.Net.WebException("The operation has timed out", System.Net.WebExceptionStatus.Timeout),
+            @"http://www.myapifilms.com/title?limit=10&title=Italian%20Job") { }
+    }
+
     public class DummyIconLayoutViewModel : IconLayoutViewModel
     {
         public DummyIconLayoutViewModel() : base(DummyFolderJpg(), "8.1")
