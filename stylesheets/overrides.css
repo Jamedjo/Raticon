@@ -29,6 +29,23 @@ background-color: hsl(10, 93% ,39%);
 	font-variant: small-caps;
 }
 
+#main_content h2 {
+	margin-top: 110px;
+}
+
+#main_content h3 {
+	margin-top: 50px;
+	margin-bottom: 15px;
+}
+
+#main_content h1 + h3, #main_content h2 + h3 {
+	margin-top: 15px;
+}
+
+#main_content p, #main_content li {
+	font-size: 1.15em;
+}
+
 #main_content img {
 	max-width: 100%;
 }
