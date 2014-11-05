@@ -23,7 +23,7 @@
         <rv:SystemIconConverter x:Key="SysIconConverter"/>
     </UserControl.Resources>
 
-    <ListView x:Name="FilmList" GridViewColumnHeader.Click="SortClickHandler" ItemsSource="{Binding Collection}">
+    <ListView x:Name="FilmList" GridViewColumnHeader.Click="SortClickHandler" ItemsSource="{Binding Collection}"  MouseDoubleClick="ListView_MouseDoubleClick">
         <ListView.ItemContainerStyle>
             <Style TargetType="ListViewItem">
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />

@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.ComponentModel;
+using System.Windows.Input;
 
 namespace Raticon.Control
 {
@@ -13,6 +14,15 @@ namespace Raticon.Control
         public FilmListView()
         {
             InitializeComponent();
+        }
+
+        void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var item = ((FrameworkElement)e.OriginalSource).DataContext as Raticon.Model.IFilmFromFolder;
+            if (item != null)
+            {
+                new Raticon.Service.ShellService().Execute("explorer " + item.Path);
+            }
         }
 
         GridViewColumnHeader _lastHeaderClicked = null;
