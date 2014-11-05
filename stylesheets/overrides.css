@@ -49,3 +49,29 @@ background-color: hsl(10, 93% ,39%);
 #main_content img {
 	max-width: 100%;
 }
+
+@media (max-width: 600px) {
+	#header_wrap .inner {
+		padding: 20px 10px;
+	}
+
+	#project_title {
+		padding-right: 10%;
+		max-width: 90%;
+		width: 350px;
+		height: 150px;
+		margin: auto;
+	}
+
+	#project_tagline {
+		display: none;
+	}
+
+	#forkme_banner {
+		top: 181px;
+	}
+
+	#main_content > h1 {
+		padding-top: 25px;
+	}
+}
