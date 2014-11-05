@@ -26,3 +26,4 @@
 * Could eliminate 'Make Icons' button and have them auto-process. Would need to find a place to mention clearing thumbnail cache.
 * MediaCollection should refresh on FileSystem change.
 * End2end testing could help prevent the introduction of threading bugs.
+* Unicode? Hyphen in TV series year?
