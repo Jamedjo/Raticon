@@ -35,19 +35,34 @@
         <h1>
 <a id="decorate-your-movie-collection" class="anchor" href="#decorate-your-movie-collection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Decorate your Movie Collection</h1>
 
-<p>Album Art for your movies! Transforms your movie folders to look like movie posters with imdb ratings.</p>
+<h3>
+<a id="album-art-for-your-movies" class="anchor" href="#album-art-for-your-movies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Album Art for your movies!</h3>
+
+<p>Transforms your movie folders to look like movie posters with imdb ratings.</p>
 
 <p><img src="https://cloud.githubusercontent.com/assets/1028741/3212890/0f523b06-ef79-11e3-9978-c93cb34147be.png" alt="Turns folders into Posters"></p>
 
 <h2>
-<a id="instructions" class="anchor" href="#instructions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Instructions</h2>
+<a id="overview" class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h2>
 
 <p>Quickly find your movie trailers, notes, etc. and view imdb ratings from within Windows Explorer.</p>
 
-<p><img src="https://cloud.githubusercontent.com/assets/1028741/3213280/48b5f776-ef87-11e3-9bc0-198cdb70494f.png" alt="Raticon App"></p>
+<ul>
+<li>Raticon will help you the right rating and cover image for each movie in your collection.</li>
+<li>You can process your whole collection at once, or you can have Raticon automatically create icons when you add new movies.</li>
+<li>The app will process your collection using the <strong>name of each sub-folder</strong> to lookup the imdb id. This means any files relating to a movie must be in a folder named after the movie.</li>
+</ul>
+
+<h2>
+<a id="instructions" class="anchor" href="#instructions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Instructions</h2>
+
+<h3>
+<a id="add-folder" class="anchor" href="#add-folder" aria-hidden="true"><span class="octicon octicon-link"></span></a>Add Folder</h3>
+
+<p><img src="https://cloud.githubusercontent.com/assets/1028741/4921034/28f90770-6507-11e4-95d5-eacf8739e808.png" alt="Raticon App"></p>
 
 <ul>
-<li>The app will process your collection using the <strong>name of each sub-folder</strong> to lookup the imdb id. This means any files relating to a movie must be in a folder named after the movie.</li>
+<li>Click "Select Folder" and select your movie folder.</li>
 <li>When all films have loaded click "Make Icons".</li>
 <li>You can 'Watch' a folder to automatically create icons when a new film is added.</li>
 <li>You may need to clear your thumbnail cache and restart explorer for the icons to update.</li>
@@ -62,6 +77,14 @@
 </ul>
 
 <p><img src="https://cloud.githubusercontent.com/assets/1028741/3213279/4801a01e-ef87-11e3-83c9-cb14500f8b53.png" alt="Result Picker"></p>
+
+<h3>
+<a id="cache-location" class="anchor" href="#cache-location" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cache Location</h3>
+
+<ul>
+<li>If the wrong film has been selected you can remove the <code>_imdb_.nfo</code> file in the film's folder. You will also need to delete the <code>folder.ico</code> and <code>folder.jpg</code> images if you want them to be updated.</li>
+<li>Raticon caches film information in the <code>ProgramData</code> folder. E.g. <code>C:\ProgramData\Raticon\Cache</code>. If a rating is wrong/out-of-date you can force an update by deleting both the icon and the cache.</li>
+</ul>
       </section>
     </div>
 
