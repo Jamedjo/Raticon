@@ -53,6 +53,11 @@ namespace Raticon.Control
         {
             ICollectionView dataView = CollectionViewSource.GetDefaultView(listView.ItemsSource);
 
+            if (listView.ItemsSource == null)
+            {
+                return;
+            }
+
             dataView.SortDescriptions.Clear();
             dataView.SortDescriptions.Add(new SortDescription(sortBy, direction));
             dataView.Refresh();
