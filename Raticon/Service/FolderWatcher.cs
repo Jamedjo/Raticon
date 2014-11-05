@@ -55,49 +55,4 @@ namespace Raticon.Service
             watcher.WaitForChanged(WatcherChangeTypes.All);
         }
     }
-
-    public class IconMakingFilmFolderWatcher<T> where T : IFilmFromFolder
-    {
-        public IFolderWatcher Watcher { get; private set; }
-
-        public IconMakingFilmFolderWatcher(Func<Action<string>, IFolderWatcher> watcherFactory, IFilmProcessor filmProcessor)
-        {
-            Watcher = watcherFactory(path => filmProcessor.Process(FilmToProcess(path)));
-        }
-
-        public IconMakingFilmFolderWatcher(string watchPath)
-            : this(action => new FolderWatcher(action), new IconService())
-        {
-            Watcher.Watch(watchPath);
-        }
-
-        private T FilmToProcess(string path)
-        {
-            BeforeProcess(path);
-            return FilmFactory<T>.BuildFilm(path);
-        }
-
-        protected virtual void BeforeProcess(string path) { }
-    }
-
-    public class GuiFilmFolderWatcher : IconMakingFilmFolderWatcher<GuiFilm>
-    {
-        public GuiFilmFolderWatcher(string watchPath) : base(watchPath) { }
-    }
-
-    public class ConsoleFilmFolderWatcher : IconMakingFilmFolderWatcher<ConsoleFilm>
-    {
-        public ConsoleFilmFolderWatcher(string watchPath) : base(watchPath) { }
-
-        protected override void BeforeProcess(string path)
-        {
-            Console.WriteLine("Detected change: " + path);
-        }
-
-        public void InfiniteWait()
-        {
-            while (true) ((FolderWatcher)Watcher).WaitForChange();
-        }
-
-    }
 }

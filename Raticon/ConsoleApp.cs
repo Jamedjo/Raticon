@@ -79,7 +79,7 @@ namespace Raticon
 
                 if(options.Watch)
                 {
-                    new ConsoleFilmFolderWatcher(firstFolder).InfiniteWait();
+                    new ConsoleFilmProcessingWatcher(firstFolder).InfiniteWait();
                 }
             }
 
