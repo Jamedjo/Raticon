@@ -27,3 +27,4 @@
 * MediaCollection should refresh on FileSystem change.
 * End2end testing could help prevent the introduction of threading bugs.
 * Unicode? Hyphen in TV series year?
+* Raticon can be initialized in background watch mode. Consider task bar icon.

@@ -1,17 +1,19 @@
 # Decorate your Movie Collection
 
-### Album Art for your movies!
-Transforms your movie folders to look like movie posters with imdb ratings.
+### Album Art for your Movies!
+Transform plain folders to into movie posters with Rating Icons.
 
 ![Turns folders into Posters](https://cloud.githubusercontent.com/assets/1028741/3223815/a88088fa-f028-11e3-93b0-14ee8e821542.png)
 
 ## Overview
 
-Quickly find your movie trailers, notes, etc. and view imdb ratings from within Windows Explorer.
+Locate your movie trailers, notes, etc. at a glance. View IMDb ratings from the convenience of Windows Explorer.
 
-* Raticon will help you the right rating and cover image for each movie in your collection.
-* You can process your whole collection at once, or you can have Raticon automatically create icons when you add new movies.
-* The app will process your collection using the **name of each sub-folder** to lookup the imdb id. This means any files relating to a movie must be in a folder named after the movie.
+Raticon will help you find the right rating and cover image for each movie in your collection.
+
+You can process your whole collection at once, or you can have Raticon automatically create icons when you add new movies.
+
+The app will process your collection using the **name of each sub-folder** to lookup the IMDb id. This means any files relating to a movie must be in a folder named after the movie.
 
 
 [ ![Download](https://cloud.githubusercontent.com/assets/1028741/4921172/38cadd08-6508-11e4-947d-c95c6a97e5e6.png) ](https://github.com/Jamedjo/Raticon/releases/latest)
@@ -22,9 +24,9 @@ Quickly find your movie trailers, notes, etc. and view imdb ratings from within 
 
 ![Raticon App](https://cloud.githubusercontent.com/assets/1028741/4921034/28f90770-6507-11e4-95d5-eacf8739e808.png)
 
-* Click "Select Folder" and select your movie folder.
+* Click "Select Folder" and find your movie folder.
 * When all films have loaded click "Make Icons".
-* You can 'Watch' a folder to automatically create icons when a new film is added.
+* When you 'Watch' a folder Raticon will create icons as soon as you add a new film.
 * You may need to clear your thumbnail cache and restart explorer for the icons to update.
 
 ### Film Search
@@ -34,7 +36,8 @@ Quickly find your movie trailers, notes, etc. and view imdb ratings from within 
 
 ![Result Picker](https://cloud.githubusercontent.com/assets/1028741/3213279/4801a01e-ef87-11e3-83c9-cb14500f8b53.png)
 
-### Cache Location
+### Cache Locations
 
-* If the wrong film has been selected you can remove the `_imdb_.nfo` file in the film's folder. You will also need to delete the `folder.ico` and `folder.jpg` images if you want them to be updated.
-* Raticon caches film information in the `ProgramData` folder. E.g. `C:\ProgramData\Raticon\Cache`. If a rating is wrong/out-of-date you can force an update by deleting both the icon and the cache.
+If the wrong film has been selected you can remove the `_imdb_.nfo` file in the film's folder. You will also need to delete `folder.ico` and `folder.jpg` so Raticon knows to update the images.
+
+Raticon caches film information in the `ProgramData` folder. E.g. `C:\ProgramData\Raticon\Cache`. If a rating is wrong/out-of-date you can force an update by deleting both the icon and the cache.
