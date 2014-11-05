@@ -59,7 +59,7 @@
         <Grid Grid.Row="2">
             <TextBlock Style="{StaticResource VisibleIfSearchFailed}" Text="{Binding ErrorMessage}" TextWrapping="Wrap" Margin="10,30"/>
 
-            <ListView Style="{StaticResource VisibleIfSearchSucceeded}" ItemsSource="{Binding LookupResultList}" SelectedItem="{Binding SelectedItem}" MouseDoubleClick="ListView_MouseDoubleClick">
+            <ListView x:Name="SearchResults" Style="{StaticResource VisibleIfSearchSucceeded}" ItemsSource="{Binding LookupResultList}" SelectedItem="{Binding SelectedItem}" GridViewColumnHeader.Click="SortClickHandler" MouseDoubleClick="ListView_MouseDoubleClick">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Raticon.Control;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,9 +19,11 @@ namespace Raticon
     /// </summary>
     public partial class SearchResultPicker : Window
     {
+        ListViewSorter listViewSorter;
         public SearchResultPicker()
         {
             InitializeComponent();
+            listViewSorter = new ListViewSorter(SearchResults, new DefaultHeaderSortDirections(new[] { "Rating", "Year" }));
         }
 
         void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -30,6 +33,11 @@ namespace Raticon
             {
                 PickButton.Command.Execute(null);
             }
+        }
+
+        void SortClickHandler(object sender, RoutedEventArgs e)
+        {
+            listViewSorter.OnGridViewColumnHeaderClick(e);
         }
     }
 }

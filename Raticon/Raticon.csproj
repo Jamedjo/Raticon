@@ -192,6 +192,7 @@
     <Compile Include="Control\IconLayout.xaml.cs">
       <DependentUpon>IconLayout.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Control\ListViewSorter.cs" />
     <Compile Include="Control\PlaceholderTextBehavior.cs" />
     <Compile Include="Converter\BoolInverterConverter.cs" />
     <Compile Include="Converter\SystemIconConverter.cs" />
@@ -232,6 +233,10 @@
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\SearchResultPickerViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Page Include="AppResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Control\FilmListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
