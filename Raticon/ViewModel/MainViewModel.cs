@@ -55,7 +55,14 @@ namespace Raticon.ViewModel
             if (dialog.ShowDialog(Application.Current.MainWindow) == CommonFileDialogResult.Ok)
             {
                 openFolder = dialog.FileName;
-                Collection = new MediaCollection<GuiFilm>(openFolder).Items;
+                if(System.IO.Directory.Exists(openFolder))
+                {
+                    Collection = new MediaCollection<GuiFilm>(openFolder).Items;
+                }
+                else
+                {
+                    MessageBox.Show("The directory " + openFolder + " does not exist.", "No Such Folder", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
