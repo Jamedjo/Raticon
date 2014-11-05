@@ -57,8 +57,7 @@
         </Grid>
 
         <Grid Grid.Row="2">
-            <TextBlock Style="{StaticResource VisibleIfSearchFailed}" Text="{Binding ErrorMessage}" TextWrapping="Wrap" Margin="10,30"/>
-
+            <TextBox Style="{StaticResource VisibleIfSearchFailed}" Background="Transparent" BorderThickness="0" Text="{Binding ErrorMessage, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" Margin="10,30"/>
             <ListView x:Name="SearchResults" Style="{StaticResource VisibleIfSearchSucceeded}" ItemsSource="{Binding LookupResultList}" SelectedItem="{Binding SelectedItem}" GridViewColumnHeader.Click="SortClickHandler" MouseDoubleClick="ListView_MouseDoubleClick">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}">
