@@ -35,28 +35,29 @@ namespace Raticon.Service
 
         protected virtual string ResultFromSearch(string unsanitized_title, Func<LookupContext, LookupChoice> choiceCallback)
         {
-            List<LookupResult> results = Search(unsanitized_title);
-            LookupChoice choice = choiceCallback(new LookupContext(results, unsanitized_title));
+            LookupContext result = Search(unsanitized_title);
+            LookupChoice choice = choiceCallback(result);
             return choice.Run(newTitleToSearch => ResultFromSearch(newTitleToSearch, choiceCallback));
         }
 
-
-        public List<LookupResult> Search(string title)
+        public LookupContext Search(string title)
         {
             string clean_title = new TitleCleaner().Clean(title);
+            string queryUrl = @"http://www.myapifilms.com/title?limit=10&title=" + clean_title;
             try
             {
-                string data = httpService.Get(@"http://www.myapifilms.com/title?limit=10&title=" + clean_title);
+                string data = httpService.Get(queryUrl);
                 JArray objects = JArray.Parse(data);
-                return objects.Select(o => parseOne(o, title)).OrderBy(r => -r.SearchScore).ToList<LookupResult>();
+                var results = objects.Select(o => parseOne(o, title)).OrderBy(r => -r.SearchScore);
+                return new LookupContext(results.ToList<LookupResult>(), title);
             }
-            catch (JsonReaderException)
+            catch (JsonReaderException e)
             {
-                return new List<LookupResult>();
+                return new LookupContext(new List<LookupResult>(), title, e, queryUrl);
             }
-            catch (System.Net.WebException)
+            catch (System.Net.WebException e)
             {
-                return new List<LookupResult>();
+                return new LookupContext(new List<LookupResult>(), title, e, queryUrl);
             }
         }
 
@@ -131,10 +132,29 @@ namespace Raticon.Service
     {
         public List<LookupResult> Results { get; private set; }
         public string Query { get; private set; }
+
         public LookupContext(List<LookupResult> results, string query)
         {
             Results = results;
             Query = query;
+        }
+
+        private Exception exception = null;
+        private string queryUrl;
+        public LookupContext(List<LookupResult> results, string query, Exception e, string queryUrl) : this(results, query)
+        {
+            this.exception = e;
+            this.queryUrl = queryUrl;
+        }
+
+        public string FailureMessage()
+        {
+            if (exception == null)
+            {
+                return null;
+            }
+
+            return "Search for " + Query + " failed:\nError: " + exception.Message + "\nUrl: " + queryUrl;
         }
     }
 }

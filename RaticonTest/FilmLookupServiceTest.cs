@@ -15,14 +15,14 @@ namespace RaticonTest
         [TestMethod]
         public void Search_returns_multiple_results_for_ambiguous_titles()
         {
-            var results = new FilmLookupService(new MockHttpService(FullMyApiFilmsResponse)).Search("Italian Job");
+            var results = new FilmLookupService(new MockHttpService(FullMyApiFilmsResponse)).Search("Italian Job").Results;
             Assert.IsTrue(results.Count >= 2);
         }
 
         [TestMethod]
         public void Search_gets_a_correct_imdb_id()
         {
-             var results = new FilmLookupService(new MockHttpService(FullMyApiFilmsResponse)).Search("Italian Job");
+            var results = new FilmLookupService(new MockHttpService(FullMyApiFilmsResponse)).Search("Italian Job").Results;
             var ids = results.Select(r => r.ImdbId).ToList();
             CollectionAssert.Contains(ids, "tt0064505");
         }
@@ -46,15 +46,26 @@ namespace RaticonTest
         public void Search_returns_an_empty_list_when_no_results_found()
         {
             //"This is a movie which doesn't exist and never will unless someone reads this an makes one to prove a point"
-            var results = new FilmLookupService(new MockHttpService("{\"code\":110,\"message\":\"Movie not found\"}")).Search("32498238409");
+            var results = new FilmLookupService(new MockHttpService("{\"code\":110,\"message\":\"Movie not found\"}")).Search("32498238409").Results;
             Assert.IsTrue(results.Count == 0);
         }
 
         [TestMethod]
         public void Search_doesnt_throw_exception_when_internet_down()
         {
-            var results = new FilmLookupService(new MockHttpService(s => { throw new System.Net.WebException("Internet down"); })).Search("32498238409");
+            var results = new FilmLookupService(new MockHttpService(s => { throw new System.Net.WebException("Internet down"); })).Search("32498238409").Results;
             Assert.IsTrue(results.Count == 0);
+        }
+
+        [TestMethod]
+        public void FilmLookup_handles_timeout_by_passing_status()
+        {
+            var exception = new System.Net.WebException("The operation has timed out", System.Net.WebExceptionStatus.Timeout);
+            var result = new FilmLookupService(new MockHttpService(s => { throw exception; })).Search("The Usual Status");
+            var message = result.FailureMessage();
+            Assert.IsTrue(message.Contains("timed out"));
+            Assert.IsTrue(message.Contains("myapifilms"));
+            Assert.IsTrue(message.Contains("Usual"));
         }
 
         [TestMethod]
@@ -143,7 +154,7 @@ namespace RaticonTest
         [TestMethod]
         public void Search_sorts_results_by_score()
         {
-            var results = new FilmLookupService(new MockHttpService(MatrixResultsWithSpoofResponse)).Search("The Matrix 1999");
+            var results = new FilmLookupService(new MockHttpService(MatrixResultsWithSpoofResponse)).Search("The Matrix 1999").Results;
             var ids = results.Select(r => r.ImdbId).ToList();
             Assert.AreEqual(ids.First(), "tt0133093");
             Assert.AreEqual(ids.Last(), "tt0274085");
